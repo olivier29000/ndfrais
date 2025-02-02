@@ -3,6 +3,10 @@ import { StoreService } from './store.service';
 import { eachDayOfInterval, format } from 'date-fns';
 import { DAY_STATE, DayApp, WORK_STATE } from '../models/day-app.model';
 import { UtilsService } from './utils.service';
+import { EffectService } from './effect.service';
+import { UserApp } from '../models/user.model';
+import { NavigationService } from '../core/navigation/navigation.service';
+import { ContratEmploye } from '../models/contrat-employe.model';
 
 @Injectable({
   providedIn: 'root'
@@ -10,13 +14,18 @@ import { UtilsService } from './utils.service';
 export class ServerService {
   constructor(
     private store: StoreService,
-    private utilsService: UtilsService
+    private utilsService: UtilsService,
+    private effect: EffectService
   ) {}
   userAppList = this.store.userAppList;
   weekendDays = this.store.weekendDays;
   currentYear = this.store.currentYear;
   ferieList = this.store.ferieList;
   dayListBdd = this.store.dayListBdd;
+  getContratListByUserId(idUserApp: string) {
+    this.effect.getContratListByUserId(idUserApp);
+  }
+  adminContratList = this.store.adminContratList;
   dayAppMap = computed(() =>
     eachDayOfInterval({
       start: new Date(this.currentYear(), 0, 1),
@@ -63,4 +72,20 @@ export class ServerService {
       {} as { [month: string]: DayApp[] }
     )
   );
+
+  createUser(): void {
+    this.effect.createUserModal();
+  }
+
+  updateUserModal(userApp: UserApp) {
+    this.effect.updateUserModal(userApp);
+  }
+
+  createContratModal(userApp: UserApp): void {
+    this.effect.createContratModal(userApp);
+  }
+
+  updateContratModal(contrat: ContratEmploye) {
+    this.effect.updateContratModal(contrat);
+  }
 }

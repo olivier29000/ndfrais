@@ -30,16 +30,17 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { CommonModule, NgClass, NgFor, NgIf } from '@angular/common';
 import { VexPageLayoutContentDirective } from '@vex/components/vex-page-layout/vex-page-layout-content.directive';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { VexPageLayoutComponent } from '@vex/components/vex-page-layout/vex-page-layout.component';
 import { MatInputModule } from '@angular/material/input';
-import { UserApp } from 'src/app/models/user.model';
 import { MatSelectModule } from '@angular/material/select';
+import { ContratEmploye } from 'src/app/models/contrat-employe.model';
+import { UserApp } from 'src/app/models/user.model';
 
 @Component({
-  selector: 'dumb-user-app-list',
+  selector: 'dumb-contrat-list',
   template: `<vex-page-layout>
       <vex-page-layout-content class="-mt-6 container">
         <div class="card overflow-auto -mt-16" style="margin-top : 50px">
@@ -47,9 +48,12 @@ import { MatSelectModule } from '@angular/material/select';
             class="bg-app-bar px-6 h-16 border-b sticky left-0 flex items-center">
             <h2
               class="title my-0 ltr:pr-4 rtl:pl-4 ltr:mr-4 rtl:ml-4 ltr:border-r rtl:border-l hidden sm:block flex-none">
-              <span *ngIf="selection.isEmpty()">UserApps</span>
+              <span *ngIf="selection.isEmpty()"
+                >{{ contratEmployeList.length }} Contrats :
+                {{ userApp?.nomPrenom }}</span
+              >
               <span *ngIf="selection.hasValue()"
-                >{{ selection.selected.length }} UserApp<span
+                >{{ selection.selected.length }} ContratEmploye<span
                   *ngIf="selection.selected.length > 1"
                   >s</span
                 >
@@ -92,23 +96,18 @@ import { MatSelectModule } from '@angular/material/select';
               class="ml-4 flex-none"
               color="primary"
               mat-mini-fab
-              matTooltip="Add UserApp"
+              matTooltip="Add ContratEmploye"
               type="button"
-              (click)="createUserModalOutput()">
+              (click)="createContratModalOutput()">
               <mat-icon svgIcon="mat:add"></mat-icon>
             </button>
           </div>
-
           <table
             @stagger
             [dataSource]="dataSource"
             class="w-full"
             mat-table
             matSort>
-            <!--- Note that these columns can be defined in any order.
-                The actual rendered columns are set as a property on the row definition" -->
-
-            <!-- Checkbox Column -->
             <ng-container matColumnDef="checkbox">
               <th *matHeaderCellDef mat-header-cell>
                 <mat-checkbox
@@ -151,6 +150,7 @@ import { MatSelectModule } from '@angular/material/select';
                   mat-sort-header>
                   {{ column.label }}
                 </th>
+
                 <td
                   *matCellDef="let row"
                   [ngClass]="column.cssClasses"
@@ -158,6 +158,46 @@ import { MatSelectModule } from '@angular/material/select';
                   {{ row[column.property] }}
                 </td>
               </ng-container>
+              <ng-container
+                *ngIf="column.type === 'date'"
+                [matColumnDef]="column.property">
+                <th
+                  *matHeaderCellDef
+                  class="uppercase"
+                  mat-header-cell
+                  mat-sort-header>
+                  {{ column.label }}
+                </th>
+                <td
+                  *matCellDef="let row"
+                  [ngClass]="column.cssClasses"
+                  mat-cell>
+                  {{ row[column.property] | date: 'short' : '' : 'fr' }}
+                </td>
+              </ng-container>
+              <ng-container
+                *ngIf="column.type === 'dayWeekEndList'"
+                [matColumnDef]="column.property">
+                <th
+                  *matHeaderCellDef
+                  class="uppercase"
+                  mat-header-cell
+                  mat-sort-header>
+                  {{ column.label }}
+                </th>
+                <td
+                  *matCellDef="let row"
+                  [ngClass]="column.cssClasses"
+                  mat-cell>
+                  @for (dayWeekEnd of row[column.property]; track dayWeekEnd) {
+                    {{ dayWeekEnd }}
+                  }
+                </td>
+              </ng-container>
+            </ng-container>
+            <!-- Date Columns -->
+            <ng-container
+              *ngFor="let column of columns; trackBy: trackByProperty">
             </ng-container>
 
             <!-- Contact Column -->
@@ -215,7 +255,7 @@ import { MatSelectModule } from '@angular/material/select';
                 </div>
               </td>
             </ng-container>
-            <!-- Action Column -->
+
             <ng-container matColumnDef="manager">
               <th
                 *matHeaderCellDef
@@ -239,7 +279,7 @@ import { MatSelectModule } from '@angular/material/select';
               <td *matCellDef="let row" class="w-10 text-secondary" mat-cell>
                 <button
                   (click)="$event.stopPropagation()"
-                  [matMenuTriggerData]="{ UserApp: row }"
+                  [matMenuTriggerData]="{ ContratEmploye: row }"
                   [matMenuTriggerFor]="actionsMenu"
                   mat-icon-button
                   type="button">
@@ -247,7 +287,6 @@ import { MatSelectModule } from '@angular/material/select';
                 </button>
               </td>
             </ng-container>
-
             <tr *matHeaderRowDef="visibleColumns" mat-header-row></tr>
             <tr
               *matRowDef="let row; columns: visibleColumns"
@@ -274,8 +313,10 @@ import { MatSelectModule } from '@angular/material/select';
     </mat-menu>
 
     <mat-menu #actionsMenu="matMenu" xPosition="before" yPosition="below">
-      <ng-template let-UserApp="UserApp" matMenuContent>
-        <button mat-menu-item (click)="updateUserModalOutput(UserApp)">
+      <ng-template let-ContratEmploye="ContratEmploye" matMenuContent>
+        <button
+          mat-menu-item
+          (click)="updateContratModalOutput(ContratEmploye)">
           <mat-icon svgIcon="mat:edit"></mat-icon>
           <span>Modify</span>
         </button>
@@ -284,10 +325,11 @@ import { MatSelectModule } from '@angular/material/select';
           <span>Delete</span>
         </button>
       </ng-template>
-    </mat-menu> `,
+    </mat-menu>`,
   animations: [fadeInUp400ms, stagger40ms],
   standalone: true,
   imports: [
+    CommonModule,
     VexPageLayoutComponent,
     MatButtonToggleModule,
     ReactiveFormsModule,
@@ -309,72 +351,85 @@ import { MatSelectModule } from '@angular/material/select';
     MatSelectModule
   ]
 })
-export class UserListDumb implements AfterViewInit {
-  columns: TableColumn<UserApp>[] = [
+export class ContratListDumb implements AfterViewInit {
+  columns: TableColumn<ContratEmploye>[] = [
     {
-      label: 'Checkbox',
-      property: 'checkbox',
-      type: 'checkbox',
-      visible: true
-    },
-    { label: 'Image', property: 'image', type: 'image', visible: true },
-    {
-      label: 'Nom Prénom',
-      property: 'nomPrenom',
+      label: 'Poste',
+      property: 'poste',
       type: 'text',
       visible: true,
       cssClasses: ['font-medium']
     },
     {
-      label: 'Email',
-      property: 'email',
-      type: 'text',
+      label: 'Date de début',
+      property: 'dateBegin',
+      type: 'date',
+      visible: true,
+      cssClasses: ['font-medium']
+    },
+    {
+      label: 'Date de fin',
+      property: 'dateEnd',
+      type: 'date',
+      visible: true,
+      cssClasses: ['font-medium']
+    },
+    {
+      label: 'Jours de repos',
+      property: 'dayWeekEndList',
+      type: 'dayWeekEndList',
       visible: true,
       cssClasses: ['text-secondary', 'font-medium']
     },
     {
-      label: 'Telephone',
-      property: 'telephone',
-      type: 'text',
+      label: 'cumul congés/mois',
+      property: 'nbJourCongeMois',
+      type: 'number',
       visible: false,
       cssClasses: ['text-secondary', 'font-medium']
     },
     {
-      label: 'Manager',
-      property: 'manager',
-      type: 'user',
-      visible: true,
+      label: 'cumul rtt/mois',
+      property: 'nbJourRttMois',
+      type: 'number',
+      visible: false,
       cssClasses: ['text-secondary', 'font-medium']
     },
     {
-      label: 'Notes',
-      property: 'notes',
-      type: 'text',
-      visible: true,
+      label: 'heures/semaines',
+      property: 'nbHeureSemaine',
+      type: 'number',
+      visible: false,
       cssClasses: ['text-secondary', 'font-medium']
     },
     { label: 'Actions', property: 'actions', type: 'button', visible: true }
   ];
 
-  @Output() createUserModal = new EventEmitter<void>();
-  @Output() updateUserModal = new EventEmitter<UserApp>();
-  createUserModalOutput(): void {
-    this.createUserModal.emit();
+  @Output() createContratModal = new EventEmitter<void>();
+  @Output() updateContratModal = new EventEmitter<ContratEmploye>();
+  createContratModalOutput(): void {
+    this.createContratModal.emit();
   }
 
-  updateUserModalOutput(userApp: UserApp): void {
-    this.updateUserModal.emit(userApp);
+  updateContratModalOutput(contratEmploye: ContratEmploye): void {
+    this.updateContratModal.emit(contratEmploye);
   }
-  dataSource!: MatTableDataSource<UserApp, MatPaginator>;
-  managerList: UserApp[] = [];
+  dataSource!: MatTableDataSource<ContratEmploye, MatPaginator>;
+  _contratEmployeList: ContratEmploye[] = [];
   @Input()
-  set userAppList(value: UserApp[]) {
-    const dataSource: MatTableDataSource<UserApp> = new MatTableDataSource();
-    dataSource.data = value;
+  set contratEmployeList(value: ContratEmploye[]) {
+    const dataSource: MatTableDataSource<ContratEmploye> =
+      new MatTableDataSource();
+    dataSource.data = value || [];
     this.dataSource = dataSource;
-    this.managerList = value;
+    this._contratEmployeList = value;
   }
-  selection = new SelectionModel<UserApp>(true, []);
+  get contratEmployeList(): ContratEmploye[] {
+    return this._contratEmployeList;
+  }
+  @Input() userApp: UserApp | undefined;
+
+  selection = new SelectionModel<ContratEmploye>(true, []);
 
   @ViewChild(MatSort, { static: true }) sort?: MatSort;
 
@@ -390,7 +445,7 @@ export class UserListDumb implements AfterViewInit {
       .map((column) => column.property);
   }
 
-  toggleColumnVisibility(column: TableColumn<UserApp>, event: Event) {
+  toggleColumnVisibility(column: TableColumn<ContratEmploye>, event: Event) {
     event.stopPropagation();
     event.stopImmediatePropagation();
     column.visible = !column.visible;

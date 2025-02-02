@@ -38,11 +38,10 @@ import { VexPageLayoutComponent } from '@vex/components/vex-page-layout/vex-page
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatInputModule } from '@angular/material/input';
 import { aioTableData } from './data/aio-table-data';
-import { UserApp } from '../models/user.model';
 import { ServerService } from '../services/server.service';
-import { UserListDumb } from './dumbs/user-app-list.dumb';
 import { OrganigrammeDumb } from './dumbs/organigramme.dumb';
 import { TreeNode } from 'primeng/api';
+import { ContratEmploye } from '../models/contrat-employe.model';
 
 @Component({
   template: `
@@ -62,38 +61,34 @@ import { TreeNode } from 'primeng/api';
 export class AdminOrganigrammePage {
   constructor(private server: ServerService) {}
 
-  dataTreeNode = computed(() =>
-    this.transformToTree(this.server.userAppList())
-  );
+  dataTreeNode = computed(() => this.transformToTree([]));
 
-  transformToTree(users: UserApp[]): TreeNode[] {
-    const userMap: { [key: number]: TreeNode } = {};
+  transformToTree(contratList: ContratEmploye[]): TreeNode[] {
+    const contratMap: { [key: number]: TreeNode } = {};
     const roots: TreeNode[] = [];
     // Créer une map des utilisateurs sous forme de TreeNode
-    users.forEach((user) => {
-      userMap[user.id] = {
-        label: `${user.prenom} ${user.nom}`,
-        data: user,
+    contratList.forEach((contrat) => {
+      contratMap[contrat.id] = {
+        label: `${contrat.userApp.prenom} ${contrat.userApp.nom}`,
+        data: contrat.poste,
         expanded: true,
         children: [],
         draggable: true,
         droppable: true
       };
     });
-    console.log(userMap);
-    console.log(users);
+
     // Parcourir la liste et construire l'arbre
-    users.forEach((user) => {
-      if (user.manager) {
-        const managerNode = userMap[user.manager.id];
+    contratList.forEach((contrat) => {
+      if (contrat.manager) {
+        const managerNode = contratMap[contrat.manager.id];
         if (managerNode) {
-          managerNode.children!.push(userMap[user.id]);
+          managerNode.children!.push(contratMap[contrat.id]);
         }
       } else {
-        roots.push(userMap[user.id]); // Ajout des utilisateurs sans manager comme racine
+        roots.push(contratMap[contrat.id]); // Ajout des utilisateurs sans manager comme racine
       }
     });
-    console.log(roots);
     return roots;
   }
 }

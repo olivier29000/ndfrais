@@ -22,6 +22,11 @@ export const appRoutes: VexRoutes = [
           import('./pages/admin-users.page').then((m) => m.AdminUsersPage)
       },
       {
+        path: 'admin/employes/:idUserApp',
+        loadComponent: () =>
+          import('./pages/admin-contrats.page').then((m) => m.AdminContratsPage)
+      },
+      {
         path: 'admin/organigramme',
         loadComponent: () =>
           import('./pages/admin-organigramme.page').then(

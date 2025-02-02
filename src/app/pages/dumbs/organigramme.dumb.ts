@@ -12,6 +12,9 @@ import { OrganizationChartModule } from 'primeng/organizationchart';
             <div class="p-2">
               {{ node.label }}
             </div>
+            <div class="p-2">
+              {{ node.data }}
+            </div>
           </div>
         </ng-template>
       </p-organizationChart>

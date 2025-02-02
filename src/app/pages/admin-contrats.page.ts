@@ -6,7 +6,9 @@ import {
   inject,
   Input,
   OnInit,
-  ViewChild
+  signal,
+  ViewChild,
+  WritableSignal
 } from '@angular/core';
 import { Observable, of, ReplaySubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -41,29 +43,48 @@ import { aioTableData } from './data/aio-table-data';
 import { UserApp } from '../models/user.model';
 import { ServerService } from '../services/server.service';
 import { UserListDumb } from './dumbs/user-app-list.dumb';
+import { ActivatedRoute } from '@angular/router';
+import { ContratListDumb } from './dumbs/contrat-list.dumb';
+import { ContratEmploye } from '../models/contrat-employe.model';
 
 @Component({
-  template: `
-    <dumb-user-app-list
-      (createUserModal)="createUserModal()"
-      (updateUserModal)="updateUserModal($event)"
-      [userAppList]="userAppList()"></dumb-user-app-list>
-  `,
+  template: `<dumb-contrat-list
+    (createContratModal)="createContratModal()"
+    (updateContratModal)="updateContratModal($event)"
+    [contratEmployeList]="adminContratList()"
+    [userApp]="currentUserApp"></dumb-contrat-list>`,
   animations: [],
   standalone: true,
-  imports: [UserListDumb]
+  imports: [ContratListDumb]
 })
-export class AdminUsersPage {
-  userAppList = this.server.userAppList;
-  createUserModal(): void {
-    this.server.createUser();
+export class AdminContratsPage {
+  currentUserApp: UserApp | undefined = undefined;
+  adminContratList = this.server.adminContratList;
+  ngOnInit(): void {
+    this.route.paramMap.subscribe((params) => {
+      const idUserApp = params.get('idUserApp');
+      if (idUserApp) {
+        this.currentUserApp = this.server
+          .userAppList()
+          .find((u) => u.id === Number(idUserApp));
+        this.server.getContratListByUserId(idUserApp);
+      }
+    });
   }
 
-  updateUserModal(userApp: UserApp) {
-    this.server.updateUserModal(userApp);
+  createContratModal(): void {
+    if (this.currentUserApp) {
+      this.server.createContratModal(this.currentUserApp);
+    }
   }
+
+  updateContratModal(contrat: ContratEmploye) {
+    this.server.updateContratModal(contrat);
+  }
+
   constructor(
     private dialog: MatDialog,
-    private server: ServerService
+    private server: ServerService,
+    private route: ActivatedRoute
   ) {}
 }

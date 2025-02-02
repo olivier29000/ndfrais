@@ -1,3 +1,5 @@
+import { ContratEmploye } from './contrat-employe.model';
+
 export class UserApp {
   id: number;
   imageBase64: string;
@@ -6,7 +8,6 @@ export class UserApp {
   telephone: string;
   email: string;
   notes: string;
-  manager?: UserApp;
 
   constructor(userApp: any) {
     this.id = userApp.id;
@@ -16,7 +17,6 @@ export class UserApp {
     this.telephone = userApp.telephone;
     this.email = userApp.email;
     this.notes = userApp.notes;
-    this.manager = userApp.manager;
   }
 
   get nomPrenom() {

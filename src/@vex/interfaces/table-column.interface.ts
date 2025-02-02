@@ -4,6 +4,9 @@ export interface TableColumn<T> {
   type:
     | 'text'
     | 'image'
+    | 'number'
+    | 'date'
+    | 'dayWeekEndList'
     | 'badge'
     | 'progress'
     | 'checkbox'

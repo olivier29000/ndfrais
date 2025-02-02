@@ -1,14 +1,66 @@
-import { Injectable, signal, WritableSignal } from '@angular/core';
+import { effect, Injectable, signal, WritableSignal } from '@angular/core';
 import { DayApp } from '../models/day-app.model';
 import { DayBdd } from '../models/day-bdd.model';
 import { UserApp } from '../models/user.model';
+import {
+  NavigationItem,
+  NavigationSubheading
+} from '../core/navigation/navigation-item.interface';
+import { NavigationService } from '../core/navigation/navigation.service';
+import { Role, UserConnected } from '../models/user-connected.model';
+import { ContratEmploye } from '../models/contrat-employe.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StoreService {
-  constructor() {}
+  constructor(private readonly navigationService: NavigationService) {
+    effect(() => {
+      const userConnected = this.userConnected();
+      if (userConnected) {
+        const navigationItemList: NavigationItem[] = [];
+        if (userConnected.roleList.includes(Role.ROLE_USER)) {
+          navigationItemList.push(navigationItemUser);
+        }
+        if (userConnected.roleList.includes(Role.ROLE_MANAGER)) {
+          const userAppList = this.userAppList();
+          navigationItemList.push(navigationItemManager);
+        }
+        if (userConnected.roleList.includes(Role.ROLE_ADMIN)) {
+          const userAppList = this.userAppList();
+          navigationItemList.push({
+            ...navigationItemAdmin,
+            children: navigationItemAdmin.children.map((child) => {
+              if (child.type === 'dropdown' && child.label === 'Employés') {
+                return {
+                  ...child,
+                  children: userAppList.map((userApp) => ({
+                    type: 'link',
+                    label: userApp.nomPrenom,
+                    route: '/admin/employes/' + userApp.id,
+                    routerLinkActiveOptions: { exact: true }
+                  }))
+                };
+              } else {
+                return child;
+              }
+            })
+          });
+        }
+        this.navigationService.loadNavigation(navigationItemList);
+      }
+    });
+  }
 
+  adminContratList: WritableSignal<ContratEmploye[]> = signal([]);
+  adminAllContratList: WritableSignal<ContratEmploye[]> = signal([]);
+  isLoading: WritableSignal<boolean> = signal(false);
+  navigationItemList: WritableSignal<NavigationItem[]> = signal([]);
+  userConnected: WritableSignal<UserConnected | undefined> = signal({
+    entreprise: 'Alaisedev Company',
+    email: 'lasbleis.olivier@yahoo.fr',
+    roleList: [Role.ROLE_ADMIN, Role.ROLE_MANAGER, Role.ROLE_USER]
+  });
   currentYear: WritableSignal<number> = signal(2025);
   dayListBdd: WritableSignal<DayBdd[]> = signal([]);
   weekendDays: WritableSignal<number[]> = signal([0, 6]);
@@ -23,6 +75,73 @@ export class StoreService {
   );
 }
 
+const navigationItemUser: NavigationSubheading = {
+  type: 'subheading',
+  label: 'Employé',
+  children: [
+    {
+      type: 'link',
+      label: 'Planning',
+      route: '/',
+      icon: 'mat:calendar_today',
+      routerLinkActiveOptions: { exact: true }
+    },
+    {
+      type: 'link',
+      label: 'Congés',
+      route: '/conges',
+      icon: 'mat:card_travel',
+      routerLinkActiveOptions: { exact: true }
+    }
+  ]
+};
+const navigationItemManager: NavigationSubheading = {
+  type: 'subheading',
+  label: 'Manager',
+  children: [
+    {
+      type: 'link',
+      label: 'Mes employés',
+      route: '/manager/mes-employes',
+      icon: 'mat:people',
+      routerLinkActiveOptions: { exact: true }
+    },
+    {
+      type: 'link',
+      label: 'Validations',
+      route: '/manager/notifications',
+      icon: 'mat:thumbs_up_down',
+      routerLinkActiveOptions: { exact: true }
+    }
+  ]
+};
+const navigationItemAdmin: NavigationSubheading = {
+  type: 'subheading',
+  label: 'Admin',
+  children: [
+    {
+      type: 'link',
+      label: 'Users',
+      route: '/admin/users',
+      icon: 'mat:person_pin',
+      routerLinkActiveOptions: { exact: true }
+    },
+    {
+      type: 'dropdown',
+      label: 'Employés',
+      icon: 'mat:people',
+      children: []
+    },
+    {
+      type: 'link',
+      label: 'Organigramme',
+      route: '/admin/organigramme',
+      icon: 'mat:bubble_chart',
+      routerLinkActiveOptions: { exact: true }
+    }
+  ]
+};
+
 export const UserBddList = [
   {
     id: 0,
@@ -31,7 +150,8 @@ export const UserBddList = [
     prenom: 'Chang',
     telephone: '+32 (818) 580-3557',
     email: 'dejesus.chang@yourcompany.biz',
-    notes: ''
+    notes: '',
+    manager: undefined
   },
   {
     id: 1,

@@ -36,4 +36,12 @@ export class NavigationService {
   isSubheading(item: NavigationItem): item is NavigationSubheading {
     return item.type === 'subheading';
   }
+
+  addItem(itemListToAdd: NavigationLink[], itemWhereAdd: NavigationItem): void {
+    this.navigationLoaderService.addItem(itemListToAdd, itemWhereAdd);
+  }
+
+  loadNavigation(navigationItemList: NavigationItem[]): void {
+    this.navigationLoaderService.loadNavigation(navigationItemList);
+  }
 }

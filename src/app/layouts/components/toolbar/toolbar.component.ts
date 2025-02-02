@@ -22,7 +22,10 @@ import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { NavigationItem } from '../../../core/navigation/navigation-item.interface';
+import {
+  NavigationItem,
+  NavigationLink
+} from '../../../core/navigation/navigation-item.interface';
 import { checkRouterChildsData } from '@vex/utils/check-router-childs-data';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -97,6 +100,10 @@ export class ToolbarComponent implements OnInit {
           (data) => data.toolbarShadowEnabled ?? false
         );
       });
+  }
+
+  addItem(itemListToAdd: NavigationLink[], itemWhereAdd: NavigationItem): void {
+    this.navigationService.addItem(itemListToAdd, itemWhereAdd);
   }
 
   openQuickpanel(): void {
