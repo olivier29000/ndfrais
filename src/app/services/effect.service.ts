@@ -3,11 +3,11 @@ import { DayApp } from '../models/day-app.model';
 import { DayBdd } from '../models/day-bdd.model';
 import { UserApp } from '../models/user.model';
 import { MatDialog } from '@angular/material/dialog';
-import { CreateUpdateUserModal } from '../pages/modals/create-update-user.modal';
+import { CreateUpdateUserModal } from '../pages/admin/modals/create-update-user.modal';
 import { StoreService } from './store.service';
 import { RepoService } from './repo.service';
 import { ContratUserApp } from '../models/contrat-employe.model';
-import { CreateUpdateContratModal } from '../pages/modals/create-update-contrat.modal';
+import { CreateUpdateContratModal } from '../pages/admin/modals/create-update-contrat.modal';
 import { Router, UrlTree } from '@angular/router';
 import Swal from 'sweetalert2';
 import { catchError, map, Observable, of } from 'rxjs';
@@ -106,7 +106,14 @@ export class EffectService {
     this.repo.getContratListByUserId(idUserApp).subscribe(
       (adminContratList) => {
         this.store.isLoading.set(false);
-        this.store.adminContratList.set(adminContratList);
+        console.log(adminContratList);
+        this.store.adminContratList.set(
+          adminContratList.map((c) => ({
+            ...c,
+            dateBegin: new Date(c.dateBegin),
+            dateEnd: new Date(c.dateEnd)
+          }))
+        );
       },
       () => {
         this.store.isLoading.set(false);
@@ -127,7 +134,7 @@ export class EffectService {
   }
 
   updateContrat(contratEmploye: ContratUserApp): void {
-    this.repo.createContrat(contratEmploye).subscribe(
+    this.repo.updateContrat(contratEmploye).subscribe(
       (adminContratList) => {
         this.store.isLoading.set(false);
         this.store.adminContratList.set(adminContratList);
@@ -186,6 +193,19 @@ export class EffectService {
     );
   }
 
+  getAllContrat(): void {
+    this.repo.getAllContrat().subscribe(
+      (adminAllContratList) => {
+        this.store.isLoading.set(false);
+        console.log(adminAllContratList);
+        this.store.adminAllContratList.set(adminAllContratList);
+      },
+      () => {
+        this.store.isLoading.set(false);
+      }
+    );
+  }
+
   createUserModal() {
     this.dialog
       .open(CreateUpdateUserModal, {
@@ -214,27 +234,31 @@ export class EffectService {
   }
 
   createContratModal(userApp: UserApp): void {
+    this.getAllContrat();
     this.dialog
       .open(CreateUpdateContratModal, {
         data: {
-          userApp,
-          contratList: this.store.adminAllContratList()
+          userApp
         }
       })
       .afterClosed()
-      .subscribe((userApp: UserApp) => {});
+      .subscribe((contrat: ContratUserApp) => {
+        this.createContrat(contrat);
+      });
   }
 
   updateContratModal(contrat: ContratUserApp) {
+    this.getAllContrat();
     this.dialog
       .open(CreateUpdateContratModal, {
         data: {
-          contrat,
-          contratList: this.store.adminAllContratList()
+          contrat
         }
       })
       .afterClosed()
-      .subscribe((userApp: UserApp) => {});
+      .subscribe((contrat: ContratUserApp) => {
+        this.updateContrat(contrat);
+      });
   }
 
   canActivate(): Observable<void | UrlTree> {

@@ -1,12 +1,13 @@
-import { computed, Injectable } from '@angular/core';
+import { computed, effect, Injectable } from '@angular/core';
 import { StoreService } from './store.service';
 import { eachDayOfInterval, format } from 'date-fns';
 import { DAY_STATE, DayApp, WORK_STATE } from '../models/day-app.model';
 import { UtilsService } from './utils.service';
-import { EffectService } from './effect.service';
 import { UserApp } from '../models/user.model';
 import { NavigationService } from '../core/navigation/navigation.service';
 import { ContratUserApp } from '../models/contrat-employe.model';
+import { Role } from '../models/user-connected.model';
+import { EffectService } from './effect.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,25 +16,36 @@ export class ServerService {
   constructor(
     private store: StoreService,
     private utilsService: UtilsService,
-    private effect: EffectService
-  ) {}
+    private effectService: EffectService
+  ) {
+    effect(() => {
+      const userConnected = this.userConnected();
+      if (userConnected?.roleList.includes(Role.ROLE_ADMIN)) {
+        this.getUserAppList();
+      }
+    });
+  }
+  userConnected = this.store.userConnected;
   userAppList = this.store.userAppList;
   weekendDays = this.store.weekendDays;
   currentYear = this.store.currentYear;
   ferieList = this.store.ferieList;
   dayListBdd = this.store.dayListBdd;
-
+  adminAllContratList = this.store.adminAllContratList;
+  getAllContrat(): void {
+    this.effectService.getAllContrat();
+  }
   getUserAppList(): void {
-    this.effect.getUserAppList();
+    this.effectService.getUserAppList();
   }
   creationCompte(email: string, entreprise: string, password: string): void {
-    this.effect.creationCompte(email, entreprise, password);
+    this.effectService.creationCompte(email, entreprise, password);
   }
   authentification(email: string, password: string): void {
-    this.effect.authentification(email, password);
+    this.effectService.authentification(email, password);
   }
   getContratListByUserId(idUserApp: string) {
-    this.effect.getContratListByUserId(idUserApp);
+    this.effectService.getContratListByUserId(idUserApp);
   }
   adminContratList = this.store.adminContratList;
   dayAppMap = computed(() =>
@@ -84,18 +96,18 @@ export class ServerService {
   );
 
   createUser(): void {
-    this.effect.createUserModal();
+    this.effectService.createUserModal();
   }
 
   updateUserModal(userApp: UserApp) {
-    this.effect.updateUserModal(userApp);
+    this.effectService.updateUserModal(userApp);
   }
 
   createContratModal(userApp: UserApp): void {
-    this.effect.createContratModal(userApp);
+    this.effectService.createContratModal(userApp);
   }
 
   updateContratModal(contrat: ContratUserApp) {
-    this.effect.updateContratModal(contrat);
+    this.effectService.updateContratModal(contrat);
   }
 }

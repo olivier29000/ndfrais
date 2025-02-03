@@ -23,7 +23,6 @@ export class StoreService {
           navigationItemList.push(navigationItemUser);
         }
         if (userConnected.roleList.includes(Role.ROLE_MANAGER)) {
-          const userAppList = this.userAppList();
           navigationItemList.push(navigationItemManager);
         }
         if (userConnected.roleList.includes(Role.ROLE_ADMIN)) {
@@ -38,7 +37,7 @@ export class StoreService {
                     type: 'link',
                     label: userApp.nomPrenom,
                     route: '/admin/employes/' + userApp.id,
-                    routerLinkActiveOptions: { exact: true }
+                    routerLinkActiveOptions: { exact: false }
                   }))
                 };
               } else {

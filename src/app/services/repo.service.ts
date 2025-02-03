@@ -81,7 +81,7 @@ export class RepoService {
     return this.http
       .post<
         ContratUserApp[]
-      >(`${URL_BACKEND}/user/create-contrat`, contratEmploye, httpOptions)
+      >(`${URL_BACKEND}/contrat-user-app/create-contrat`, contratEmploye, httpOptions)
       .pipe(catchError(this.handleError));
   }
 
@@ -89,7 +89,7 @@ export class RepoService {
     return this.http
       .post<
         ContratUserApp[]
-      >(`${URL_BACKEND}/user/update-contrat`, contratEmploye, httpOptions)
+      >(`${URL_BACKEND}/contrat-user-app/update-contrat`, contratEmploye, httpOptions)
       .pipe(catchError(this.handleError));
   }
 
@@ -97,7 +97,15 @@ export class RepoService {
     return this.http
       .get<
         ContratUserApp[]
-      >(`${URL_BACKEND}/user/get-contrat-list-by-user-app-id/${userAppId}`, httpOptions)
+      >(`${URL_BACKEND}/contrat-user-app/get-contrat-list-by-user-app-id/${userAppId}`, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+  getAllContrat(): Observable<ContratUserApp[]> {
+    return this.http
+      .get<
+        ContratUserApp[]
+      >(`${URL_BACKEND}/contrat-user-app/get-all-contrat`, httpOptions)
       .pipe(catchError(this.handleError));
   }
 

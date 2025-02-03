@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   DestroyRef,
+  effect,
   inject,
   Input,
   OnInit,
@@ -31,7 +32,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { CommonModule, NgClass, NgFor, NgIf } from '@angular/common';
 import { VexPageLayoutContentDirective } from '@vex/components/vex-page-layout/vex-page-layout-content.directive';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { VexBreadcrumbsComponent } from '@vex/components/vex-breadcrumbs/vex-breadcrumbs.component';
@@ -39,51 +40,36 @@ import { VexPageLayoutHeaderDirective } from '@vex/components/vex-page-layout/ve
 import { VexPageLayoutComponent } from '@vex/components/vex-page-layout/vex-page-layout.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatInputModule } from '@angular/material/input';
-import { aioTableData } from './data/aio-table-data';
-import { UserApp } from '../models/user.model';
-import { ServerService } from '../services/server.service';
-import { UserListDumb } from './dumbs/user-app-list.dumb';
+import { aioTableData } from '../data/aio-table-data';
+import { UserApp } from '../../models/user.model';
+import { ServerService } from '../../services/server.service';
+import { UserListDumb } from '../dumbs/user-app-list.dumb';
 import { ActivatedRoute } from '@angular/router';
-import { ContratListDumb } from './dumbs/contrat-list.dumb';
-import { ContratUserApp } from '../models/contrat-employe.model';
+import { ContratListDumb } from '../dumbs/contrat-list.dumb';
+import { ContratUserApp } from '../../models/contrat-employe.model';
+import { DayListDumb } from '../dumbs/day-list.dumb';
 
 @Component({
-  template: `<dumb-contrat-list
-    (createContratModal)="createContratModal()"
-    (updateContratModal)="updateContratModal($event)"
-    [contratEmployeList]="adminContratList()"
-    [userApp]="currentUserApp"></dumb-contrat-list>`,
+  template: ` <dumb-day-list [dayAppMap]="dayAppMap()"></dumb-day-list>`,
   animations: [],
   standalone: true,
-  imports: [ContratListDumb]
+  imports: [CommonModule, DayListDumb]
 })
-export class AdminContratsPage {
-  currentUserApp: UserApp | undefined = undefined;
-  adminContratList = this.server.adminContratList;
+export class AdminContratUserAppPage {
+  currentContratUserApp: WritableSignal<ContratUserApp | undefined> =
+    signal(undefined);
+  idContratUserApp: WritableSignal<string | undefined> = signal(undefined);
+  dayAppMap = this.server.dayAppMap;
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
-      const idUserApp = params.get('idUserApp');
-      if (idUserApp) {
-        this.currentUserApp = this.server
-          .userAppList()
-          .find((u) => u.id === Number(idUserApp));
-        this.server.getContratListByUserId(idUserApp);
+      const idContratUserApp = params.get('idContratUserApp');
+      if (idContratUserApp) {
+        this.idContratUserApp.set(idContratUserApp);
       }
     });
   }
 
-  createContratModal(): void {
-    if (this.currentUserApp) {
-      this.server.createContratModal(this.currentUserApp);
-    }
-  }
-
-  updateContratModal(contrat: ContratUserApp) {
-    this.server.updateContratModal(contrat);
-  }
-
   constructor(
-    private dialog: MatDialog,
     private server: ServerService,
     private route: ActivatedRoute
   ) {}

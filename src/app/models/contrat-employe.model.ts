@@ -4,7 +4,7 @@ export class ContratUserApp {
   id: number;
   poste: string;
   dateBegin: Date;
-  dateEnd: string;
+  dateEnd: Date;
   jourSemaineReposList: JourSemaine[];
   nbJourCongeMois: number;
   nbJourRttMois: number;

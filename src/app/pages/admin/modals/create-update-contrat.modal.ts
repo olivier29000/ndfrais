@@ -14,20 +14,59 @@ import { MatButtonModule } from '@angular/material/button';
 import { NgIf } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
 import { ContratUserApp } from 'src/app/models/contrat-employe.model';
+import {
+  MatNativeDateModule,
+  DateAdapter,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
+  NativeDateAdapter
+} from '@angular/material/core';
 
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { UserApp } from 'src/app/models/user.model';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { ServerService } from 'src/app/services/server.service';
+
+export class CustomDateAdapter extends NativeDateAdapter {
+  override parse(value: any): Date | null {
+    if (typeof value === 'string' && value.length === 10) {
+      const [day, month, year] = value.split('/').map(Number);
+      return new Date(year, month - 1, day);
+    }
+    return super.parse(value);
+  }
+
+  override format(date: Date, displayFormat: string): string {
+    if (displayFormat === 'input') {
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
+    }
+    return super.format(date, displayFormat);
+  }
+}
+
+export const CUSTOM_DATE_FORMATS = {
+  parse: { dateInput: 'DD/MM/YYYY' },
+  display: {
+    dateInput: 'dd/MM/yyyy',
+    monthYearLabel: 'MMMM yyyy',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'MMMM yyyy'
+  }
+};
+
 @Component({
   template: `<form>
       <div class="flex items-center" mat-dialog-title>
-        @if (data.contrat) {
+        @if (currentContrat.userApp) {
           <h2 class="headline m-0 flex-auto">
             {{ currentContrat.userApp.nomPrenom }} : {{ currentContrat.poste }}
           </h2>
         } @else {
           <h2 class="headline m-0 flex-auto">
-            {{ currentContrat.userApp.nomPrenom }} : Nouveau contrat
+            {{ data.userApp.nomPrenom }} : Nouveau contrat
           </h2>
         }
 
@@ -97,7 +136,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
           <mat-select
             [(ngModel)]="currentContrat.contratManager"
             name="contratManager">
-            @for (contrat of data.contratList; track contrat) {
+            @for (contrat of adminAllContratList(); track contrat) {
               @if (currentContrat.userApp.id !== contrat.userApp.id) {
                 <mat-option [value]="contrat">{{
                   contrat.userApp.nom +
@@ -112,20 +151,59 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
           <mat-icon matIconPrefix svgIcon="mat:phone"></mat-icon>
         </mat-form-field>
-        <label class="mb-2 block">Jours de repos</label>
-        <mat-button-toggle-group
-          name="ingredients"
-          aria-label="Ingredients"
-          [ngModel]="['lundi', 'mercredi', 'samedi']"
-          multiple>
-          <mat-button-toggle value="lundi"> lundi </mat-button-toggle>
-          <mat-button-toggle value="mardi"> mardi </mat-button-toggle>
-          <mat-button-toggle value="mercredi"> mercredi </mat-button-toggle>
-          <mat-button-toggle value="jeudi"> jeudi </mat-button-toggle>
-          <mat-button-toggle value="vendredi"> vendredi </mat-button-toggle>
-          <mat-button-toggle value="samedi"> samedi </mat-button-toggle>
-          <mat-button-toggle value="dimanche"> dimanche </mat-button-toggle>
-        </mat-button-toggle-group>
+        <div class="flex flex-col sm:flex-row">
+          <mat-form-field class="sm:ml-4 flex-auto">
+            <mat-label>Cumul de congés par mois</mat-label>
+            <input
+              cdkFocusInitial
+              [(ngModel)]="currentContrat.nbJourCongeMois"
+              name="nbJourCongeMois"
+              type="number"
+              matInput />
+
+            <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
+          </mat-form-field>
+
+          <mat-form-field class="sm:ml-4 flex-auto">
+            <mat-label>Cumul de RTT par mois</mat-label>
+            <input
+              cdkFocusInitial
+              [(ngModel)]="currentContrat.nbJourRttMois"
+              name="nbJourRttMois"
+              type="number"
+              matInput />
+
+            <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
+          </mat-form-field>
+          <mat-form-field class="sm:ml-4 flex-auto">
+            <mat-label>Nb heures par semaines</mat-label>
+            <input
+              cdkFocusInitial
+              [(ngModel)]="currentContrat.nbHeureSemaine"
+              name="nbHeureSemaine"
+              type="number"
+              matInput />
+
+            <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="flex flex-col sm:flex-row">
+          <label class="mb-2 block">Jours de repos</label>
+          <mat-button-toggle-group
+            name="ingredients"
+            aria-label="Ingredients"
+            [(ngModel)]="currentContrat.jourSemaineReposList"
+            multiple>
+            <mat-button-toggle value="LUNDI"> lundi </mat-button-toggle>
+            <mat-button-toggle value="MARDI"> mardi </mat-button-toggle>
+            <mat-button-toggle value="MERCREDI"> mercredi </mat-button-toggle>
+            <mat-button-toggle value="JEUDI"> jeudi </mat-button-toggle>
+            <mat-button-toggle value="VENDREDI"> vendredi </mat-button-toggle>
+            <mat-button-toggle value="SAMEDI"> samedi </mat-button-toggle>
+            <mat-button-toggle value="DIMANCHE"> dimanche </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
       </mat-dialog-content>
 
       <mat-dialog-actions align="end">
@@ -134,14 +212,16 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
           *ngIf="isCreateMode()"
           color="primary"
           mat-flat-button
-          type="submit">
+          type="submit"
+          (click)="save()">
           Create Customer
         </button>
         <button
           *ngIf="isUpdateMode()"
           color="primary"
           mat-flat-button
-          type="submit">
+          type="submit"
+          (click)="save()">
           Update Customer
         </button>
       </mat-dialog-actions>
@@ -177,6 +257,11 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
     MatSelectModule,
     MatDatepickerModule,
     MatButtonToggleModule
+  ],
+  providers: [
+    { provide: DateAdapter, useClass: CustomDateAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS },
+    { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' }
   ]
 })
 export class CreateUpdateContratModal implements OnInit {
@@ -189,18 +274,20 @@ export class CreateUpdateContratModal implements OnInit {
     nbJourRttMois: this.data?.contrat?.nbJourRttMois || 0,
     nbHeureSemaine: this.data?.contrat?.nbHeureSemaine || 0,
     contratManager: this.data?.contrat?.contratManager || undefined,
-    userApp: this.data?.contrat?.contratManager || this.data?.userApp
+    userApp: this.data?.contrat?.userApp
+      ? new UserApp(this.data?.contrat?.userApp)
+      : this.data?.userApp
   });
   mode: 'create' | 'update' = 'create';
-
+  adminAllContratList = this.server.adminAllContratList;
   constructor(
     @Inject(MAT_DIALOG_DATA)
     public data: {
       userApp: UserApp;
       contrat: ContratUserApp;
-      contratList: ContratUserApp[];
     },
-    private dialogRef: MatDialogRef<CreateUpdateContratModal>
+    private dialogRef: MatDialogRef<CreateUpdateContratModal>,
+    private server: ServerService
   ) {}
 
   ngOnInit() {
@@ -209,6 +296,7 @@ export class CreateUpdateContratModal implements OnInit {
     } else {
       this.mode = 'create';
     }
+    console.log(this.mode);
   }
 
   save() {

@@ -26,12 +26,21 @@ export const appRoutes: VexRoutes = [
       {
         path: 'admin/users',
         loadComponent: () =>
-          import('./pages/admin-users.page').then((m) => m.AdminUsersPage)
+          import('./pages/admin/admin-users.page').then((m) => m.AdminUsersPage)
       },
       {
         path: 'admin/employes/:idUserApp',
         loadComponent: () =>
-          import('./pages/admin-contrats.page').then((m) => m.AdminContratsPage)
+          import('./pages/admin/admin-contrats.page').then(
+            (m) => m.AdminContratsPage
+          )
+      },
+      {
+        path: 'admin/employes/:idUserApp/contrat-detail/:idContratUserApp',
+        loadComponent: () =>
+          import('./pages/admin/admin-contrat-detail.page').then(
+            (m) => m.AdminContratUserAppPage
+          )
       },
       {
         path: 'admin/organigramme',

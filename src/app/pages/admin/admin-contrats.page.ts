@@ -3,10 +3,13 @@ import {
   Component,
   computed,
   DestroyRef,
+  effect,
   inject,
   Input,
   OnInit,
-  ViewChild
+  signal,
+  ViewChild,
+  WritableSignal
 } from '@angular/core';
 import { Observable, of, ReplaySubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -37,66 +40,65 @@ import { VexPageLayoutHeaderDirective } from '@vex/components/vex-page-layout/ve
 import { VexPageLayoutComponent } from '@vex/components/vex-page-layout/vex-page-layout.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatInputModule } from '@angular/material/input';
-import { aioTableData } from './data/aio-table-data';
-import { ServerService } from '../services/server.service';
-import { OrganigrammeDumb } from './dumbs/organigramme.dumb';
-import { TreeNode } from 'primeng/api';
-import { ContratUserApp } from '../models/contrat-employe.model';
+import { aioTableData } from '../data/aio-table-data';
+import { UserApp } from '../../models/user.model';
+import { ServerService } from '../../services/server.service';
+import { UserListDumb } from '../dumbs/user-app-list.dumb';
+import { ActivatedRoute } from '@angular/router';
+import { ContratListDumb } from '../dumbs/contrat-list.dumb';
+import { ContratUserApp } from '../../models/contrat-employe.model';
 
 @Component({
-  template: `
-    <!-- <dumb-organigramme [data]="dataTreeNode()"></dumb-organigramme> -->
-    <div class="d-flex">
-      @for (data of dataTreeNode(); track data) {
-        <div class="border">
-          <dumb-organigramme [data]="[data]"></dumb-organigramme>
-        </div>
-      }
-    </div>
-  `,
+  template: `<dumb-contrat-list
+    (createContratModal)="createContratModal()"
+    (updateContratModal)="updateContratModal($event)"
+    [contratEmployeList]="adminContratList()"
+    [userApp]="currentUserApp()"></dumb-contrat-list>`,
   animations: [],
   standalone: true,
-  imports: [OrganigrammeDumb]
+  imports: [ContratListDumb]
 })
-export class AdminOrganigrammePage implements OnInit {
-  constructor(private server: ServerService) {}
-
+export class AdminContratsPage {
+  currentUserApp: WritableSignal<UserApp | undefined> = signal(undefined);
+  idUserApp: WritableSignal<string | undefined> = signal(undefined);
+  adminContratList = this.server.adminContratList;
   ngOnInit(): void {
-    this.server.getAllContrat();
-  }
-
-  dataTreeNode = computed(() => {
-    console.log(this.server.adminAllContratList());
-    return this.transformToTree(this.server.adminAllContratList());
-  });
-
-  transformToTree(contratList: ContratUserApp[]): TreeNode[] {
-    const contratMap: { [key: number]: TreeNode } = {};
-    const roots: TreeNode[] = [];
-    // Créer une map des utilisateurs sous forme de TreeNode
-    contratList.forEach((contrat) => {
-      contratMap[contrat.id] = {
-        label: `${contrat.userApp.prenom} ${contrat.userApp.nom}`,
-        data: contrat.poste,
-        expanded: true,
-        children: [],
-        draggable: true,
-        droppable: true
-      };
-    });
-
-    // Parcourir la liste et construire l'arbre
-    contratList.forEach((contrat) => {
-      if (contrat.contratManager) {
-        const contratManagerNode = contratMap[contrat.contratManager.id];
-        if (contratManagerNode) {
-          contratManagerNode.children!.push(contratMap[contrat.id]);
-        }
-      } else {
-        roots.push(contratMap[contrat.id]); // Ajout des utilisateurs sans contratManager comme racine
+    this.route.paramMap.subscribe((params) => {
+      const idUserApp = params.get('idUserApp');
+      if (idUserApp) {
+        this.idUserApp.set(idUserApp);
       }
     });
-    console.log();
-    return roots;
+  }
+
+  createContratModal(): void {
+    const currentUserApp = this.currentUserApp();
+    if (currentUserApp) {
+      this.server.createContratModal(currentUserApp);
+    }
+  }
+
+  updateContratModal(contrat: ContratUserApp) {
+    this.server.updateContratModal(contrat);
+  }
+
+  constructor(
+    private dialog: MatDialog,
+    private server: ServerService,
+    private route: ActivatedRoute
+  ) {
+    effect(
+      () => {
+        const idUserApp = this.idUserApp();
+        const userAppList = this.server.userAppList();
+        if (idUserApp && userAppList.length > 0) {
+          this.currentUserApp.set(
+            userAppList.find((u) => u.id === Number(idUserApp))
+          );
+          this.server.getContratListByUserId(idUserApp);
+        }
+      },
+      { allowSignalWrites: true }
+    );
   }
 }

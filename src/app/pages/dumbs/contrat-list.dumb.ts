@@ -38,6 +38,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { ContratUserApp } from 'src/app/models/contrat-employe.model';
 import { UserApp } from 'src/app/models/user.model';
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
 
 @Component({
   selector: 'dumb-contrat-list',
@@ -435,7 +437,9 @@ export class ContratListDumb implements AfterViewInit {
 
   @ViewChild(MatSort, { static: true }) sort?: MatSort;
 
-  constructor() {}
+  constructor() {
+    registerLocaleData(localeFr);
+  }
   ngAfterViewInit() {
     if (this.sort) {
       this.dataSource.sort = this.sort;
