@@ -106,7 +106,6 @@ export class EffectService {
     this.repo.getContratListByUserId(idUserApp).subscribe(
       (adminContratList) => {
         this.store.isLoading.set(false);
-        console.log(adminContratList);
         this.store.adminContratList.set(
           adminContratList.map((c) => ({
             ...c,

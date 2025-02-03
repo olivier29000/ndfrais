@@ -40,6 +40,7 @@ import { ContratUserApp } from 'src/app/models/contrat-employe.model';
 import { UserApp } from 'src/app/models/user.model';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'dumb-contrat-list',
@@ -320,6 +321,17 @@ import localeFr from '@angular/common/locales/fr';
       <ng-template let-ContratUserApp="ContratUserApp" matMenuContent>
         <button
           mat-menu-item
+          [routerLink]="
+            '/admin/employes/' +
+            ContratUserApp.userApp.id +
+            '/contrat-detail/' +
+            ContratUserApp.id
+          ">
+          <mat-icon svgIcon="mat:remove_red_eye"></mat-icon>
+          <span>Voir</span>
+        </button>
+        <button
+          mat-menu-item
           (click)="updateContratModalOutput(ContratUserApp)">
           <mat-icon svgIcon="mat:edit"></mat-icon>
           <span>Modify</span>
@@ -352,7 +364,8 @@ import localeFr from '@angular/common/locales/fr';
     FormsModule,
     MatDialogModule,
     MatInputModule,
-    MatSelectModule
+    MatSelectModule,
+    RouterLink
   ]
 })
 export class ContratListDumb implements AfterViewInit {
