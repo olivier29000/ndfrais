@@ -8,7 +8,7 @@ import {
 } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from 'src/environment/environment';
-import { ContratEmploye } from '../models/contrat-employe.model';
+import { ContratUserApp } from '../models/contrat-employe.model';
 import { UserApp } from '../models/user.model';
 import { UserConnected } from '../models/user-connected.model';
 
@@ -25,28 +25,79 @@ const httpOptions = {
 })
 export class RepoService {
   constructor(private http: HttpClient) {}
+  verifAuthenticate(): Observable<UserConnected> {
+    return this.http.get<UserConnected>(
+      `${URL_BACKEND}/user/verifAuthenticate`,
+      httpOptions
+    );
+  }
 
-  createContrat(contratEmploye: ContratEmploye): Observable<ContratEmploye[]> {
+  authentification(email: string, password: string): Observable<UserConnected> {
+    return this.http
+      .post<UserConnected>(
+        URL_BACKEND + '/user/login',
+        {
+          email,
+          password
+        },
+        httpOptions
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  creationCompte(
+    email: string,
+    entreprise: string,
+    password: string
+  ): Observable<void> {
+    return this.http
+      .post<void>(
+        URL_BACKEND + '/user/creation-compte',
+        {
+          email,
+          entreprise,
+          password
+        },
+        httpOptions
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  logout(): Observable<void> {
+    return this.http.get<void>(`${URL_BACKEND}/logout`, {
+      withCredentials: true
+    });
+  }
+
+  fetchUserConnected(avaibilityUrl: string): Observable<UserConnected> {
+    return this.http
+      .get<UserConnected>(
+        `${URL_BACKEND}/user/fetch-user-connected/${avaibilityUrl}`
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  createContrat(contratEmploye: ContratUserApp): Observable<ContratUserApp[]> {
     return this.http
       .post<
-        ContratEmploye[]
+        ContratUserApp[]
       >(`${URL_BACKEND}/user/create-contrat`, contratEmploye, httpOptions)
       .pipe(catchError(this.handleError));
   }
 
-  updateContrat(contratEmploye: ContratEmploye): Observable<ContratEmploye[]> {
+  updateContrat(contratEmploye: ContratUserApp): Observable<ContratUserApp[]> {
     return this.http
       .post<
-        ContratEmploye[]
+        ContratUserApp[]
       >(`${URL_BACKEND}/user/update-contrat`, contratEmploye, httpOptions)
       .pipe(catchError(this.handleError));
   }
 
-  getContratListByUserId(userAppId: string): Observable<ContratEmploye[]> {
+  getContratListByUserId(userAppId: string): Observable<ContratUserApp[]> {
     return this.http
       .get<
-        ContratEmploye[]
-      >(`${URL_BACKEND}/user/get-contrat-list-by-user-id/${userAppId}`, httpOptions)
+        ContratUserApp[]
+      >(`${URL_BACKEND}/user/get-contrat-list-by-user-app-id/${userAppId}`, httpOptions)
       .pipe(catchError(this.handleError));
   }
 
@@ -54,7 +105,7 @@ export class RepoService {
     return this.http
       .post<
         UserApp[]
-      >(`${URL_BACKEND}/user/create-user-app`, userApp, httpOptions)
+      >(`${URL_BACKEND}/user-app/create-user-app`, userApp, httpOptions)
       .pipe(catchError(this.handleError));
   }
 
@@ -62,13 +113,13 @@ export class RepoService {
     return this.http
       .post<
         UserApp[]
-      >(`${URL_BACKEND}/user/update-user-app`, userApp, httpOptions)
+      >(`${URL_BACKEND}/user-app/update-user-app`, userApp, httpOptions)
       .pipe(catchError(this.handleError));
   }
 
   getUserAppList(): Observable<UserApp[]> {
     return this.http
-      .get<UserApp[]>(`${URL_BACKEND}/user/get-user-app-list`, httpOptions)
+      .get<UserApp[]>(`${URL_BACKEND}/user-app/get-user-app-list`, httpOptions)
       .pipe(catchError(this.handleError));
   }
 

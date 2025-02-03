@@ -216,7 +216,7 @@ import { MatSelectModule } from '@angular/material/select';
               </td>
             </ng-container>
             <!-- Action Column -->
-            <ng-container matColumnDef="manager">
+            <ng-container matColumnDef="contratManager">
               <th
                 *matHeaderCellDef
                 class="uppercase"
@@ -226,9 +226,11 @@ import { MatSelectModule } from '@angular/material/select';
               </th>
               <td *matCellDef="let row" mat-cell>
                 {{
-                  row['manager']
-                    ? row['manager'].nom + ' ' + row['manager'].prenom
-                    : 'Aucun manager'
+                  row['contratManager']
+                    ? row['contratManager'].nom +
+                      ' ' +
+                      row['contratManager'].prenom
+                    : 'Aucun contratManager'
                 }}
               </td>
             </ng-container>
@@ -326,6 +328,13 @@ export class UserListDumb implements AfterViewInit {
       cssClasses: ['font-medium']
     },
     {
+      label: "Nom d'utilisateur",
+      property: 'pseudo',
+      type: 'text',
+      visible: true,
+      cssClasses: ['font-medium']
+    },
+    {
       label: 'Email',
       property: 'email',
       type: 'text',
@@ -337,13 +346,6 @@ export class UserListDumb implements AfterViewInit {
       property: 'telephone',
       type: 'text',
       visible: false,
-      cssClasses: ['text-secondary', 'font-medium']
-    },
-    {
-      label: 'Manager',
-      property: 'manager',
-      type: 'user',
-      visible: true,
       cssClasses: ['text-secondary', 'font-medium']
     },
     {
@@ -366,13 +368,13 @@ export class UserListDumb implements AfterViewInit {
     this.updateUserModal.emit(userApp);
   }
   dataSource!: MatTableDataSource<UserApp, MatPaginator>;
-  managerList: UserApp[] = [];
+  contratManagerList: UserApp[] = [];
   @Input()
   set userAppList(value: UserApp[]) {
     const dataSource: MatTableDataSource<UserApp> = new MatTableDataSource();
     dataSource.data = value;
     this.dataSource = dataSource;
-    this.managerList = value;
+    this.contratManagerList = value;
   }
   selection = new SelectionModel<UserApp>(true, []);
 

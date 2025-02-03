@@ -13,7 +13,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { NgIf } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
-import { ContratEmploye } from 'src/app/models/contrat-employe.model';
+import { ContratUserApp } from 'src/app/models/contrat-employe.model';
 
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { UserApp } from 'src/app/models/user.model';
@@ -94,7 +94,9 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
         <mat-form-field class="flex-auto">
           <mat-label>Manager</mat-label>
-          <mat-select [(ngModel)]="currentContrat.manager" name="manager">
+          <mat-select
+            [(ngModel)]="currentContrat.contratManager"
+            name="contratManager">
             @for (contrat of data.contratList; track contrat) {
               @if (currentContrat.userApp.id !== contrat.userApp.id) {
                 <mat-option [value]="contrat">{{
@@ -178,16 +180,16 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
   ]
 })
 export class CreateUpdateContratModal implements OnInit {
-  currentContrat: ContratEmploye = new ContratEmploye({
+  currentContrat: ContratUserApp = new ContratUserApp({
     poste: this.data?.contrat?.poste || '',
     dateBegin: this.data?.contrat?.dateBegin || new Date(),
     dateEnd: this.data?.contrat?.dateEnd || new Date(),
-    dayWeekEndList: this.data?.contrat?.dayWeekEndList || [],
+    jourSemaineReposList: this.data?.contrat?.jourSemaineReposList || [],
     nbJourCongeMois: this.data?.contrat?.nbJourCongeMois || 0,
     nbJourRttMois: this.data?.contrat?.nbJourRttMois || 0,
     nbHeureSemaine: this.data?.contrat?.nbHeureSemaine || 0,
-    manager: this.data?.contrat?.manager || undefined,
-    userApp: this.data?.contrat?.manager || this.data?.userApp
+    contratManager: this.data?.contrat?.contratManager || undefined,
+    userApp: this.data?.contrat?.contratManager || this.data?.userApp
   });
   mode: 'create' | 'update' = 'create';
 
@@ -195,8 +197,8 @@ export class CreateUpdateContratModal implements OnInit {
     @Inject(MAT_DIALOG_DATA)
     public data: {
       userApp: UserApp;
-      contrat: ContratEmploye;
-      contratList: ContratEmploye[];
+      contrat: ContratUserApp;
+      contratList: ContratUserApp[];
     },
     private dialogRef: MatDialogRef<CreateUpdateContratModal>
   ) {}

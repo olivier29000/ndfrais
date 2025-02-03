@@ -6,8 +6,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { CreateUpdateUserModal } from '../pages/modals/create-update-user.modal';
 import { StoreService } from './store.service';
 import { RepoService } from './repo.service';
-import { ContratEmploye } from '../models/contrat-employe.model';
+import { ContratUserApp } from '../models/contrat-employe.model';
 import { CreateUpdateContratModal } from '../pages/modals/create-update-contrat.modal';
+import { Router, UrlTree } from '@angular/router';
+import Swal from 'sweetalert2';
+import { catchError, map, Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +19,89 @@ export class EffectService {
   constructor(
     private dialog: MatDialog,
     private store: StoreService,
-    private repo: RepoService
+    private repo: RepoService,
+    private router: Router
   ) {}
+
+  authentification(email: string, password: string): void {
+    this.store.isLoading.set(true);
+    this.repo.authentification(email, password).subscribe(
+      (userConnected) => {
+        this.store.userConnected.set(userConnected);
+        this.store.isLoading.set(false);
+        this.router.navigate(['calendriers']);
+      },
+      (error: string) => {
+        this.store.isLoading.set(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: `${error}`
+        });
+      }
+    );
+  }
+
+  logout(): void {
+    this.store.isLoading.set(true);
+    this.repo.logout().subscribe(
+      () => {
+        this.store.isLoading.set(false);
+        window.location.href = '';
+      },
+      () => {
+        this.store.isLoading.set(false);
+        this.router.navigate(['']);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Erreur inconnu'
+        });
+      }
+    );
+  }
+
+  creationCompte(email: string, entreprise: string, password: string): void {
+    this.store.isLoading.set(true);
+    this.repo.creationCompte(email, entreprise, password).subscribe(
+      () => {
+        this.store.isLoading.set(false);
+        this.router.navigate(['']);
+        Swal.fire({
+          icon: 'success',
+          title: 'Félicitation !',
+          text: 'Votre compte a été créé, un email avec un lien de confirmation vient de vous être envoyé'
+        });
+      },
+      (error: string) => {
+        this.store.isLoading.set(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: `${error}`
+        });
+      }
+    );
+  }
+
+  fetchUserConnected(avaibilityUrl: string): void {
+    this.store.isLoading.set(true);
+    this.repo.fetchUserConnected(avaibilityUrl).subscribe(
+      (userConnected) => {
+        this.store.isLoading.set(false);
+        this.store.userConnected.set(userConnected);
+      },
+      (error: string) => {
+        this.store.isLoading.set(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: `${error}`
+        });
+      }
+    );
+  }
+
   getContratListByUserId(idUserApp: string): void {
     this.repo.getContratListByUserId(idUserApp).subscribe(
       (adminContratList) => {
@@ -30,7 +114,7 @@ export class EffectService {
     );
   }
 
-  createContrat(contratEmploye: ContratEmploye): void {
+  createContrat(contratEmploye: ContratUserApp): void {
     this.repo.createContrat(contratEmploye).subscribe(
       (adminContratList) => {
         this.store.isLoading.set(false);
@@ -42,7 +126,7 @@ export class EffectService {
     );
   }
 
-  updateContrat(contratEmploye: ContratEmploye): void {
+  updateContrat(contratEmploye: ContratUserApp): void {
     this.repo.createContrat(contratEmploye).subscribe(
       (adminContratList) => {
         this.store.isLoading.set(false);
@@ -58,7 +142,7 @@ export class EffectService {
     this.repo.createUserApp(userApp).subscribe(
       (userAppList) => {
         this.store.isLoading.set(false);
-        this.store.userAppList.set(userAppList);
+        this.store.userAppList.set(userAppList.map((u) => new UserApp(u)));
       },
       () => {
         this.store.isLoading.set(false);
@@ -70,7 +154,7 @@ export class EffectService {
     this.repo.updateUserApp(userApp).subscribe(
       (userAppList) => {
         this.store.isLoading.set(false);
-        this.store.userAppList.set(userAppList);
+        this.store.userAppList.set(userAppList.map((u) => new UserApp(u)));
       },
       () => {
         this.store.isLoading.set(false);
@@ -82,7 +166,7 @@ export class EffectService {
     this.repo.getUserAppList().subscribe(
       (userAppList) => {
         this.store.isLoading.set(false);
-        this.store.userAppList.set(userAppList);
+        this.store.userAppList.set(userAppList.map((u) => new UserApp(u)));
       },
       () => {
         this.store.isLoading.set(false);
@@ -110,7 +194,9 @@ export class EffectService {
         }
       })
       .afterClosed()
-      .subscribe((userApp: UserApp) => {});
+      .subscribe((userApp: UserApp) => {
+        this.createUserApp(userApp);
+      });
   }
 
   updateUserModal(userApp: UserApp) {
@@ -122,7 +208,9 @@ export class EffectService {
         }
       })
       .afterClosed()
-      .subscribe((updatedUserApp) => {});
+      .subscribe((updatedUserApp) => {
+        this.updateUserApp(updatedUserApp);
+      });
   }
 
   createContratModal(userApp: UserApp): void {
@@ -137,7 +225,7 @@ export class EffectService {
       .subscribe((userApp: UserApp) => {});
   }
 
-  updateContratModal(contrat: ContratEmploye) {
+  updateContratModal(contrat: ContratUserApp) {
     this.dialog
       .open(CreateUpdateContratModal, {
         data: {
@@ -147,5 +235,19 @@ export class EffectService {
       })
       .afterClosed()
       .subscribe((userApp: UserApp) => {});
+  }
+
+  canActivate(): Observable<void | UrlTree> {
+    this.store.isLoading.set(true);
+    return this.repo.verifAuthenticate().pipe(
+      map((userConnected) => {
+        this.store.isLoading.set(false);
+        this.store.userConnected.set(userConnected);
+      }),
+      catchError(() => {
+        this.store.isLoading.set(false);
+        return of(this.router.parseUrl(`login`));
+      })
+    );
   }
 }

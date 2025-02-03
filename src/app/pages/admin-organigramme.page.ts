@@ -41,7 +41,7 @@ import { aioTableData } from './data/aio-table-data';
 import { ServerService } from '../services/server.service';
 import { OrganigrammeDumb } from './dumbs/organigramme.dumb';
 import { TreeNode } from 'primeng/api';
-import { ContratEmploye } from '../models/contrat-employe.model';
+import { ContratUserApp } from '../models/contrat-employe.model';
 
 @Component({
   template: `
@@ -63,7 +63,7 @@ export class AdminOrganigrammePage {
 
   dataTreeNode = computed(() => this.transformToTree([]));
 
-  transformToTree(contratList: ContratEmploye[]): TreeNode[] {
+  transformToTree(contratList: ContratUserApp[]): TreeNode[] {
     const contratMap: { [key: number]: TreeNode } = {};
     const roots: TreeNode[] = [];
     // Créer une map des utilisateurs sous forme de TreeNode
@@ -80,13 +80,13 @@ export class AdminOrganigrammePage {
 
     // Parcourir la liste et construire l'arbre
     contratList.forEach((contrat) => {
-      if (contrat.manager) {
-        const managerNode = contratMap[contrat.manager.id];
-        if (managerNode) {
-          managerNode.children!.push(contratMap[contrat.id]);
+      if (contrat.contratManager) {
+        const contratManagerNode = contratMap[contrat.contratManager.id];
+        if (contratManagerNode) {
+          contratManagerNode.children!.push(contratMap[contrat.id]);
         }
       } else {
-        roots.push(contratMap[contrat.id]); // Ajout des utilisateurs sans manager comme racine
+        roots.push(contratMap[contrat.id]); // Ajout des utilisateurs sans contratManager comme racine
       }
     });
     return roots;

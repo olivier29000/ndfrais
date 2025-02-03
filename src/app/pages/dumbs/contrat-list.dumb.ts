@@ -36,7 +36,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { VexPageLayoutComponent } from '@vex/components/vex-page-layout/vex-page-layout.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { ContratEmploye } from 'src/app/models/contrat-employe.model';
+import { ContratUserApp } from 'src/app/models/contrat-employe.model';
 import { UserApp } from 'src/app/models/user.model';
 
 @Component({
@@ -53,7 +53,7 @@ import { UserApp } from 'src/app/models/user.model';
                 {{ userApp?.nomPrenom }}</span
               >
               <span *ngIf="selection.hasValue()"
-                >{{ selection.selected.length }} ContratEmploye<span
+                >{{ selection.selected.length }} ContratUserApp<span
                   *ngIf="selection.selected.length > 1"
                   >s</span
                 >
@@ -96,7 +96,7 @@ import { UserApp } from 'src/app/models/user.model';
               class="ml-4 flex-none"
               color="primary"
               mat-mini-fab
-              matTooltip="Add ContratEmploye"
+              matTooltip="Add ContratUserApp"
               type="button"
               (click)="createContratModalOutput()">
               <mat-icon svgIcon="mat:add"></mat-icon>
@@ -176,7 +176,7 @@ import { UserApp } from 'src/app/models/user.model';
                 </td>
               </ng-container>
               <ng-container
-                *ngIf="column.type === 'dayWeekEndList'"
+                *ngIf="column.type === 'jourSemaineReposList'"
                 [matColumnDef]="column.property">
                 <th
                   *matHeaderCellDef
@@ -256,7 +256,7 @@ import { UserApp } from 'src/app/models/user.model';
               </td>
             </ng-container>
 
-            <ng-container matColumnDef="manager">
+            <ng-container matColumnDef="contratManager">
               <th
                 *matHeaderCellDef
                 class="uppercase"
@@ -266,9 +266,11 @@ import { UserApp } from 'src/app/models/user.model';
               </th>
               <td *matCellDef="let row" mat-cell>
                 {{
-                  row['manager']
-                    ? row['manager'].nom + ' ' + row['manager'].prenom
-                    : 'Aucun manager'
+                  row['contratManager']
+                    ? row['contratManager'].nom +
+                      ' ' +
+                      row['contratManager'].prenom
+                    : 'Aucun contratManager'
                 }}
               </td>
             </ng-container>
@@ -279,7 +281,7 @@ import { UserApp } from 'src/app/models/user.model';
               <td *matCellDef="let row" class="w-10 text-secondary" mat-cell>
                 <button
                   (click)="$event.stopPropagation()"
-                  [matMenuTriggerData]="{ ContratEmploye: row }"
+                  [matMenuTriggerData]="{ ContratUserApp: row }"
                   [matMenuTriggerFor]="actionsMenu"
                   mat-icon-button
                   type="button">
@@ -313,10 +315,10 @@ import { UserApp } from 'src/app/models/user.model';
     </mat-menu>
 
     <mat-menu #actionsMenu="matMenu" xPosition="before" yPosition="below">
-      <ng-template let-ContratEmploye="ContratEmploye" matMenuContent>
+      <ng-template let-ContratUserApp="ContratUserApp" matMenuContent>
         <button
           mat-menu-item
-          (click)="updateContratModalOutput(ContratEmploye)">
+          (click)="updateContratModalOutput(ContratUserApp)">
           <mat-icon svgIcon="mat:edit"></mat-icon>
           <span>Modify</span>
         </button>
@@ -352,7 +354,7 @@ import { UserApp } from 'src/app/models/user.model';
   ]
 })
 export class ContratListDumb implements AfterViewInit {
-  columns: TableColumn<ContratEmploye>[] = [
+  columns: TableColumn<ContratUserApp>[] = [
     {
       label: 'Poste',
       property: 'poste',
@@ -376,8 +378,8 @@ export class ContratListDumb implements AfterViewInit {
     },
     {
       label: 'Jours de repos',
-      property: 'dayWeekEndList',
-      type: 'dayWeekEndList',
+      property: 'jourSemaineReposList',
+      type: 'jourSemaineReposList',
       visible: true,
       cssClasses: ['text-secondary', 'font-medium']
     },
@@ -406,30 +408,30 @@ export class ContratListDumb implements AfterViewInit {
   ];
 
   @Output() createContratModal = new EventEmitter<void>();
-  @Output() updateContratModal = new EventEmitter<ContratEmploye>();
+  @Output() updateContratModal = new EventEmitter<ContratUserApp>();
   createContratModalOutput(): void {
     this.createContratModal.emit();
   }
 
-  updateContratModalOutput(contratEmploye: ContratEmploye): void {
+  updateContratModalOutput(contratEmploye: ContratUserApp): void {
     this.updateContratModal.emit(contratEmploye);
   }
-  dataSource!: MatTableDataSource<ContratEmploye, MatPaginator>;
-  _contratEmployeList: ContratEmploye[] = [];
+  dataSource!: MatTableDataSource<ContratUserApp, MatPaginator>;
+  _contratEmployeList: ContratUserApp[] = [];
   @Input()
-  set contratEmployeList(value: ContratEmploye[]) {
-    const dataSource: MatTableDataSource<ContratEmploye> =
+  set contratEmployeList(value: ContratUserApp[]) {
+    const dataSource: MatTableDataSource<ContratUserApp> =
       new MatTableDataSource();
     dataSource.data = value || [];
     this.dataSource = dataSource;
     this._contratEmployeList = value;
   }
-  get contratEmployeList(): ContratEmploye[] {
+  get contratEmployeList(): ContratUserApp[] {
     return this._contratEmployeList;
   }
   @Input() userApp: UserApp | undefined;
 
-  selection = new SelectionModel<ContratEmploye>(true, []);
+  selection = new SelectionModel<ContratUserApp>(true, []);
 
   @ViewChild(MatSort, { static: true }) sort?: MatSort;
 
@@ -445,7 +447,7 @@ export class ContratListDumb implements AfterViewInit {
       .map((column) => column.property);
   }
 
-  toggleColumnVisibility(column: TableColumn<ContratEmploye>, event: Event) {
+  toggleColumnVisibility(column: TableColumn<ContratUserApp>, event: Event) {
     event.stopPropagation();
     event.stopImmediatePropagation();
     column.visible = !column.visible;

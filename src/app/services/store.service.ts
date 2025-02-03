@@ -8,7 +8,7 @@ import {
 } from '../core/navigation/navigation-item.interface';
 import { NavigationService } from '../core/navigation/navigation.service';
 import { Role, UserConnected } from '../models/user-connected.model';
-import { ContratEmploye } from '../models/contrat-employe.model';
+import { ContratUserApp } from '../models/contrat-employe.model';
 
 @Injectable({
   providedIn: 'root'
@@ -52,15 +52,11 @@ export class StoreService {
     });
   }
 
-  adminContratList: WritableSignal<ContratEmploye[]> = signal([]);
-  adminAllContratList: WritableSignal<ContratEmploye[]> = signal([]);
+  adminContratList: WritableSignal<ContratUserApp[]> = signal([]);
+  adminAllContratList: WritableSignal<ContratUserApp[]> = signal([]);
   isLoading: WritableSignal<boolean> = signal(false);
   navigationItemList: WritableSignal<NavigationItem[]> = signal([]);
-  userConnected: WritableSignal<UserConnected | undefined> = signal({
-    entreprise: 'Alaisedev Company',
-    email: 'lasbleis.olivier@yahoo.fr',
-    roleList: [Role.ROLE_ADMIN, Role.ROLE_MANAGER, Role.ROLE_USER]
-  });
+  userConnected: WritableSignal<UserConnected | undefined> = signal(undefined);
   currentYear: WritableSignal<number> = signal(2025);
   dayListBdd: WritableSignal<DayBdd[]> = signal([]);
   weekendDays: WritableSignal<number[]> = signal([0, 6]);
@@ -70,9 +66,7 @@ export class StoreService {
     new Date(2025, 6, 4)
   ]);
 
-  userAppList: WritableSignal<UserApp[]> = signal(
-    UserBddList.map((u) => new UserApp(u))
-  );
+  userAppList: WritableSignal<UserApp[]> = signal([]);
 }
 
 const navigationItemUser: NavigationSubheading = {
@@ -151,7 +145,7 @@ export const UserBddList = [
     telephone: '+32 (818) 580-3557',
     email: 'dejesus.chang@yourcompany.biz',
     notes: '',
-    manager: undefined
+    contratManager: undefined
   },
   {
     id: 1,
@@ -161,7 +155,7 @@ export const UserBddList = [
     telephone: '+11 (977) 574-3636',
     email: 'short.lowe@yourcompany.ca',
     notes: '',
-    manager: {
+    contratManager: {
       id: 0,
       imageBase64: 'assets/img/avatars/20.jpg',
       nom: 'Dejesus',
@@ -179,7 +173,7 @@ export const UserBddList = [
     telephone: '+49 (969) 505-3323',
     email: 'antoinette.carson@yourcompany.net',
     notes: '',
-    manager: {
+    contratManager: {
       id: 0,
       imageBase64: 'assets/img/avatars/20.jpg',
       nom: 'Dejesus',
@@ -197,7 +191,7 @@ export const UserBddList = [
     telephone: '+48 (836) 545-3237',
     email: 'lynnette.adkins@yourcompany.info',
     notes: '',
-    manager: {
+    contratManager: {
       id: 1,
       imageBase64: 'assets/img/avatars/1.jpg',
       nom: 'Short',
@@ -215,7 +209,7 @@ export const UserBddList = [
     telephone: '+36 (955) 485-3652',
     email: 'patrica.good@yourcompany.me',
     notes: '',
-    manager: {
+    contratManager: {
       id: 1,
       imageBase64: 'assets/img/avatars/1.jpg',
       nom: 'Short',
@@ -233,7 +227,7 @@ export const UserBddList = [
     telephone: '+35 (983) 587-3423',
     email: 'kane.koch@yourcompany.org',
     notes: '',
-    manager: {
+    contratManager: {
       id: 3,
       imageBase64: 'assets/img/avatars/3.jpg',
       nom: 'Lynnette',
@@ -251,7 +245,7 @@ export const UserBddList = [
     telephone: '+47 (914) 469-3270',
     email: 'donovan.gonzalez@yourcompany.tv',
     notes: '',
-    manager: {
+    contratManager: {
       id: 0,
       imageBase64: 'assets/img/avatars/20.jpg',
       nom: 'Dejesus',
@@ -269,7 +263,7 @@ export const UserBddList = [
     telephone: '+37 (896) 474-3143',
     email: 'sabrina.logan@yourcompany.co.uk',
     notes: '',
-    manager: {
+    contratManager: {
       id: 6,
       imageBase64: 'assets/img/avatars/6.jpg',
       nom: 'Donovan',
@@ -287,7 +281,7 @@ export const UserBddList = [
     telephone: '+2 (993) 445-3626',
     email: 'estela.jordan@yourcompany.name',
     notes: '',
-    manager: {
+    contratManager: {
       id: 7,
       imageBase64: 'assets/img/avatars/7.jpg',
       nom: 'Sabrina',
@@ -305,7 +299,7 @@ export const UserBddList = [
     telephone: '+12 (877) 563-2737',
     email: 'rosanna.cross@yourcompany.biz',
     notes: '',
-    manager: {
+    contratManager: {
       id: 8,
       imageBase64: 'assets/img/avatars/8.jpg',
       nom: 'Estela',
@@ -323,7 +317,7 @@ export const UserBddList = [
     telephone: '+15 (877) 334-2231',
     email: 'Mary.jane@yourcompany.biz',
     notes: '',
-    manager: {
+    contratManager: {
       id: 8,
       imageBase64: 'assets/img/avatars/8.jpg',
       nom: 'Estela',

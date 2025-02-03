@@ -66,6 +66,12 @@ import { MatSelectModule } from '@angular/material/select';
         </div>
 
         <mat-form-field class="flex-auto">
+          <mat-label>Nom d'utilisateur</mat-label>
+          <input [(ngModel)]="currentUserApp.pseudo" name="pseudo" matInput />
+
+          <mat-icon matIconPrefix svgIcon="mat:edit_location"></mat-icon>
+        </mat-form-field>
+        <mat-form-field class="flex-auto">
           <mat-label>Email</mat-label>
           <input [(ngModel)]="currentUserApp.email" name="email" matInput />
 
@@ -97,14 +103,16 @@ import { MatSelectModule } from '@angular/material/select';
           *ngIf="isCreateMode()"
           color="primary"
           mat-flat-button
-          type="submit">
+          type="submit"
+          (click)="save()">
           Create Customer
         </button>
         <button
           *ngIf="isUpdateMode()"
           color="primary"
           mat-flat-button
-          type="submit">
+          type="submit"
+          (click)="save()">
           Update Customer
         </button>
       </mat-dialog-actions>
@@ -142,8 +150,10 @@ import { MatSelectModule } from '@angular/material/select';
 })
 export class CreateUpdateUserModal implements OnInit {
   currentUserApp: UserApp = new UserApp({
+    id: this.data?.userApp?.id || null,
     nom: this.data?.userApp?.nom || '',
     prenom: this.data?.userApp?.prenom || '',
+    pseudo: this.data?.userApp?.pseudo || '',
     email: this.data?.userApp?.email || '',
     telephone: this.data?.userApp?.telephone || '',
     notes: this.data?.userApp?.notes || '',

@@ -6,7 +6,7 @@ import { UtilsService } from './utils.service';
 import { EffectService } from './effect.service';
 import { UserApp } from '../models/user.model';
 import { NavigationService } from '../core/navigation/navigation.service';
-import { ContratEmploye } from '../models/contrat-employe.model';
+import { ContratUserApp } from '../models/contrat-employe.model';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +22,16 @@ export class ServerService {
   currentYear = this.store.currentYear;
   ferieList = this.store.ferieList;
   dayListBdd = this.store.dayListBdd;
+
+  getUserAppList(): void {
+    this.effect.getUserAppList();
+  }
+  creationCompte(email: string, entreprise: string, password: string): void {
+    this.effect.creationCompte(email, entreprise, password);
+  }
+  authentification(email: string, password: string): void {
+    this.effect.authentification(email, password);
+  }
   getContratListByUserId(idUserApp: string) {
     this.effect.getContratListByUserId(idUserApp);
   }
@@ -85,7 +95,7 @@ export class ServerService {
     this.effect.createContratModal(userApp);
   }
 
-  updateContratModal(contrat: ContratEmploye) {
+  updateContratModal(contrat: ContratUserApp) {
     this.effect.updateContratModal(contrat);
   }
 }

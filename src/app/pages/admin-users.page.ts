@@ -53,7 +53,7 @@ import { UserListDumb } from './dumbs/user-app-list.dumb';
   standalone: true,
   imports: [UserListDumb]
 })
-export class AdminUsersPage {
+export class AdminUsersPage implements OnInit {
   userAppList = this.server.userAppList;
   createUserModal(): void {
     this.server.createUser();
@@ -66,4 +66,7 @@ export class AdminUsersPage {
     private dialog: MatDialog,
     private server: ServerService
   ) {}
+  ngOnInit(): void {
+    this.server.getUserAppList();
+  }
 }

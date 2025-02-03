@@ -45,7 +45,7 @@ import { ServerService } from '../services/server.service';
 import { UserListDumb } from './dumbs/user-app-list.dumb';
 import { ActivatedRoute } from '@angular/router';
 import { ContratListDumb } from './dumbs/contrat-list.dumb';
-import { ContratEmploye } from '../models/contrat-employe.model';
+import { ContratUserApp } from '../models/contrat-employe.model';
 
 @Component({
   template: `<dumb-contrat-list
@@ -78,7 +78,7 @@ export class AdminContratsPage {
     }
   }
 
-  updateContratModal(contrat: ContratEmploye) {
+  updateContratModal(contrat: ContratUserApp) {
     this.server.updateContratModal(contrat);
   }
 
