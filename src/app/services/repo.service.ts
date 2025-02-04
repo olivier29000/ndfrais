@@ -1,5 +1,5 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
-import { DAY_STATE, DayApp, WORK_STATE } from '../models/day-app.model';
+import { WEEK_STATE, DayApp, WORK_STATE } from '../models/day-app.model';
 import { DayBdd } from '../models/day-bdd.model';
 import {
   HttpClient,
@@ -128,6 +128,14 @@ export class RepoService {
   getUserAppList(): Observable<UserApp[]> {
     return this.http
       .get<UserApp[]>(`${URL_BACKEND}/user-app/get-user-app-list`, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+  getDayAppListByContratId(contratId: string): Observable<DayApp[]> {
+    return this.http
+      .get<
+        DayApp[]
+      >(`${URL_BACKEND}/day-app/get-all-by-contrat-id/${contratId}`, httpOptions)
       .pipe(catchError(this.handleError));
   }
 

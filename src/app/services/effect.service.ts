@@ -120,6 +120,23 @@ export class EffectService {
     );
   }
 
+  getDayAppListByContratId(idContrat: string): void {
+    this.repo.getDayAppListByContratId(idContrat).subscribe(
+      (dayAppList) => {
+        this.store.isLoading.set(false);
+        this.store.dayAppList.set(
+          dayAppList.map((d) => ({
+            ...d,
+            date: new Date(d.date)
+          }))
+        );
+      },
+      () => {
+        this.store.isLoading.set(false);
+      }
+    );
+  }
+
   createContrat(contratEmploye: ContratUserApp): void {
     this.repo.createContrat(contratEmploye).subscribe(
       (adminContratList) => {

@@ -52,6 +52,7 @@ export class StoreService {
   }
 
   adminContratList: WritableSignal<ContratUserApp[]> = signal([]);
+  dayAppList: WritableSignal<DayApp[]> = signal([]);
   adminAllContratList: WritableSignal<ContratUserApp[]> = signal([]);
   isLoading: WritableSignal<boolean> = signal(false);
   navigationItemList: WritableSignal<NavigationItem[]> = signal([]);

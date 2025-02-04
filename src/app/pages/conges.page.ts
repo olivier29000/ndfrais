@@ -9,7 +9,8 @@ import { FormsModule } from '@angular/forms';
 import { OrganigrammeDumb } from './dumbs/organigramme.dumb';
 @Component({
   selector: 'vex-dashboard-analytics',
-  template: ` <dumb-organigramme></dumb-organigramme>
+  template: `
+    <dumb-organigramme></dumb-organigramme>
     <div class="row">
       <div class="col text-center">
         <mat-button-toggle-group class="mt-6">
@@ -40,17 +41,7 @@ import { OrganigrammeDumb } from './dumbs/organigramme.dumb';
         </mat-button-toggle-group>
       </div>
     </div>
-    @for (item of dayAppMap() | keyvalue; track $index) {
-      <div class="me-3 d-flex my-3">
-        <div class="border py-1 px-2">
-          <h2>{{ item.key }}</h2>
-        </div>
-
-        @for (day of item.value; track day) {
-          <dumb-day-state [day]="day"></dumb-day-state>
-        }
-      </div>
-    }`,
+  `,
   styles: [
     `
       .day-square {
@@ -62,7 +53,6 @@ import { OrganigrammeDumb } from './dumbs/organigramme.dumb';
   standalone: true,
   imports: [
     CommonModule,
-    DaySquareDumb,
     MatButtonToggleModule,
     MatIconModule,
     FormsModule,
@@ -71,7 +61,5 @@ import { OrganigrammeDumb } from './dumbs/organigramme.dumb';
 })
 export class CongesPage {
   constructor(private server: ServerService) {}
-  dayAppMap = this.server.dayAppMap;
-
   hideMultipleSelectionIndicator = signal(false);
 }

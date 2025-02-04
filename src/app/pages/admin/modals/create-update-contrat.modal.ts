@@ -193,19 +193,18 @@ export const CUSTOM_DATE_FORMATS = {
           <mat-button-toggle-group
             name="ingredients"
             aria-label="Ingredients"
-            [(ngModel)]="currentContrat.jourSemaineReposList"
+            [(ngModel)]="currentContrat.dayOfWeekReposList"
             multiple>
-            <mat-button-toggle value="LUNDI"> lundi </mat-button-toggle>
-            <mat-button-toggle value="MARDI"> mardi </mat-button-toggle>
-            <mat-button-toggle value="MERCREDI"> mercredi </mat-button-toggle>
-            <mat-button-toggle value="JEUDI"> jeudi </mat-button-toggle>
-            <mat-button-toggle value="VENDREDI"> vendredi </mat-button-toggle>
-            <mat-button-toggle value="SAMEDI"> samedi </mat-button-toggle>
-            <mat-button-toggle value="DIMANCHE"> dimanche </mat-button-toggle>
+            <mat-button-toggle value="MONDAY"> lundi </mat-button-toggle>
+            <mat-button-toggle value="TUESDAY"> mardi </mat-button-toggle>
+            <mat-button-toggle value="WEDNESDAY"> mercredi </mat-button-toggle>
+            <mat-button-toggle value="THURSDAY"> jeudi </mat-button-toggle>
+            <mat-button-toggle value="FRIDAY"> vendredi </mat-button-toggle>
+            <mat-button-toggle value="SATURDAY"> samedi </mat-button-toggle>
+            <mat-button-toggle value="SUNDAY"> dimanche </mat-button-toggle>
           </mat-button-toggle-group>
         </div>
       </mat-dialog-content>
-
       <mat-dialog-actions align="end">
         <button mat-button mat-dialog-close type="button">Cancel</button>
         <button
@@ -269,7 +268,7 @@ export class CreateUpdateContratModal implements OnInit {
     poste: this.data?.contrat?.poste || '',
     dateBegin: this.data?.contrat?.dateBegin || new Date(),
     dateEnd: this.data?.contrat?.dateEnd || new Date(),
-    jourSemaineReposList: this.data?.contrat?.jourSemaineReposList || [],
+    dayOfWeekReposList: this.data?.contrat?.dayOfWeekReposList || [],
     nbJourCongeMois: this.data?.contrat?.nbJourCongeMois || 0,
     nbJourRttMois: this.data?.contrat?.nbJourRttMois || 0,
     nbHeureSemaine: this.data?.contrat?.nbHeureSemaine || 0,

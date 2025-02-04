@@ -179,7 +179,7 @@ import { RouterLink } from '@angular/router';
                 </td>
               </ng-container>
               <ng-container
-                *ngIf="column.type === 'jourSemaineReposList'"
+                *ngIf="column.type === 'dayOfWeekReposList'"
                 [matColumnDef]="column.property">
                 <th
                   *matHeaderCellDef
@@ -393,8 +393,8 @@ export class ContratListDumb implements AfterViewInit {
     },
     {
       label: 'Jours de repos',
-      property: 'jourSemaineReposList',
-      type: 'jourSemaineReposList',
+      property: 'dayOfWeekReposList',
+      type: 'dayOfWeekReposList',
       visible: true,
       cssClasses: ['text-secondary', 'font-medium']
     },

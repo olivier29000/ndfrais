@@ -21,7 +21,22 @@ import { DaySquareDumb } from './day-square.dumb';
   imports: [CommonModule, DaySquareDumb]
 })
 export class DayListDumb {
-  @Input() dayAppMap!: {
+  dayAppMap!: {
     [month: string]: DayApp[];
   };
+
+  @Input()
+  set dayAppList(value: DayApp[]) {
+    this.dayAppMap = value.reduce(
+      (acc, d) => {
+        if (acc[format(d.date, 'yyyy-MM')]) {
+          acc[format(d.date, 'yyyy-MM')].push(d);
+        } else {
+          acc[format(d.date, 'yyyy-MM')] = [d];
+        }
+        return acc;
+      },
+      {} as { [month: string]: DayApp[] }
+    );
+  }
 }

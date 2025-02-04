@@ -50,7 +50,7 @@ import { ContratUserApp } from '../../models/contrat-employe.model';
 import { DayListDumb } from '../dumbs/day-list.dumb';
 
 @Component({
-  template: ` <dumb-day-list [dayAppMap]="dayAppMap()"></dumb-day-list>`,
+  template: ` <dumb-day-list [dayAppList]="dayAppList()"></dumb-day-list>`,
   animations: [],
   standalone: true,
   imports: [CommonModule, DayListDumb]
@@ -59,12 +59,13 @@ export class AdminContratUserAppPage {
   currentContratUserApp: WritableSignal<ContratUserApp | undefined> =
     signal(undefined);
   idContratUserApp: WritableSignal<string | undefined> = signal(undefined);
-  dayAppMap = this.server.dayAppMap;
+  dayAppList = this.server.dayAppList;
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       const idContratUserApp = params.get('idContratUserApp');
       if (idContratUserApp) {
         this.idContratUserApp.set(idContratUserApp);
+        this.server.getDayAppListByContratId(idContratUserApp);
       }
     });
   }

@@ -5,7 +5,7 @@ export class ContratUserApp {
   poste: string;
   dateBegin: Date;
   dateEnd: Date;
-  jourSemaineReposList: JourSemaine[];
+  dayOfWeekReposList: DayOfWeek[];
   nbJourCongeMois: number;
   nbJourRttMois: number;
   nbHeureSemaine: number;
@@ -17,7 +17,7 @@ export class ContratUserApp {
     this.poste = contratEmploye.poste;
     this.dateBegin = contratEmploye.dateBegin;
     this.dateEnd = contratEmploye.dateEnd;
-    this.jourSemaineReposList = contratEmploye.jourSemaineReposList;
+    this.dayOfWeekReposList = contratEmploye.dayOfWeekReposList;
     this.nbJourCongeMois = contratEmploye.nbJourCongeMois;
     this.nbJourRttMois = contratEmploye.nbJourRttMois;
     this.nbHeureSemaine = contratEmploye.nbHeureSemaine;
@@ -26,12 +26,12 @@ export class ContratUserApp {
   }
 }
 
-export enum JourSemaine {
-  DIMANCHE,
-  LUNDI,
-  MARDI,
-  MERCREDI,
-  JEUDI,
-  VENDREDI,
-  SAMEDI
+export enum DayOfWeek {
+  MONDAY,
+  TUESDAY,
+  WEDNESDAY,
+  THURSDAY,
+  FRIDAY,
+  SATURDAY,
+  SUNDAY
 }

@@ -6,7 +6,7 @@ import { DayApp } from 'src/app/models/day-app.model';
   selector: 'dumb-day-state',
   template: `
     <div class="day-square">
-      <div class="day-state" [ngClass]="day.dayState"></div>
+      <div class="day-state" [ngClass]="day.weekState"></div>
       <div class="work-state" [ngClass]="day.workState"></div>
       <h2 class="">{{ day.date.getDate() }}</h2>
     </div>

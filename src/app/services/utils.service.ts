@@ -1,5 +1,5 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
-import { DAY_STATE, DayApp, WORK_STATE } from '../models/day-app.model';
+import { WEEK_STATE, DayApp, WORK_STATE } from '../models/day-app.model';
 import { DayBdd } from '../models/day-bdd.model';
 
 @Injectable({
@@ -8,14 +8,18 @@ import { DayBdd } from '../models/day-bdd.model';
 export class UtilsService {
   constructor() {}
 
-  getDayState(date: Date, ferieList: Date[], weekendDays: number[]): DAY_STATE {
+  getWeekState(
+    date: Date,
+    ferieList: Date[],
+    weekendDays: number[]
+  ): WEEK_STATE {
     if (ferieList.some((d) => d.getTime() === date.getTime())) {
-      return DAY_STATE.FERIE;
+      return WEEK_STATE.FERIE;
     }
     if (weekendDays.includes(date.getDay())) {
-      return DAY_STATE.WEEK_END;
+      return WEEK_STATE.WEEK_END;
     }
-    return DAY_STATE.NORMAL;
+    return WEEK_STATE.NORMAL;
   }
 
   getWorkState(

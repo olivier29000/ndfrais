@@ -1,7 +1,7 @@
 import { computed, effect, Injectable } from '@angular/core';
 import { StoreService } from './store.service';
 import { eachDayOfInterval, format } from 'date-fns';
-import { DAY_STATE, DayApp, WORK_STATE } from '../models/day-app.model';
+import { WEEK_STATE, DayApp, WORK_STATE } from '../models/day-app.model';
 import { UtilsService } from './utils.service';
 import { UserApp } from '../models/user.model';
 import { NavigationService } from '../core/navigation/navigation.service';
@@ -48,52 +48,7 @@ export class ServerService {
     this.effectService.getContratListByUserId(idUserApp);
   }
   adminContratList = this.store.adminContratList;
-  dayAppMap = computed(() =>
-    eachDayOfInterval({
-      start: new Date(this.currentYear(), 0, 1),
-      end: new Date(this.currentYear(), 11, 31)
-    }).reduce(
-      (acc, d) => {
-        if (acc[format(d, 'yyyy-MM')]) {
-          acc[format(d, 'yyyy-MM')].push({
-            date: d,
-            dayState: this.utilsService.getDayState(
-              d,
-              this.ferieList(),
-              this.weekendDays()
-            ),
-            workState: this.utilsService.getWorkState(
-              d,
-              this.ferieList(),
-              this.weekendDays(),
-              this.dayListBdd()
-            ),
-            workStateHistory: []
-          });
-        } else {
-          acc[format(d, 'yyyy-MM')] = [
-            {
-              date: d,
-              dayState: this.utilsService.getDayState(
-                d,
-                this.ferieList(),
-                this.weekendDays()
-              ),
-              workState: this.utilsService.getWorkState(
-                d,
-                this.ferieList(),
-                this.weekendDays(),
-                this.dayListBdd()
-              ),
-              workStateHistory: []
-            }
-          ];
-        }
-        return acc;
-      },
-      {} as { [month: string]: DayApp[] }
-    )
-  );
+  dayAppList = this.store.dayAppList;
 
   createUser(): void {
     this.effectService.createUserModal();
@@ -109,5 +64,9 @@ export class ServerService {
 
   updateContratModal(contrat: ContratUserApp) {
     this.effectService.updateContratModal(contrat);
+  }
+
+  getDayAppListByContratId(idContrat: string) {
+    this.effectService.getDayAppListByContratId(idContrat);
   }
 }

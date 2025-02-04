@@ -1,13 +1,14 @@
 import { UserApp } from './user.model';
 
 export interface DayApp {
+  id: number;
   date: Date;
-  dayState: DAY_STATE;
+  weekState: WEEK_STATE;
   workState: WORK_STATE;
-  workStateHistory: WorkStateAction[];
 }
 
 export interface WorkStateAction {
+  id: number;
   date: Date;
   user: UserApp;
   workState: WORK_STATE;
@@ -25,7 +26,13 @@ export enum WORK_STATE {
   REPOS = 'REPOS'
 }
 
-export enum DAY_STATE {
+export enum ACTION_STATE {
+  VALID = 'VALID',
+  ASKING = 'ASKING',
+  REFUSED = 'REFUSED'
+}
+
+export enum WEEK_STATE {
   NORMAL = 'NORMAL',
   WEEK_END = 'WEEK_END',
   FERIE = 'FERIE'

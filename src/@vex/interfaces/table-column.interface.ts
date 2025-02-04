@@ -6,7 +6,7 @@ export interface TableColumn<T> {
     | 'image'
     | 'number'
     | 'date'
-    | 'jourSemaineReposList'
+    | 'dayOfWeekReposList'
     | 'badge'
     | 'progress'
     | 'checkbox'
