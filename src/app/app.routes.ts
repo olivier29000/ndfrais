@@ -14,38 +14,59 @@ export const appRoutes: VexRoutes = [
     component: LayoutComponent,
     children: [
       {
+        path: 'admin',
+        children: [
+          {
+            path: 'users',
+            loadComponent: () =>
+              import('./pages/admin/admin-users.page').then(
+                (m) => m.AdminUsersPage
+              )
+          },
+          {
+            path: 'employes/:idUserApp',
+            loadComponent: () =>
+              import('./pages/admin/admin-contrats.page').then(
+                (m) => m.AdminContratsPage
+              )
+          },
+          {
+            path: 'employes/:idUserApp/contrat-detail/:idContratUserApp',
+            loadComponent: () =>
+              import('./pages/admin/admin-contrat-detail.page').then(
+                (m) => m.AdminContratUserAppPage
+              )
+          }
+        ]
+      },
+      {
+        path: 'user',
+        children: [
+          {
+            path: 'planning',
+            loadComponent: () =>
+              import('./pages/user/user-planning.page').then(
+                (m) => m.UserPlanningPage
+              )
+          },
+          {
+            path: 'conges',
+            loadComponent: () =>
+              import('./pages/user/user-conges.page').then(
+                (m) => m.UserCongesPage
+              )
+          }
+        ]
+      },
+      {
         path: 'employe',
         redirectTo: '/',
         pathMatch: 'full'
       },
       {
-        path: '',
-        loadComponent: () =>
-          import('./pages/conges.page').then((m) => m.CongesPage)
-      },
-      {
-        path: 'admin/users',
-        loadComponent: () =>
-          import('./pages/admin/admin-users.page').then((m) => m.AdminUsersPage)
-      },
-      {
-        path: 'admin/employes/:idUserApp',
-        loadComponent: () =>
-          import('./pages/admin/admin-contrats.page').then(
-            (m) => m.AdminContratsPage
-          )
-      },
-      {
-        path: 'admin/employes/:idUserApp/contrat-detail/:idContratUserApp',
-        loadComponent: () =>
-          import('./pages/admin/admin-contrat-detail.page').then(
-            (m) => m.AdminContratUserAppPage
-          )
-      },
-      {
         path: 'admin/organigramme',
         loadComponent: () =>
-          import('./pages/admin-organigramme.page').then(
+          import('./pages/commun/admin-organigramme.page').then(
             (m) => m.AdminOrganigrammePage
           )
       }

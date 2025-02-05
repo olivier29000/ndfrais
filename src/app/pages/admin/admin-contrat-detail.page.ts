@@ -40,7 +40,6 @@ import { VexPageLayoutHeaderDirective } from '@vex/components/vex-page-layout/ve
 import { VexPageLayoutComponent } from '@vex/components/vex-page-layout/vex-page-layout.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatInputModule } from '@angular/material/input';
-import { aioTableData } from '../data/aio-table-data';
 import { UserApp } from '../../models/user.model';
 import { ServerService } from '../../services/server.service';
 import { UserListDumb } from '../dumbs/user-app-list.dumb';
