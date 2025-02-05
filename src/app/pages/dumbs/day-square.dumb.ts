@@ -86,18 +86,7 @@ export class CustomDateFormats {
         height: 40px;
         border: thin solid;
       }
-      .TRAVAIL {
-        background-color: #a1fb8e;
-      }
-      .REPOS {
-        background-color: white;
-      }
-      .CONGE {
-        background-color: #067ef5;
-      }
-      .RTT {
-        background-color: #051ef5;
-      }
+
       .day-text {
         position: relative; /* Permet de le placer au-dessus des autres éléments */
         z-index: 1; /* Plus grand que .day-state et .work-state */

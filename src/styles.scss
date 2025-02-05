@@ -3,6 +3,28 @@
 // Vex Core
 @import "./@vex/styles/core";
 
+.TRAVAIL {
+  background-color: #a1fb8e !important;
+}
+.REPOS {
+  background-color: white !important;
+}
+.CONGE {
+  background-color: #067ef5 !important;
+}
+.RTT {
+  background-color: #051ef5 !important;
+}
+.ARRET_MALADIE {
+  background-color: red !important;
+}
+.CONGE_SANS_SOLDE {
+  background-color: purple !important;
+}
+.RECUP {
+  background-color: orange !important;
+}
+
 .p-organizationchart table {
   all: unset !important; /* Réinitialise les styles hérités */
 }

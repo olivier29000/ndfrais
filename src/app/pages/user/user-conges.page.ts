@@ -82,6 +82,7 @@ export class UserCongesPage implements OnInit {
   ];
   selectWorkState(workState: workStateItem): void {
     this.selectedWorkState = workState;
+    this.currentActionList.set([]);
   }
   userDayAppList = this.userServer.userDayAppList;
   currentActionList: WritableSignal<DayAppAction[]> = signal([]);
@@ -121,6 +122,7 @@ export class UserCongesPage implements OnInit {
   }
   askDayAppActionList(): void {
     this.userServer.askDayAppActionList(this.currentActionList());
+    this.currentActionList.set([]);
   }
 
   tableColumns: TableColumn<{
