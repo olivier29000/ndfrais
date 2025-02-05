@@ -15,13 +15,15 @@ import { EffectService } from './effect.service';
 export class ServerService {
   constructor(
     private store: StoreService,
-    private utilsService: UtilsService,
     private effectService: EffectService
   ) {
     effect(() => {
       const userConnected = this.userConnected();
       if (userConnected?.roleList.includes(Role.ROLE_ADMIN)) {
         this.getUserAppList();
+      }
+      if (userConnected?.roleList.includes(Role.ROLE_USER)) {
+        this.getUserContratList();
       }
     });
   }
@@ -32,6 +34,9 @@ export class ServerService {
   ferieList = this.store.ferieList;
   dayListBdd = this.store.dayListBdd;
   adminAllContratList = this.store.adminAllContratList;
+  getUserContratList(): void {
+    this.effectService.getUserContratList();
+  }
   getAllContrat(): void {
     this.effectService.getAllContrat();
   }

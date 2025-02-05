@@ -1,12 +1,17 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
 import { WEEK_STATE, DayApp, WORK_STATE } from '../models/day-app.model';
 import { DayBdd } from '../models/day-bdd.model';
+import { StoreService } from './store.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UtilsService {
-  constructor() {}
+  constructor(private store: StoreService) {}
+
+  changeIsLoading(value: boolean): void {
+    this.store.isLoading.set(value);
+  }
 
   getWeekState(
     date: Date,

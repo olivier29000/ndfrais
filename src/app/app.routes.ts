@@ -50,18 +50,13 @@ export const appRoutes: VexRoutes = [
               )
           },
           {
-            path: 'conges',
+            path: 'conges/:idContratUserApp',
             loadComponent: () =>
               import('./pages/user/user-conges.page').then(
                 (m) => m.UserCongesPage
               )
           }
         ]
-      },
-      {
-        path: 'employe',
-        redirectTo: '/',
-        pathMatch: 'full'
       },
       {
         path: 'admin/organigramme',
@@ -71,5 +66,10 @@ export const appRoutes: VexRoutes = [
           )
       }
     ]
+  },
+  {
+    path: '*',
+    redirectTo: '/user/conges',
+    pathMatch: 'full'
   }
 ];

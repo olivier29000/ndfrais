@@ -109,6 +109,14 @@ export class RepoService {
       .pipe(catchError(this.handleError));
   }
 
+  getUserContratList(): Observable<ContratUserApp[]> {
+    return this.http
+      .get<
+        ContratUserApp[]
+      >(`${URL_BACKEND}/contrat-user-app/get-user-contrat-list`, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
   createUserApp(userApp: UserApp): Observable<UserApp[]> {
     return this.http
       .post<

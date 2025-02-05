@@ -20,7 +20,30 @@ export class StoreService {
       if (userConnected) {
         const navigationItemList: NavigationItem[] = [];
         if (userConnected.roleList.includes(Role.ROLE_USER)) {
-          navigationItemList.push(navigationItemUser);
+          const userAllContratList = this.userAllContratList();
+          console.log(userAllContratList);
+          for (let userAppContrat of userAllContratList) {
+            navigationItemList.push({
+              ...navigationItemUser,
+              label: userAppContrat.poste,
+              children: [
+                {
+                  type: 'link',
+                  label: 'Congés',
+                  route: '/user/conges/' + userAppContrat.id,
+                  icon: 'mat:card_travel',
+                  routerLinkActiveOptions: { exact: true }
+                }
+              ]
+            });
+          }
+          if (userAllContratList.length === 0) {
+            navigationItemList.push({
+              type: 'subheading',
+              label: 'Aucun contrat',
+              children: []
+            });
+          }
         }
         if (userConnected.roleList.includes(Role.ROLE_MANAGER)) {
           navigationItemList.push(navigationItemManager);
@@ -54,6 +77,7 @@ export class StoreService {
   adminContratList: WritableSignal<ContratUserApp[]> = signal([]);
   dayAppList: WritableSignal<DayApp[]> = signal([]);
   adminAllContratList: WritableSignal<ContratUserApp[]> = signal([]);
+  userAllContratList: WritableSignal<ContratUserApp[]> = signal([]);
   isLoading: WritableSignal<boolean> = signal(false);
   navigationItemList: WritableSignal<NavigationItem[]> = signal([]);
   userConnected: WritableSignal<UserConnected | undefined> = signal(undefined);
@@ -76,14 +100,14 @@ const navigationItemUser: NavigationSubheading = {
     {
       type: 'link',
       label: 'Planning',
-      route: '/',
+      route: '/user/planning',
       icon: 'mat:calendar_today',
       routerLinkActiveOptions: { exact: true }
     },
     {
       type: 'link',
       label: 'Congés',
-      route: '/conges',
+      route: '/user/conges',
       icon: 'mat:card_travel',
       routerLinkActiveOptions: { exact: true }
     }

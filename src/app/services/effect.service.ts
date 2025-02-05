@@ -29,7 +29,7 @@ export class EffectService {
       (userConnected) => {
         this.store.userConnected.set(userConnected);
         this.store.isLoading.set(false);
-        this.router.navigate(['calendriers']);
+        this.router.navigate(['']);
       },
       (error: string) => {
         this.store.isLoading.set(false);
@@ -213,8 +213,19 @@ export class EffectService {
     this.repo.getAllContrat().subscribe(
       (adminAllContratList) => {
         this.store.isLoading.set(false);
-        console.log(adminAllContratList);
         this.store.adminAllContratList.set(adminAllContratList);
+      },
+      () => {
+        this.store.isLoading.set(false);
+      }
+    );
+  }
+
+  getUserContratList(): void {
+    this.repo.getUserContratList().subscribe(
+      (userAllContratList) => {
+        this.store.isLoading.set(false);
+        this.store.userAllContratList.set(userAllContratList);
       },
       () => {
         this.store.isLoading.set(false);
@@ -279,10 +290,12 @@ export class EffectService {
 
   canActivate(): Observable<void | UrlTree> {
     this.store.isLoading.set(true);
+    console.log(this.store.userConnected());
     return this.repo.verifAuthenticate().pipe(
       map((userConnected) => {
         this.store.isLoading.set(false);
         this.store.userConnected.set(userConnected);
+        console.log(this.store.userConnected());
       }),
       catchError(() => {
         this.store.isLoading.set(false);
