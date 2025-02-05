@@ -7,7 +7,7 @@ import {
   Output
 } from '@angular/core';
 import { eachDayOfInterval, eachMonthOfInterval, format } from 'date-fns';
-import { DayApp } from 'src/app/models/day-app.model';
+import { DayApp, workStateItem } from 'src/app/models/day-app.model';
 import { DaySquareDumb } from './day-square.dumb';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -22,10 +22,12 @@ import { scaleInOutAnimation } from '@vex/animations/scale-in-out.animation';
       <div
         [ngClass]="iconClass"
         class="rounded-full w-12 h-12 flex items-center justify-center">
-        <mat-icon [svgIcon]="icon"></mat-icon>
+        <mat-icon [svgIcon]="workState.icon"></mat-icon>
       </div>
 
-      <h3 class="subheading-2 font-medium text-secondary m-0">{{ label }}</h3>
+      <h3 class="subheading-2 font-medium text-secondary m-0">
+        {{ workState.label }}
+      </h3>
 
       <button
         *ngIf="helpText"
@@ -53,8 +55,7 @@ import { scaleInOutAnimation } from '@vex/animations/scale-in-out.animation';
   ]
 })
 export class WorkStateDumb {
-  @Input({ required: true }) icon!: string;
-  @Input({ required: true }) label!: string;
+  @Input({ required: true }) workState!: workStateItem;
   @Input() helpText?: string;
   @Input() iconClass?: string;
 }

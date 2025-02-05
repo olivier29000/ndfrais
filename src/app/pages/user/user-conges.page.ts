@@ -12,34 +12,49 @@ import { ActivatedRoute } from '@angular/router';
 import { ActionListDumb } from '../dumbs/action-list.dumb';
 import { TableColumn } from '@vex/interfaces/table-column.interface';
 import { DayAppAction } from 'src/app/models/day-app-action.model';
-import { ACTION_STATE, DayApp, WORK_STATE } from 'src/app/models/day-app.model';
+import {
+  ACTION_STATE,
+  DayApp,
+  WORK_STATE,
+  workStateItem
+} from 'src/app/models/day-app.model';
 import { UserApp } from 'src/app/models/user.model';
 import { WorkStateDumb } from '../dumbs/work-state.dumb';
+import Swal from 'sweetalert2';
 @Component({
-  template: ` <dumb-action-list
-      [columns]="tableColumns"
-      [data]="tableData()"
-      class="sm:col-span-2"></dumb-action-list>
-
+  template: `
+    <div class="container">
+      <dumb-action-list
+        (valid)="askDayAppActionList()"
+        [columns]="tableColumns"
+        [data]="tableData()"
+        class="sm:col-span-2"></dumb-action-list>
+    </div>
     <div
       class="container p-6 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-6 gap-4">
-      @for (item of WORK_STATE | keyvalue; track $index) {
+      @for (item of workStateList; track $index) {
         <dumb-work-state
-          icon="mat:group"
-          iconClass="text-primary-600 bg-primary-600/10"
-          [label]="item.key"></dumb-work-state>
+          [ngStyle]="{
+            border: selectedWorkState?.label === item.label ? 'solid' : ''
+          }"
+          [workState]="item"
+          (click)="selectWorkState(item)"></dumb-work-state>
       }
     </div>
-    <dumb-day-list
-      (selectDay)="selectDay($event)"
-      [dayAppList]="userDayAppList()"></dumb-day-list>`,
+    <div class="container">
+      <dumb-day-list
+        (selectDay)="selectDay($event)"
+        [dayAppList]="userDayAppList()"></dumb-day-list>
+    </div>
+  `,
   styles: [``],
   standalone: true,
   imports: [CommonModule, DayListDumb, ActionListDumb, WorkStateDumb]
 })
 export class UserCongesPage implements OnInit {
   WORK_STATE = WORK_STATE;
-  workStateList = [
+  selectedWorkState: workStateItem | undefined = undefined;
+  workStateList: workStateItem[] = [
     {
       label: WORK_STATE.CONGE,
       icon: 'mat:group'
@@ -65,6 +80,9 @@ export class UserCongesPage implements OnInit {
       icon: 'mat:group'
     }
   ];
+  selectWorkState(workState: workStateItem): void {
+    this.selectedWorkState = workState;
+  }
   userDayAppList = this.userServer.userDayAppList;
   currentActionList: WritableSignal<DayAppAction[]> = signal([]);
   tableData = computed(() =>
@@ -75,8 +93,16 @@ export class UserCongesPage implements OnInit {
     }))
   );
   selectDay(dayApp: DayApp): void {
+    if (!this.selectedWorkState) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "Sélectionnez un type d'abscence (congé, RTT...)"
+      });
+    }
     this.currentActionList.update((currentActionList) => {
       if (
+        this.selectedWorkState &&
         !currentActionList.some(
           (currentAction) => currentAction.dayApp.id === dayApp.id
         )
@@ -85,7 +111,7 @@ export class UserCongesPage implements OnInit {
           id: 0,
           date: new Date(),
           dayApp,
-          workState: dayApp.workState,
+          workState: this.selectedWorkState.label,
           state: ACTION_STATE.ASKING,
           userAppAction: new UserApp({})
         });
@@ -93,6 +119,10 @@ export class UserCongesPage implements OnInit {
       return currentActionList;
     });
   }
+  askDayAppActionList(): void {
+    this.userServer.askDayAppActionList(this.currentActionList());
+  }
+
   tableColumns: TableColumn<{
     date: Date;
     ancienStatut: string;

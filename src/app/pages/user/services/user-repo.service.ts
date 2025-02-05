@@ -7,6 +7,7 @@ import {
 import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from 'src/environment/environment';
 import { DayApp } from 'src/app/models/day-app.model';
+import { DayAppAction } from 'src/app/models/day-app-action.model';
 
 const URL_BACKEND = environment.urlBackEnd;
 const httpOptions = {
@@ -21,6 +22,14 @@ const httpOptions = {
 })
 export class UserRepoService {
   constructor(private http: HttpClient) {}
+  askDayAppActionList(dayAppActionList: DayAppAction[]): Observable<DayApp[]> {
+    return this.http
+      .post<
+        DayApp[]
+      >(`${URL_BACKEND}/day-app-action/user-ask-day-app-action-list`, dayAppActionList, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
   getUserDayAppListByContratId(contratId: string): Observable<DayApp[]> {
     return this.http
       .get<

@@ -7,6 +7,8 @@ import {
 } from '@angular/material/core';
 import { DayApp } from 'src/app/models/day-app.model';
 import localeFr from '@angular/common/locales/fr';
+import { MatIconModule } from '@angular/material/icon';
+import { scaleInOutAnimation } from '@vex/animations/scale-in-out.animation';
 @Injectable()
 export class CustomDateFormats {
   static readonly MY_DATE_FORMATS: MatDateFormats = {
@@ -25,19 +27,31 @@ export class CustomDateFormats {
 @Component({
   selector: 'dumb-day-state',
   template: `
-    <div class="day-square  mt-1">
+    <div class="card day-square  mt-1">
       <div class="day-state" [ngClass]="day.weekState"></div>
       <div class="work-state" [ngClass]="day.workState"></div>
       <div class="day-text text-center">
         <h2 class="">{{ day.date.getDate() }}</h2>
         <p>{{ day.date | date: 'EEE' : '' : 'fr' | slice: 0 : 2 }}</p>
       </div>
+      @if (day.dayAppAction) {
+        <button
+          @scaleInOut
+          class="absolute -top-3 -right-1 bg-foreground shadow-xl hover:shadow-lg"
+          color="primary"
+          mat-icon-button
+          type="button"
+          [ngClass]="day.dayAppAction.workState">
+          <mat-icon svgIcon="mat:question_mark"></mat-icon>
+        </button>
+      }
     </div>
   `,
   providers: [
     { provide: MAT_DATE_FORMATS, useValue: CustomDateFormats.MY_DATE_FORMATS },
     { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' } // Pour s'assurer que la locale est en français
   ],
+  animations: [scaleInOutAnimation],
   styles: [
     `
       .day-square {
@@ -78,7 +92,7 @@ export class CustomDateFormats {
       .REPOS {
         background-color: white;
       }
-      .CONGES {
+      .CONGE {
         background-color: #067ef5;
       }
       .RTT {
@@ -91,6 +105,10 @@ export class CustomDateFormats {
 
         margin: 0; /* Supprime les marges par défaut */
       }
+      button {
+        z-index: 2;
+        border-radius: 50%;
+      }
       p {
         font-size: 0.8rem;
         line-height: 5px;
@@ -102,7 +120,7 @@ export class CustomDateFormats {
     `
   ],
   standalone: true,
-  imports: [CommonModule]
+  imports: [CommonModule, MatIconModule]
 })
 export class DaySquareDumb {
   @Input() day!: DayApp;

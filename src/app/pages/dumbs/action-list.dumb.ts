@@ -2,9 +2,11 @@ import { CommonModule, NgClass, NgFor, NgIf } from '@angular/common';
 import {
   AfterViewInit,
   Component,
+  EventEmitter,
   Input,
   OnChanges,
   OnInit,
+  Output,
   SimpleChanges,
   ViewChild
 } from '@angular/core';
@@ -23,13 +25,7 @@ import { TableColumn } from '@vex/interfaces/table-column.interface';
     <div class="border-b py-2 px-6 flex items-center">
       <h2 class="m-0 title flex-auto">Recent Sales</h2>
 
-      <button mat-icon-button type="button">
-        <mat-icon
-          class="text-secondary"
-          svgIcon="mat:cloud_download"></mat-icon>
-      </button>
-
-      <button mat-icon-button type="button">
+      <button mat-icon-button type="button" (click)="validOutput()">
         <mat-icon class="text-secondary" svgIcon="mat:more_horiz"></mat-icon>
       </button>
     </div>
@@ -99,13 +95,16 @@ export class ActionListDumb<T> implements OnInit, OnChanges, AfterViewInit {
   @Input({ required: true }) columns!: TableColumn<T>[];
   @Input() pageSize = 6;
 
+  @Output() valid = new EventEmitter<void>();
   visibleColumns!: Array<keyof T | string>;
   dataSource = new MatTableDataSource<T>();
 
   @ViewChild(MatSort, { static: true }) sort?: MatSort;
 
   constructor() {}
-
+  validOutput(): void {
+    this.valid.emit();
+  }
   ngOnInit() {}
 
   ngOnChanges(changes: SimpleChanges): void {

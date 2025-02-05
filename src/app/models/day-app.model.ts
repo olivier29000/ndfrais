@@ -1,3 +1,4 @@
+import { DayAppAction } from './day-app-action.model';
 import { UserApp } from './user.model';
 
 export interface DayApp {
@@ -5,6 +6,7 @@ export interface DayApp {
   date: Date;
   weekState: WEEK_STATE;
   workState: WORK_STATE;
+  dayAppAction?: DayAppAction;
 }
 
 export interface WorkStateAction {
@@ -24,6 +26,11 @@ export enum WORK_STATE {
   CONGE_SANS_SOLDE = 'CONGE_SANS_SOLDE',
   ABSCENCE = 'ABSCENCE',
   REPOS = 'REPOS'
+}
+
+export interface workStateItem {
+  label: WORK_STATE;
+  icon: string;
 }
 
 export enum ACTION_STATE {
