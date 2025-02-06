@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, computed, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MAT_DIALOG_DATA,
@@ -59,171 +59,176 @@ export const CUSTOM_DATE_FORMATS = {
 
 @Component({
   template: `<form>
-      <div class="flex items-center" mat-dialog-title>
-        @if (currentContrat.userApp) {
-          <h2 class="headline m-0 flex-auto">
-            {{ currentContrat.userApp.nomPrenom }} : {{ currentContrat.poste }}
-          </h2>
-        } @else {
-          <h2 class="headline m-0 flex-auto">
-            {{ data.userApp.nomPrenom }} : Nouveau contrat
-          </h2>
-        }
+      @if (this.currentContrat) {
+        <div class="flex items-center" mat-dialog-title>
+          @if (currentContrat.userApp) {
+            <h2 class="headline m-0 flex-auto">
+              {{ currentContrat.userApp.nomPrenom }} :
+              {{ currentContrat.poste }}
+            </h2>
+          } @else {
+            <h2 class="headline m-0 flex-auto">
+              {{ data.userApp.nomPrenom }} : Nouveau contrat
+            </h2>
+          }
 
-        <button
-          [matMenuTriggerFor]="settingsMenu"
-          class="text-secondary"
-          mat-icon-button
-          type="button">
-          <mat-icon svgIcon="mat:more_vert"></mat-icon>
-        </button>
+          <button
+            [matMenuTriggerFor]="settingsMenu"
+            class="text-secondary"
+            mat-icon-button
+            type="button">
+            <mat-icon svgIcon="mat:more_vert"></mat-icon>
+          </button>
 
-        <button
-          class="text-secondary"
-          mat-dialog-close
-          mat-icon-button
-          type="button">
-          <mat-icon svgIcon="mat:close"></mat-icon>
-        </button>
-      </div>
+          <button
+            class="text-secondary"
+            mat-dialog-close
+            mat-icon-button
+            type="button">
+            <mat-icon svgIcon="mat:close"></mat-icon>
+          </button>
+        </div>
 
-      <mat-divider class="text-border"></mat-divider>
+        <mat-divider class="text-border"></mat-divider>
 
-      <mat-dialog-content class="flex flex-col">
-        <div class="flex flex-col sm:flex-row">
+        <mat-dialog-content class="flex flex-col">
+          <div class="flex flex-col sm:flex-row">
+            <mat-form-field class="flex-auto">
+              <mat-label>Poste</mat-label>
+              <input
+                cdkFocusInitial
+                [(ngModel)]="currentContrat.poste"
+                name="poste"
+                matInput />
+
+              <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
+            </mat-form-field>
+          </div>
+
+          <mat-form-field>
+            <mat-label>Date de début</mat-label>
+            <input
+              [matDatepicker]="datepickerRefdateBegin"
+              [(ngModel)]="currentContrat.dateBegin"
+              matInput
+              name="dateBegin" />
+            <mat-datepicker-toggle
+              [for]="datepickerRefdateBegin"
+              class="block"
+              matIconPrefix></mat-datepicker-toggle>
+            <mat-datepicker #datepickerRefdateBegin></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Date de fin</mat-label>
+            <input
+              [matDatepicker]="datepickerRefdateEnd"
+              [(ngModel)]="currentContrat.dateEnd"
+              matInput
+              name="dateEnd" />
+            <mat-datepicker-toggle
+              [for]="datepickerRefdateEnd"
+              class="block"
+              matIconPrefix></mat-datepicker-toggle>
+            <mat-datepicker #datepickerRefdateEnd></mat-datepicker>
+          </mat-form-field>
           <mat-form-field class="flex-auto">
-            <mat-label>Poste</mat-label>
-            <input
-              cdkFocusInitial
-              [(ngModel)]="currentContrat.poste"
-              name="poste"
-              matInput />
-
-            <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
-          </mat-form-field>
-        </div>
-
-        <mat-form-field>
-          <mat-label>Date de début</mat-label>
-          <input
-            [matDatepicker]="datepickerRefdateBegin"
-            [(ngModel)]="currentContrat.dateBegin"
-            matInput
-            name="dateBegin" />
-          <mat-datepicker-toggle
-            [for]="datepickerRefdateBegin"
-            class="block"
-            matIconPrefix></mat-datepicker-toggle>
-          <mat-datepicker #datepickerRefdateBegin></mat-datepicker>
-        </mat-form-field>
-
-        <mat-form-field>
-          <mat-label>Date de fin</mat-label>
-          <input
-            [matDatepicker]="datepickerRefdateEnd"
-            [(ngModel)]="currentContrat.dateEnd"
-            matInput
-            name="dateEnd" />
-          <mat-datepicker-toggle
-            [for]="datepickerRefdateEnd"
-            class="block"
-            matIconPrefix></mat-datepicker-toggle>
-          <mat-datepicker #datepickerRefdateEnd></mat-datepicker>
-        </mat-form-field>
-
-        <mat-form-field class="flex-auto">
-          <mat-label>Manager</mat-label>
-          <mat-select
-            [(ngModel)]="currentContrat.contratManager"
-            name="contratManager">
-            @for (contrat of adminAllContratList(); track contrat) {
-              @if (currentContrat.userApp.id !== contrat.userApp.id) {
-                <mat-option [value]="contrat">{{
-                  contrat.userApp.nom +
-                    ' ' +
-                    contrat.userApp.prenom +
-                    ' ' +
-                    contrat.poste
-                }}</mat-option>
+            <mat-label>Manager</mat-label>
+            <mat-select
+              [(ngModel)]="currentContrat.contratManager"
+              name="contratManager">
+              @for (contrat of adminAllContratList(); track contrat) {
+                @if (currentContrat.userApp.id !== contrat.userApp.id) {
+                  <mat-option [value]="contrat">{{
+                    contrat.userApp.nom +
+                      ' ' +
+                      contrat.userApp.prenom +
+                      ' ' +
+                      contrat.poste
+                  }}</mat-option>
+                }
               }
-            }
-          </mat-select>
+            </mat-select>
 
-          <mat-icon matIconPrefix svgIcon="mat:phone"></mat-icon>
-        </mat-form-field>
-        <div class="flex flex-col sm:flex-row">
-          <mat-form-field class="sm:ml-4 flex-auto">
-            <mat-label>Cumul de congés par mois</mat-label>
-            <input
-              cdkFocusInitial
-              [(ngModel)]="currentContrat.nbJourCongeMois"
-              name="nbJourCongeMois"
-              type="number"
-              matInput />
-
-            <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
+            <mat-icon matIconPrefix svgIcon="mat:phone"></mat-icon>
           </mat-form-field>
 
-          <mat-form-field class="sm:ml-4 flex-auto">
-            <mat-label>Cumul de RTT par mois</mat-label>
-            <input
-              cdkFocusInitial
-              [(ngModel)]="currentContrat.nbJourRttMois"
-              name="nbJourRttMois"
-              type="number"
-              matInput />
+          <div class="flex flex-col sm:flex-row">
+            <mat-form-field class="sm:ml-4 flex-auto">
+              <mat-label>Cumul de congés par mois</mat-label>
+              <input
+                cdkFocusInitial
+                [(ngModel)]="currentContrat.nbJourCongeMois"
+                name="nbJourCongeMois"
+                type="number"
+                matInput />
 
-            <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
-          </mat-form-field>
-          <mat-form-field class="sm:ml-4 flex-auto">
-            <mat-label>Nb heures par semaines</mat-label>
-            <input
-              cdkFocusInitial
-              [(ngModel)]="currentContrat.nbHeureSemaine"
-              name="nbHeureSemaine"
-              type="number"
-              matInput />
+              <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
+            </mat-form-field>
 
-            <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
-          </mat-form-field>
-        </div>
+            <mat-form-field class="sm:ml-4 flex-auto">
+              <mat-label>Cumul de RTT par mois</mat-label>
+              <input
+                cdkFocusInitial
+                [(ngModel)]="currentContrat.nbJourRttMois"
+                name="nbJourRttMois"
+                type="number"
+                matInput />
 
-        <div class="flex flex-col sm:flex-row">
-          <label class="mb-2 block">Jours de repos</label>
-          <mat-button-toggle-group
-            name="ingredients"
-            aria-label="Ingredients"
-            [(ngModel)]="currentContrat.dayOfWeekReposList"
-            multiple>
-            <mat-button-toggle value="MONDAY"> lundi </mat-button-toggle>
-            <mat-button-toggle value="TUESDAY"> mardi </mat-button-toggle>
-            <mat-button-toggle value="WEDNESDAY"> mercredi </mat-button-toggle>
-            <mat-button-toggle value="THURSDAY"> jeudi </mat-button-toggle>
-            <mat-button-toggle value="FRIDAY"> vendredi </mat-button-toggle>
-            <mat-button-toggle value="SATURDAY"> samedi </mat-button-toggle>
-            <mat-button-toggle value="SUNDAY"> dimanche </mat-button-toggle>
-          </mat-button-toggle-group>
-        </div>
-      </mat-dialog-content>
-      <mat-dialog-actions align="end">
-        <button mat-button mat-dialog-close type="button">Cancel</button>
-        <button
-          *ngIf="isCreateMode()"
-          color="primary"
-          mat-flat-button
-          type="submit"
-          (click)="save()">
-          Create Customer
-        </button>
-        <button
-          *ngIf="isUpdateMode()"
-          color="primary"
-          mat-flat-button
-          type="submit"
-          (click)="save()">
-          Update Customer
-        </button>
-      </mat-dialog-actions>
+              <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
+            </mat-form-field>
+            <mat-form-field class="sm:ml-4 flex-auto">
+              <mat-label>Nb heures par semaines</mat-label>
+              <input
+                cdkFocusInitial
+                [(ngModel)]="currentContrat.nbHeureSemaine"
+                name="nbHeureSemaine"
+                type="number"
+                matInput />
+
+              <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
+            </mat-form-field>
+          </div>
+
+          <div class="flex flex-col sm:flex-row">
+            <label class="mb-2 block">Jours de repos</label>
+            <mat-button-toggle-group
+              name="ingredients"
+              aria-label="Ingredients"
+              [(ngModel)]="currentContrat.dayOfWeekReposList"
+              multiple>
+              <mat-button-toggle value="MONDAY"> lundi </mat-button-toggle>
+              <mat-button-toggle value="TUESDAY"> mardi </mat-button-toggle>
+              <mat-button-toggle value="WEDNESDAY">
+                mercredi
+              </mat-button-toggle>
+              <mat-button-toggle value="THURSDAY"> jeudi </mat-button-toggle>
+              <mat-button-toggle value="FRIDAY"> vendredi </mat-button-toggle>
+              <mat-button-toggle value="SATURDAY"> samedi </mat-button-toggle>
+              <mat-button-toggle value="SUNDAY"> dimanche </mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
+        </mat-dialog-content>
+        <mat-dialog-actions align="end">
+          <button mat-button mat-dialog-close type="button">Cancel</button>
+          <button
+            *ngIf="isCreateMode()"
+            color="primary"
+            mat-flat-button
+            type="submit"
+            (click)="save()">
+            Create Customer
+          </button>
+          <button
+            *ngIf="isUpdateMode()"
+            color="primary"
+            mat-flat-button
+            type="submit"
+            (click)="save()">
+            Update Customer
+          </button>
+        </mat-dialog-actions>
+      }
     </form>
 
     <mat-menu #settingsMenu="matMenu" xPosition="before" yPosition="below">
@@ -264,7 +269,8 @@ export const CUSTOM_DATE_FORMATS = {
   ]
 })
 export class CreateUpdateContratModal implements OnInit {
-  currentContrat: ContratUserApp = new ContratUserApp({
+  currentContrat: ContratUserApp = {
+    id: this.data?.contrat?.id || undefined,
     poste: this.data?.contrat?.poste || '',
     dateBegin: this.data?.contrat?.dateBegin || new Date(),
     dateEnd: this.data?.contrat?.dateEnd || new Date(),
@@ -272,13 +278,20 @@ export class CreateUpdateContratModal implements OnInit {
     nbJourCongeMois: this.data?.contrat?.nbJourCongeMois || 0,
     nbJourRttMois: this.data?.contrat?.nbJourRttMois || 0,
     nbHeureSemaine: this.data?.contrat?.nbHeureSemaine || 0,
-    contratManager: this.data?.contrat?.contratManager || undefined,
+    contratManager: this.data?.contrat?.contratManager || undefined, // Temporairement null
     userApp: this.data?.contrat?.userApp
       ? new UserApp(this.data?.contrat?.userApp)
       : this.data?.userApp
-  });
+  };
   mode: 'create' | 'update' = 'create';
-  adminAllContratList = this.server.adminAllContratList;
+  adminAllContratList = computed(() => {
+    const adminAllContratList = this.server.adminAllContratList();
+    this.currentContrat.contratManager =
+      adminAllContratList.find(
+        (contrat) => contrat.id === this.data?.contrat?.contratManager?.id
+      ) || undefined;
+    return adminAllContratList;
+  });
   constructor(
     @Inject(MAT_DIALOG_DATA)
     public data: {
@@ -295,7 +308,7 @@ export class CreateUpdateContratModal implements OnInit {
     } else {
       this.mode = 'create';
     }
-    console.log(this.mode);
+    console.log(this.currentContrat);
   }
 
   save() {

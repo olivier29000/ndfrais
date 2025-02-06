@@ -59,6 +59,25 @@ export const appRoutes: VexRoutes = [
         ]
       },
       {
+        path: 'manager',
+        children: [
+          {
+            path: 'contrats',
+            loadComponent: () =>
+              import('./pages/manager/manager-contrat-list.page').then(
+                (m) => m.ManagerContratListPage
+              )
+          },
+          {
+            path: 'validations',
+            loadComponent: () =>
+              import('./pages/manager/manager-validations.page').then(
+                (m) => m.ManagerValidationListPage
+              )
+          }
+        ]
+      },
+      {
         path: 'admin/organigramme',
         loadComponent: () =>
           import('./pages/commun/admin-organigramme.page').then(

@@ -78,6 +78,7 @@ export class StoreService {
   dayAppList: WritableSignal<DayApp[]> = signal([]);
   adminAllContratList: WritableSignal<ContratUserApp[]> = signal([]);
   userAllContratList: WritableSignal<ContratUserApp[]> = signal([]);
+  managerContratList: WritableSignal<ContratUserApp[]> = signal([]);
   isLoading: WritableSignal<boolean> = signal(false);
   navigationItemList: WritableSignal<NavigationItem[]> = signal([]);
   userConnected: WritableSignal<UserConnected | undefined> = signal(undefined);
@@ -120,14 +121,14 @@ const navigationItemManager: NavigationSubheading = {
     {
       type: 'link',
       label: 'Mes employés',
-      route: '/manager/mes-employes',
+      route: '/manager/contrats',
       icon: 'mat:people',
       routerLinkActiveOptions: { exact: true }
     },
     {
       type: 'link',
       label: 'Validations',
-      route: '/manager/notifications',
+      route: '/manager/validations',
       icon: 'mat:thumbs_up_down',
       routerLinkActiveOptions: { exact: true }
     }

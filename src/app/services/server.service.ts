@@ -27,6 +27,7 @@ export class ServerService {
       }
     });
   }
+  managerContratList = this.store.managerContratList;
   userConnected = this.store.userConnected;
   userAppList = this.store.userAppList;
   weekendDays = this.store.weekendDays;
