@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { UserRepoService } from './user-repo.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { UserStoreService } from './user-store.service';
-import { DayAppAction } from 'src/app/models/day-app-action.model';
+import { Action } from 'src/app/models/action.model';
 
 @Injectable({
   providedIn: 'root'
@@ -32,9 +32,9 @@ export class UserEffectService {
     );
   }
 
-  askDayAppActionList(dayAppActionList: DayAppAction[]): void {
+  askActionList(action: Action): void {
     this.utils.changeIsLoading(true);
-    this.userRepo.askDayAppActionList(dayAppActionList).subscribe(
+    this.userRepo.askActionList(action).subscribe(
       (dayAppList) => {
         this.utils.changeIsLoading(false);
         this.userStore.userDayAppList.set(

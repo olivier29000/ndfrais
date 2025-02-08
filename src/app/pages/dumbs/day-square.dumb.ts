@@ -1,11 +1,17 @@
 import { CommonModule, registerLocaleData } from '@angular/common';
-import { Component, Injectable, Input } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Injectable,
+  Input,
+  Output
+} from '@angular/core';
 import {
   MAT_DATE_FORMATS,
   MAT_DATE_LOCALE,
   MatDateFormats
 } from '@angular/material/core';
-import { DayApp } from 'src/app/models/day-app.model';
+import { DayApp, WORK_STATE } from 'src/app/models/day-app.model';
 import localeFr from '@angular/common/locales/fr';
 import { MatIconModule } from '@angular/material/icon';
 import { scaleInOutAnimation } from '@vex/animations/scale-in-out.animation';
@@ -29,19 +35,32 @@ export class CustomDateFormats {
   template: `
     <div class="card day-square  mt-1">
       <div class="day-state" [ngClass]="day.weekState"></div>
-      <div class="work-state" [ngClass]="day.workState"></div>
-      <div class="day-text text-center">
+      <div
+        class="work-state"
+        [ngClass]="isSelected ? 'bg-grey' : day.workState"
+        (click)="clickDayOutput(day)"></div>
+      <div class="day-text text-center" (click)="clickDayOutput(day)">
         <h2 class="">{{ day.date.getDate() }}</h2>
         <p>{{ day.date | date: 'EEE' : '' : 'fr' | slice: 0 : 2 }}</p>
       </div>
-      @if (day.dayAppAction) {
+      @if (isLastSelected) {
+        <button
+          @scaleInOut
+          class="absolute -top-3 -right-1 bg-foreground shadow-xl hover:shadow-lg bg-grey"
+          color="primary"
+          mat-icon-button
+          type="button"
+          (click)="clickLastOutput(day)">
+          <mat-icon svgIcon="mat:highlight_off"></mat-icon>
+        </button>
+      } @else if (day.actionDay) {
         <button
           @scaleInOut
           class="absolute -top-3 -right-1 bg-foreground shadow-xl hover:shadow-lg"
           color="primary"
           mat-icon-button
           type="button"
-          [ngClass]="day.dayAppAction.workState">
+          [ngClass]="day.actionDay.workState">
           <mat-icon svgIcon="mat:question_mark"></mat-icon>
         </button>
       }
@@ -54,6 +73,9 @@ export class CustomDateFormats {
   animations: [scaleInOutAnimation],
   styles: [
     `
+      .bg-grey {
+        background-color: grey;
+      }
       .day-square {
         position: relative; /* Nécessaire pour que les enfants en absolute soient positionnés par rapport à ce div */
         width: 50px;
@@ -113,8 +135,21 @@ export class CustomDateFormats {
 })
 export class DaySquareDumb {
   @Input() day!: DayApp;
+  @Input() isSelected: boolean = false;
+  @Input() isLastSelected: boolean = false;
+  @Output() clickLast = new EventEmitter<DayApp>();
+  @Output() clickDay = new EventEmitter<void>();
 
   constructor() {
     registerLocaleData(localeFr);
+  }
+
+  clickLastOutput(day: DayApp): void {
+    this.clickLast.emit(day);
+  }
+  clickDayOutput(day: DayApp): void {
+    if (!day.actionDay && day.workState === WORK_STATE.TRAVAIL) {
+      this.clickDay.emit();
+    }
   }
 }

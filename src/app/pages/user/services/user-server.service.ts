@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UserStoreService } from './user-store.service';
 import { UserEffectService } from './user-effect.service';
-import { DayAppAction } from 'src/app/models/day-app-action.model';
+import { Action } from 'src/app/models/action.model';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,7 @@ export class UserServerService {
     this.userEffect.getUserDayAppListByContratId(idContrat);
   }
 
-  askDayAppActionList(dayAppActionList: DayAppAction[]): void {
-    this.userEffect.askDayAppActionList(dayAppActionList);
+  askActionList(action: Action): void {
+    this.userEffect.askActionList(action);
   }
 }

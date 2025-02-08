@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ManagerEffectService } from './manager-effect.service';
-import { DayAppAction } from 'src/app/models/day-app-action.model';
+import { Action } from 'src/app/models/action.model';
 import { ManagerStoreService } from './manager-store.service';
 
 @Injectable({
@@ -12,21 +12,28 @@ export class ManagerServerService {
     private managerStore: ManagerStoreService
   ) {}
   contratUserAppList = this.managerStore.contratUserAppList;
-  dayAppActionList = this.managerStore.dayAppActionList;
-
+  actionList = this.managerStore.actionList;
+  selectedActionList = this.managerStore.selectedActionList;
   getAllContratUserApp(): void {
     this.managerEffect.getAllContratUserApp();
   }
 
-  validDayAppActionList(dayAppActionList: DayAppAction[]): void {
-    this.managerEffect.validDayAppActionList(dayAppActionList);
+  validActionList(actionList: Action[]): void {
+    this.managerEffect.validActionList(actionList);
   }
 
-  refuseDayAppActionList(dayAppActionList: DayAppAction[]): void {
-    this.managerEffect.refuseDayAppActionList(dayAppActionList);
+  refuseActionList(actionList: Action[]): void {
+    this.managerEffect.refuseActionList(actionList);
   }
 
-  getDayAppActionListByUserApp(): void {
-    this.managerEffect.getDayAppActionListByUserApp();
+  getActionListByUserApp(): void {
+    this.managerEffect.getActionListByUserApp();
+  }
+
+  openActionListValidRefuseModal(action: Action): void {
+    this.managerStore.selectedActionList.update((selectedActionList) =>
+      selectedActionList.concat(action)
+    );
+    this.managerEffect.openActionListValidRefuseModal();
   }
 }

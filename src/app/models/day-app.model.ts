@@ -1,4 +1,4 @@
-import { DayAppAction } from './day-app-action.model';
+import { Action, ActionDay } from './action.model';
 import { UserApp } from './user.model';
 
 export interface DayApp {
@@ -6,7 +6,7 @@ export interface DayApp {
   date: Date;
   weekState: WEEK_STATE;
   workState: WORK_STATE;
-  dayAppAction?: DayAppAction;
+  actionDay?: ActionDay;
 }
 
 export interface WorkStateAction {

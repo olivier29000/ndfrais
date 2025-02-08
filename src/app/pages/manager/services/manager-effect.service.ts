@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { ManagerRepoService } from './manager-repo.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { ManagerStoreService } from './manager-store.service';
-import { DayAppAction } from 'src/app/models/day-app-action.model';
+import { Action } from 'src/app/models/action.model';
+import { ActionListValidRefuseModal } from '../modals/action-list-valid-refuse.modal';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +13,8 @@ export class ManagerEffectService {
   constructor(
     private managerRepo: ManagerRepoService,
     private utils: UtilsService,
-    private managerStore: ManagerStoreService
+    private managerStore: ManagerStoreService,
+    private _bottomSheet: MatBottomSheet
   ) {}
 
   getAllContratUserApp(): void {
@@ -27,12 +30,12 @@ export class ManagerEffectService {
     );
   }
 
-  validDayAppActionList(dayAppActionList: DayAppAction[]): void {
+  validActionList(actionList: Action[]): void {
     this.utils.changeIsLoading(true);
-    this.managerRepo.validDayAppActionList(dayAppActionList).subscribe(
-      (dayAppActionList) => {
+    this.managerRepo.validActionList(actionList).subscribe(
+      (actionList) => {
         this.utils.changeIsLoading(false);
-        this.managerStore.dayAppActionList.set(dayAppActionList);
+        this.managerStore.actionList.set(actionList);
       },
       () => {
         this.utils.changeIsLoading(false);
@@ -40,28 +43,32 @@ export class ManagerEffectService {
     );
   }
 
-  refuseDayAppActionList(dayAppActionList: DayAppAction[]): void {
+  refuseActionList(actionList: Action[]): void {
     this.utils.changeIsLoading(true);
-    this.managerRepo.refuseDayAppActionList(dayAppActionList).subscribe(
-      (dayAppActionList) => {
+    this.managerRepo.refuseActionList(actionList).subscribe(
+      (actionList) => {
         this.utils.changeIsLoading(false);
-        this.managerStore.dayAppActionList.set(dayAppActionList);
+        this.managerStore.actionList.set(actionList);
       },
       () => {
         this.utils.changeIsLoading(false);
       }
     );
   }
-  getDayAppActionListByUserApp(): void {
+  getActionListByUserApp(): void {
     this.utils.changeIsLoading(true);
-    this.managerRepo.getDayAppActionListByUserApp().subscribe(
-      (dayAppActionList) => {
+    this.managerRepo.getActionListByUserApp().subscribe(
+      (actionList) => {
         this.utils.changeIsLoading(false);
-        this.managerStore.dayAppActionList.set(dayAppActionList);
+        this.managerStore.actionList.set(actionList);
       },
       () => {
         this.utils.changeIsLoading(false);
       }
     );
+  }
+
+  openActionListValidRefuseModal() {
+    this._bottomSheet.open(ActionListValidRefuseModal);
   }
 }

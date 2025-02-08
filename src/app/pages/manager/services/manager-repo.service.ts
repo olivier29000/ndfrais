@@ -7,7 +7,7 @@ import {
 import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from 'src/environment/environment';
 import { ContratUserApp } from 'src/app/models/contrat-employe.model';
-import { DayAppAction } from 'src/app/models/day-app-action.model';
+import { Action } from 'src/app/models/action.model';
 
 const URL_BACKEND = environment.urlBackEnd + '/manager';
 const httpOptions = {
@@ -31,29 +31,25 @@ export class ManagerRepoService {
       .pipe(catchError(this.handleError));
   }
 
-  validDayAppActionList(
-    dayAppActionList: DayAppAction[]
-  ): Observable<DayAppAction[]> {
+  validActionList(actionList: Action[]): Observable<Action[]> {
     return this.http
       .post<
-        DayAppAction[]
-      >(`${URL_BACKEND}/day-app-action/valid-day-app-action-list`, dayAppActionList, httpOptions)
+        Action[]
+      >(`${URL_BACKEND}/day-app-action/valid-day-app-action-list`, actionList, httpOptions)
       .pipe(catchError(this.handleError));
   }
 
-  refuseDayAppActionList(
-    dayAppActionList: DayAppAction[]
-  ): Observable<DayAppAction[]> {
+  refuseActionList(actionList: Action[]): Observable<Action[]> {
     return this.http
       .post<
-        DayAppAction[]
-      >(`${URL_BACKEND}/day-app-action/refuse-day-app-action-list`, dayAppActionList, httpOptions)
+        Action[]
+      >(`${URL_BACKEND}/day-app-action/refuse-day-app-action-list`, actionList, httpOptions)
       .pipe(catchError(this.handleError));
   }
-  getDayAppActionListByUserApp(): Observable<DayAppAction[]> {
+  getActionListByUserApp(): Observable<Action[]> {
     return this.http
       .get<
-        DayAppAction[]
+        Action[]
       >(`${URL_BACKEND}/day-app-action/get-all-by-user-app`, httpOptions)
       .pipe(catchError(this.handleError));
   }

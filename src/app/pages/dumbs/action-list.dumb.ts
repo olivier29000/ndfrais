@@ -10,72 +10,86 @@ import {
   SimpleChanges,
   ViewChild
 } from '@angular/core';
-import { eachDayOfInterval, eachMonthOfInterval, format } from 'date-fns';
-import { DayApp } from 'src/app/models/day-app.model';
-import { DaySquareDumb } from './day-square.dumb';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TableColumn } from '@vex/interfaces/table-column.interface';
+import { MatMenuModule } from '@angular/material/menu';
+import { Action } from 'src/app/models/action.model';
+
+interface ActionDisplay {
+  id: number;
+  from: Date;
+  to: Date;
+  ancienStatut: string;
+  nouveauStatut: string;
+}
 @Component({
   selector: 'dumb-action-list',
-  template: `<div class="card overflow-hidden w-full flex flex-col">
-    <div class="border-b py-2 px-6 flex items-center">
-      <h2 class="m-0 title flex-auto">Recent Sales</h2>
+  template: `
+    <div class="card overflow-hidden w-full flex flex-col">
+      <div class="border-b py-2 px-6 flex items-center">
+        <h2 class="m-0 title flex-auto">Recent Sales</h2>
+      </div>
+      <div class="overflow-auto">
+        <table [dataSource]="dataSource" class="w-full" mat-table matSort>
+          <!-- Colonnes définies dynamiquement -->
+          <ng-container *ngFor="let column of columns">
+            <ng-container
+              *ngIf="column.type === 'text'"
+              [matColumnDef]="column.property">
+              <th *matHeaderCellDef mat-header-cell mat-sort-header>
+                {{ column.label }}
+              </th>
+              <td *matCellDef="let row" [ngClass]="column.cssClasses" mat-cell>
+                {{ row[column.property] }}
+              </td>
+            </ng-container>
 
-      <button mat-icon-button type="button" (click)="validOutput()">
-        <mat-icon class="text-secondary" svgIcon="mat:more_horiz"></mat-icon>
-      </button>
-    </div>
+            <ng-container
+              *ngIf="column.type === 'badge'"
+              [matColumnDef]="column.property">
+              <th *matHeaderCellDef mat-header-cell mat-sort-header>
+                {{ column.label }}
+              </th>
+              <td *matCellDef="let row" [ngClass]="column.cssClasses" mat-cell>
+                <div
+                  *ngIf="row[column.property] === 'ready'"
+                  class="w-3 h-3 rounded-full bg-green-600 cursor-pointer"
+                  matTooltip="Ready to ship"></div>
+                <div
+                  *ngIf="row[column.property] === 'pending'"
+                  class="w-3 h-3 rounded-full bg-orange-600 cursor-pointer"
+                  matTooltip="Pending Payment"></div>
+                <div
+                  *ngIf="row[column.property] === 'warn'"
+                  class="w-3 h-3 rounded-full bg-red-600 cursor-pointer"
+                  matTooltip="Missing Payment"></div>
+              </td>
+            </ng-container>
+          </ng-container>
 
-    <div class="overflow-auto">
-      <table [dataSource]="dataSource" class="w-full" mat-table matSort>
-        <!--- Note that these columns can be defined in any order.
-            The actual rendered columns are set as a property on the row definition" -->
-
-        <!-- Model Properties Column -->
-        <ng-container *ngFor="let column of columns">
-          <ng-container
-            *ngIf="column.type === 'text'"
-            [matColumnDef]="column.property">
-            <th *matHeaderCellDef mat-header-cell mat-sort-header>
-              {{ column.label }}
-            </th>
-            <td *matCellDef="let row" [ngClass]="column.cssClasses" mat-cell>
-              {{ row[column.property] }}
+          <!-- Colonne d'action -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let row">
+              <button
+                mat-icon-button
+                (click)="clickActionOutput(row)"
+                (click)="$event.stopPropagation()">
+                <mat-icon svgIcon="mat:edit"></mat-icon>
+              </button>
             </td>
           </ng-container>
 
-          <ng-container
-            *ngIf="column.type === 'badge'"
-            [matColumnDef]="column.property">
-            <th *matHeaderCellDef mat-header-cell mat-sort-header>
-              {{ column.label }}
-            </th>
-            <td *matCellDef="let row" [ngClass]="column.cssClasses" mat-cell>
-              <div
-                *ngIf="row[column.property] === 'ready'"
-                class="w-3 h-3 rounded-full bg-green-600 cursor-pointer"
-                matTooltip="Ready to ship"></div>
-              <div
-                *ngIf="row[column.property] === 'pending'"
-                class="w-3 h-3 rounded-full bg-orange-600 cursor-pointer"
-                matTooltip="Pending Payment"></div>
-              <div
-                *ngIf="row[column.property] === 'warn'"
-                class="w-3 h-3 rounded-full bg-red-600 cursor-pointer"
-                matTooltip="Missing Payment"></div>
-            </td>
-          </ng-container>
-        </ng-container>
-
-        <tr *matHeaderRowDef="visibleColumns" mat-header-row></tr>
-        <tr *matRowDef="let row; columns: visibleColumns" mat-row></tr>
-      </table>
+          <tr *matHeaderRowDef="visibleColumns" mat-header-row></tr>
+          <tr *matRowDef="let row; columns: visibleColumns" mat-row></tr>
+        </table>
+      </div>
     </div>
-  </div> `,
+  `,
   styles: [``],
   standalone: true,
   imports: [
@@ -87,33 +101,72 @@ import { TableColumn } from '@vex/interfaces/table-column.interface';
     NgFor,
     NgIf,
     NgClass,
-    MatTooltipModule
+    MatTooltipModule,
+    MatMenuModule
   ]
 })
-export class ActionListDumb<T> implements OnInit, OnChanges, AfterViewInit {
-  @Input({ required: true }) data!: T[];
-  @Input({ required: true }) columns!: TableColumn<T>[];
+export class ActionListDumb implements OnInit, OnChanges, AfterViewInit {
+  @Input({ required: true }) actionList!: Action[];
   @Input() pageSize = 6;
 
-  @Output() valid = new EventEmitter<void>();
-  visibleColumns!: Array<keyof T | string>;
-  dataSource = new MatTableDataSource<T>();
+  @Output() clickAction = new EventEmitter<Action>();
+  visibleColumns!: Array<keyof ActionDisplay | string>;
+  dataSource = new MatTableDataSource<ActionDisplay>();
 
   @ViewChild(MatSort, { static: true }) sort?: MatSort;
 
   constructor() {}
-  validOutput(): void {
-    this.valid.emit();
+
+  columns: TableColumn<ActionDisplay>[] = [
+    {
+      label: 'du',
+      property: 'from',
+      type: 'text'
+    },
+    {
+      label: 'au',
+      property: 'to',
+      type: 'text'
+    },
+    {
+      label: 'Ancien statut',
+      property: 'ancienStatut',
+      type: 'text',
+      cssClasses: ['font-medium']
+    },
+    {
+      label: 'Nouveau Statut',
+      property: 'nouveauStatut',
+      type: 'text',
+      cssClasses: ['font-medium']
+    }
+  ];
+
+  clickActionOutput(row: ActionDisplay): void {
+    // Traitement de l'action sur la ligne
+    console.log("Bouton d'action cliqué sur la ligne :", row);
+    const action = this.actionList.find((a) => a.id === row.id);
+    if (action) {
+      this.clickAction.emit(action);
+    }
   }
-  ngOnInit() {}
+
+  ngOnInit() {
+    this.visibleColumns = this.columns.map((column) => column.property);
+    if (!this.visibleColumns.includes('action')) {
+      this.visibleColumns.push('action');
+    }
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['columns']) {
-      this.visibleColumns = this.columns.map((column) => column.property);
-    }
-
-    if (changes['data']) {
-      this.dataSource.data = this.data;
+    if (changes['actionList']) {
+      this.dataSource.data = this.actionList.map((currentAction) => ({
+        id: currentAction.id,
+        from: currentAction.dayAppList[0].date,
+        to: currentAction.dayAppList[currentAction.dayAppList.length - 1].date,
+        ancienStatut: currentAction.dayAppList[0].workState,
+        nouveauStatut: currentAction.workState
+      }));
     }
   }
 

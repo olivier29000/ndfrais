@@ -11,7 +11,7 @@ import { DayListDumb } from '../dumbs/day-list.dumb';
 import { ActivatedRoute } from '@angular/router';
 import { ActionListDumb } from '../dumbs/action-list.dumb';
 import { TableColumn } from '@vex/interfaces/table-column.interface';
-import { DayAppAction } from 'src/app/models/day-app-action.model';
+import { Action } from 'src/app/models/action.model';
 import {
   ACTION_STATE,
   DayApp,
@@ -24,11 +24,16 @@ import Swal from 'sweetalert2';
 @Component({
   template: `
     <div class="container">
-      <dumb-action-list
-        (valid)="askDayAppActionList()"
-        [columns]="tableColumns"
-        [data]="tableData()"
-        class="sm:col-span-2"></dumb-action-list>
+      @if (currentAction(); as currentAction) {
+        <dumb-action-list
+          (valid)="askActionList()"
+          [actionList]="[currentAction]"
+          class="sm:col-span-2"></dumb-action-list>
+      } @else {
+        <dumb-action-list
+          [actionList]="[]"
+          class="sm:col-span-2"></dumb-action-list>
+      }
     </div>
     <div
       class="container p-6 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-6 gap-4">
@@ -43,7 +48,7 @@ import Swal from 'sweetalert2';
     </div>
     <div class="container">
       <dumb-day-list
-        (selectDay)="selectDay($event)"
+        (selectDayList)="selectDayList($event)"
         [dayAppList]="userDayAppList()"></dumb-day-list>
     </div>
   `,
@@ -53,7 +58,6 @@ import Swal from 'sweetalert2';
 })
 export class UserCongesPage implements OnInit {
   WORK_STATE = WORK_STATE;
-  selectedWorkState: workStateItem | undefined = undefined;
   workStateList: workStateItem[] = [
     {
       label: WORK_STATE.CONGE,
@@ -80,74 +84,55 @@ export class UserCongesPage implements OnInit {
       icon: 'mat:group'
     }
   ];
+  selectedWorkState: workStateItem = this.workStateList[0];
   selectWorkState(workState: workStateItem): void {
     this.selectedWorkState = workState;
-    this.currentActionList.set([]);
+    this.currentAction.set(undefined);
   }
   userDayAppList = this.userServer.userDayAppList;
-  currentActionList: WritableSignal<DayAppAction[]> = signal([]);
-  tableData = computed(() =>
-    this.currentActionList().map((currentAction) => ({
-      date: currentAction.dayApp.date,
-      ancienStatut: currentAction.dayApp.workState,
-      nouveauStatut: currentAction.workState
-    }))
-  );
-  selectDay(dayApp: DayApp): void {
-    if (!this.selectedWorkState) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: "Sélectionnez un type d'abscence (congé, RTT...)"
-      });
+  currentAction: WritableSignal<Action | undefined> = signal(undefined);
+  tableData = computed(() => {
+    const currentAction = this.currentAction();
+    if (currentAction) {
+      return [
+        {
+          date: currentAction.dayAppList[0].date,
+          ancienStatut: currentAction.dayAppList[0].workState,
+          nouveauStatut: currentAction.workState
+        }
+      ];
+    } else {
+      return [];
     }
-    this.currentActionList.update((currentActionList) => {
-      if (
-        this.selectedWorkState &&
-        !currentActionList.some(
-          (currentAction) => currentAction.dayApp.id === dayApp.id
-        )
-      ) {
-        return currentActionList.concat({
+  });
+  selectDayList(dayAppList: DayApp[]): void {
+    if (dayAppList.length > 0) {
+      if (!this.selectedWorkState) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: "Sélectionnez un type d'abscence (congé, RTT...)"
+        });
+      } else {
+        this.currentAction.set({
           id: 0,
           date: new Date(),
-          dayApp,
+          dayAppList,
           workState: this.selectedWorkState.label,
           state: ACTION_STATE.ASKING,
           userAppAction: new UserApp({})
         });
       }
-      return currentActionList;
-    });
+    }
   }
-  askDayAppActionList(): void {
-    this.userServer.askDayAppActionList(this.currentActionList());
-    this.currentActionList.set([]);
+  askActionList(): void {
+    const currentAction = this.currentAction();
+    if (currentAction) {
+      this.userServer.askActionList(currentAction);
+      this.currentAction.set(undefined);
+    }
   }
 
-  tableColumns: TableColumn<{
-    date: Date;
-    ancienStatut: string;
-    nouveauStatut: string;
-  }>[] = [
-    {
-      label: 'DATE',
-      property: 'date',
-      type: 'text'
-    },
-    {
-      label: 'Ancien statut',
-      property: 'ancienStatut',
-      type: 'text',
-      cssClasses: ['font-medium']
-    },
-    {
-      label: 'Nouveau Statut',
-      property: 'nouveauStatut',
-      type: 'text',
-      cssClasses: ['font-medium']
-    }
-  ];
   constructor(
     private userServer: UserServerService,
     private route: ActivatedRoute
