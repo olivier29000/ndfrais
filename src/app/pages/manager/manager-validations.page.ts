@@ -20,7 +20,8 @@ import { Action } from 'src/app/models/action.model';
   template: `<div class="container">
     <dumb-action-list
       [actionList]="actionList()"
-      (clickAction)="openActionListValidRefuseModal($event)"
+      (validAction)="openActionListValidRefuseModal($event, 'valid')"
+      (refuseAction)="openActionListValidRefuseModal($event, 'refuse')"
       class="sm:col-span-2"></dumb-action-list>
   </div>`,
   animations: [],
@@ -29,12 +30,13 @@ import { Action } from 'src/app/models/action.model';
 })
 export class ManagerValidationListPage {
   actionList = this.managerServer.actionList;
-  ngOnInit(): void {
-    this.managerServer.getActionListByUserApp();
-  }
+  ngOnInit(): void {}
 
-  openActionListValidRefuseModal(action: Action): void {
-    this.managerServer.openActionListValidRefuseModal(action);
+  openActionListValidRefuseModal(
+    action: Action,
+    type: 'valid' | 'refuse'
+  ): void {
+    this.managerServer.openActionListValidRefuseModal(action, type);
   }
 
   constructor(private managerServer: ManagerServerService) {}

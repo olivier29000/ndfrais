@@ -16,9 +16,7 @@ import { ManagerServerService } from './services/manager-server.service';
 })
 export class ManagerContratListPage {
   contratUserAppList = this.managerServer.contratUserAppList;
-  ngOnInit(): void {
-    this.managerServer.getAllContratUserApp();
-  }
+  ngOnInit(): void {}
 
   constructor(
     private dialog: MatDialog,

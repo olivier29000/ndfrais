@@ -31,19 +31,19 @@ export class ManagerRepoService {
       .pipe(catchError(this.handleError));
   }
 
-  validActionList(actionList: Action[]): Observable<Action[]> {
+  validAction(action: Action): Observable<Action[]> {
     return this.http
       .post<
         Action[]
-      >(`${URL_BACKEND}/day-app-action/valid-day-app-action-list`, actionList, httpOptions)
+      >(`${URL_BACKEND}/day-app-action/valid-action`, action, httpOptions)
       .pipe(catchError(this.handleError));
   }
 
-  refuseActionList(actionList: Action[]): Observable<Action[]> {
+  refuseAction(action: Action): Observable<Action[]> {
     return this.http
       .post<
         Action[]
-      >(`${URL_BACKEND}/day-app-action/refuse-day-app-action-list`, actionList, httpOptions)
+      >(`${URL_BACKEND}/day-app-action/refuse-action`, action, httpOptions)
       .pipe(catchError(this.handleError));
   }
   getActionListByUserApp(): Observable<Action[]> {

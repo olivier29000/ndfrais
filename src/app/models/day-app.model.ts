@@ -6,6 +6,7 @@ export interface DayApp {
   date: Date;
   weekState: WEEK_STATE;
   workState: WORK_STATE;
+  idContrat?: number;
   actionDay?: ActionDay;
 }
 

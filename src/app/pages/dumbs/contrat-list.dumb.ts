@@ -144,6 +144,19 @@ import { RouterLink } from '@angular/router';
             <ng-container
               *ngFor="let column of columns; trackBy: trackByProperty">
               <ng-container
+                *ngIf="column.type === 'badge'"
+                [matColumnDef]="column.property">
+                <th *matHeaderCellDef mat-header-cell mat-sort-header>
+                  {{ column.label }}
+                </th>
+                <td
+                  *matCellDef="let row"
+                  [ngClass]="column.cssClasses"
+                  mat-cell>
+                  {{ row['nbActions'] }}
+                </td>
+              </ng-container>
+              <ng-container
                 *ngIf="column.type === 'text'"
                 [matColumnDef]="column.property">
                 <th
@@ -418,6 +431,13 @@ export class ContratListDumb implements AfterViewInit {
       type: 'number',
       visible: false,
       cssClasses: ['text-secondary', 'font-medium']
+    },
+    {
+      label: 'nb actions',
+      property: 'nbActions',
+      type: 'badge',
+      visible: true,
+      cssClasses: ['font-medium']
     },
     { label: 'Actions', property: 'actions', type: 'button', visible: true }
   ];

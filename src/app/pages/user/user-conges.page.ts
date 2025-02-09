@@ -26,8 +26,9 @@ import Swal from 'sweetalert2';
     <div class="container">
       @if (currentAction(); as currentAction) {
         <dumb-action-list
-          (valid)="askActionList()"
-          [actionList]="[currentAction]"
+          (validAction)="askAction()"
+          (refuseAction)="cancelAction()"
+          [actionList]="currentAction ? [currentAction] : []"
           class="sm:col-span-2"></dumb-action-list>
       } @else {
         <dumb-action-list
@@ -125,12 +126,15 @@ export class UserCongesPage implements OnInit {
       }
     }
   }
-  askActionList(): void {
+  askAction(): void {
     const currentAction = this.currentAction();
     if (currentAction) {
-      this.userServer.askActionList(currentAction);
+      this.userServer.askAction(currentAction);
       this.currentAction.set(undefined);
     }
+  }
+  cancelAction(): void {
+    this.currentAction.set(undefined);
   }
 
   constructor(

@@ -22,7 +22,7 @@ const httpOptions = {
 })
 export class UserRepoService {
   constructor(private http: HttpClient) {}
-  askActionList(action: Action): Observable<DayApp[]> {
+  askAction(action: Action): Observable<DayApp[]> {
     return this.http
       .post<
         DayApp[]

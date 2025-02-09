@@ -19,6 +19,7 @@ export class UserEffectService {
     this.userRepo.getUserDayAppListByContratId(idContrat).subscribe(
       (dayAppList) => {
         this.utils.changeIsLoading(false);
+        console.log(dayAppList);
         this.userStore.userDayAppList.set(
           dayAppList.map((d) => ({
             ...d,
@@ -32,9 +33,9 @@ export class UserEffectService {
     );
   }
 
-  askActionList(action: Action): void {
+  askAction(action: Action): void {
     this.utils.changeIsLoading(true);
-    this.userRepo.askActionList(action).subscribe(
+    this.userRepo.askAction(action).subscribe(
       (dayAppList) => {
         this.utils.changeIsLoading(false);
         this.userStore.userDayAppList.set(

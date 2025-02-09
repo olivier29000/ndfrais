@@ -5,16 +5,17 @@ import { ManagerStoreService } from './manager-store.service';
 import { Action } from 'src/app/models/action.model';
 import { ActionListValidRefuseModal } from '../modals/action-list-valid-refuse.modal';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { MatDialog } from '@angular/material/dialog';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ManagerEffectService {
   constructor(
+    private dialog: MatDialog,
     private managerRepo: ManagerRepoService,
     private utils: UtilsService,
-    private managerStore: ManagerStoreService,
-    private _bottomSheet: MatBottomSheet
+    private managerStore: ManagerStoreService
   ) {}
 
   getAllContratUserApp(): void {
@@ -30,9 +31,9 @@ export class ManagerEffectService {
     );
   }
 
-  validActionList(actionList: Action[]): void {
+  validAction(action: Action): void {
     this.utils.changeIsLoading(true);
-    this.managerRepo.validActionList(actionList).subscribe(
+    this.managerRepo.validAction(action).subscribe(
       (actionList) => {
         this.utils.changeIsLoading(false);
         this.managerStore.actionList.set(actionList);
@@ -43,9 +44,9 @@ export class ManagerEffectService {
     );
   }
 
-  refuseActionList(actionList: Action[]): void {
+  refuseAction(action: Action): void {
     this.utils.changeIsLoading(true);
-    this.managerRepo.refuseActionList(actionList).subscribe(
+    this.managerRepo.refuseAction(action).subscribe(
       (actionList) => {
         this.utils.changeIsLoading(false);
         this.managerStore.actionList.set(actionList);
@@ -68,7 +69,12 @@ export class ManagerEffectService {
     );
   }
 
-  openActionListValidRefuseModal() {
-    this._bottomSheet.open(ActionListValidRefuseModal);
+  openActionListValidRefuseModal(action: Action, type: 'valid' | 'refuse') {
+    this.dialog.open(ActionListValidRefuseModal, {
+      data: {
+        action,
+        type
+      }
+    });
   }
 }

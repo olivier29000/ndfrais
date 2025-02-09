@@ -32,6 +32,9 @@ interface ActionDisplay {
     <div class="card overflow-hidden w-full flex flex-col">
       <div class="border-b py-2 px-6 flex items-center">
         <h2 class="m-0 title flex-auto">Recent Sales</h2>
+        <button mat-icon-button type="button">
+          <mat-icon class="text-secondary" svgIcon="mat:more_horiz"></mat-icon>
+        </button>
       </div>
       <div class="overflow-auto">
         <table [dataSource]="dataSource" class="w-full" mat-table matSort>
@@ -75,11 +78,14 @@ interface ActionDisplay {
           <ng-container matColumnDef="action">
             <th mat-header-cell *matHeaderCellDef>Actions</th>
             <td mat-cell *matCellDef="let row">
-              <button
-                mat-icon-button
-                (click)="clickActionOutput(row)"
-                (click)="$event.stopPropagation()">
-                <mat-icon svgIcon="mat:edit"></mat-icon>
+              <button mat-icon-button (click)="validActionOutput(row)">
+                <mat-icon svgIcon="mat:check"></mat-icon>
+              </button>
+              <button mat-icon-button (click)="refuseActionOutput(row)">
+                <mat-icon svgIcon="mat:close"></mat-icon>
+              </button>
+              <button mat-icon-button>
+                <mat-icon svgIcon="mat:remove_red_eye"></mat-icon>
               </button>
             </td>
           </ng-container>
@@ -110,6 +116,8 @@ export class ActionListDumb implements OnInit, OnChanges, AfterViewInit {
   @Input() pageSize = 6;
 
   @Output() clickAction = new EventEmitter<Action>();
+  @Output() validAction = new EventEmitter<Action>();
+  @Output() refuseAction = new EventEmitter<Action>();
   visibleColumns!: Array<keyof ActionDisplay | string>;
   dataSource = new MatTableDataSource<ActionDisplay>();
 
@@ -117,7 +125,26 @@ export class ActionListDumb implements OnInit, OnChanges, AfterViewInit {
 
   constructor() {}
 
+  validActionOutput(row: ActionDisplay): void {
+    const action = this.actionList.find((a) => a.id === row.id);
+    if (action) {
+      this.validAction.emit(action);
+    }
+  }
+
+  refuseActionOutput(row: ActionDisplay): void {
+    const action = this.actionList.find((a) => a.id === row.id);
+    if (action) {
+      this.refuseAction.emit(action);
+    }
+  }
+
   columns: TableColumn<ActionDisplay>[] = [
+    {
+      label: 'de',
+      property: 'user',
+      type: 'text'
+    },
     {
       label: 'du',
       property: 'from',
@@ -162,6 +189,10 @@ export class ActionListDumb implements OnInit, OnChanges, AfterViewInit {
     if (changes['actionList']) {
       this.dataSource.data = this.actionList.map((currentAction) => ({
         id: currentAction.id,
+        user:
+          currentAction.userAppAction.nom +
+          ' ' +
+          currentAction.userAppAction.prenom,
         from: currentAction.dayAppList[0].date,
         to: currentAction.dayAppList[currentAction.dayAppList.length - 1].date,
         ancienStatut: currentAction.dayAppList[0].workState,

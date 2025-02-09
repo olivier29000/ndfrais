@@ -10,5 +10,4 @@ export class ManagerStoreService {
 
   contratUserAppList: WritableSignal<ContratUserApp[]> = signal([]);
   actionList: WritableSignal<Action[]> = signal([]);
-  selectedActionList: WritableSignal<Action[]> = signal([]);
 }
