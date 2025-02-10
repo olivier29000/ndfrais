@@ -6,6 +6,7 @@ import {
   signal,
   WritableSignal
 } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { UserServerService } from './services/user-server.service';
 import { DayListDumb } from '../dumbs/day-list.dumb';
 import { ActivatedRoute } from '@angular/router';
@@ -21,21 +22,9 @@ import {
 import { UserApp } from 'src/app/models/user.model';
 import { WorkStateDumb } from '../dumbs/work-state.dumb';
 import Swal from 'sweetalert2';
+import { ValidCancelActionModal } from './modals/valid-cancel-action.modal';
 @Component({
   template: `
-    <div class="container">
-      @if (currentAction(); as currentAction) {
-        <dumb-action-list
-          (validAction)="askAction()"
-          (refuseAction)="cancelAction()"
-          [actionList]="currentAction ? [currentAction] : []"
-          class="sm:col-span-2"></dumb-action-list>
-      } @else {
-        <dumb-action-list
-          [actionList]="[]"
-          class="sm:col-span-2"></dumb-action-list>
-      }
-    </div>
     <div
       class="container p-6 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-6 gap-4">
       @for (item of workStateList; track $index) {
@@ -49,15 +38,17 @@ import Swal from 'sweetalert2';
     </div>
     <div class="container">
       <dumb-day-list
+        (validPeriod)="askAction()"
         (selectDayList)="selectDayList($event)"
         [dayAppList]="userDayAppList()"></dumb-day-list>
     </div>
   `,
   styles: [``],
   standalone: true,
-  imports: [CommonModule, DayListDumb, ActionListDumb, WorkStateDumb]
+  imports: [CommonModule, DayListDumb, WorkStateDumb]
 })
 export class UserCongesPage implements OnInit {
+  idContratUserApp: string | null = null;
   WORK_STATE = WORK_STATE;
   workStateList: workStateItem[] = [
     {
@@ -121,7 +112,8 @@ export class UserCongesPage implements OnInit {
           dayAppList,
           workState: this.selectedWorkState.label,
           state: ACTION_STATE.ASKING,
-          userAppAction: new UserApp({})
+          userAppAction: new UserApp({}),
+          notes: ''
         });
       }
     }
@@ -129,8 +121,19 @@ export class UserCongesPage implements OnInit {
   askAction(): void {
     const currentAction = this.currentAction();
     if (currentAction) {
-      this.userServer.askAction(currentAction);
-      this.currentAction.set(undefined);
+      this.dialog
+        .open(ValidCancelActionModal, {
+          data: {
+            action: currentAction
+          }
+        })
+        .afterClosed()
+        .subscribe((action: Action) => {
+          if (this.idContratUserApp) {
+            this.userServer.askAction(action, this.idContratUserApp);
+            this.currentAction.set(undefined);
+          }
+        });
     }
   }
   cancelAction(): void {
@@ -139,14 +142,15 @@ export class UserCongesPage implements OnInit {
 
   constructor(
     private userServer: UserServerService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
-      const idContratUserApp = params.get('idContratUserApp');
-      if (idContratUserApp) {
-        this.userServer.getUserDayAppListByContratId(idContratUserApp);
+      this.idContratUserApp = params.get('idContratUserApp');
+      if (this.idContratUserApp) {
+        this.userServer.getUserDayAppListByContratId(this.idContratUserApp);
       }
     });
   }

@@ -22,11 +22,13 @@ const httpOptions = {
 })
 export class UserRepoService {
   constructor(private http: HttpClient) {}
-  askAction(action: Action): Observable<DayApp[]> {
+  askAction(action: Action): Observable<Action> {
     return this.http
-      .post<
-        DayApp[]
-      >(`${URL_BACKEND}/day-app-action/user-ask-day-app-action-list`, action, httpOptions)
+      .post<Action>(
+        `${URL_BACKEND}/day-app-action/user-ask-day-app-action-list`,
+        action,
+        httpOptions
+      )
       .pipe(catchError(this.handleError));
   }
 
@@ -44,5 +46,18 @@ export class UserRepoService {
     }
     // Generic error handling
     return throwError("Une erreur inconnue s'est produite");
+  }
+
+  uploadPdf(file: File, idAction: number): Observable<void> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post<void>(
+      `${URL_BACKEND}/day-app-action/upload-pdf/${idAction}`,
+      formData,
+      {
+        withCredentials: true
+      }
+    );
   }
 }

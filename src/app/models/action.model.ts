@@ -8,6 +8,9 @@ export interface Action {
   workState: WORK_STATE;
   state: ACTION_STATE;
   userAppAction: UserApp;
+  notes: string;
+  file?: File;
+  idPdf?: number;
 }
 
 export interface ActionDay {

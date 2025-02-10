@@ -33,17 +33,29 @@ export class UserEffectService {
     );
   }
 
-  askAction(action: Action): void {
+  askAction(action: Action, idContrat: string): void {
     this.utils.changeIsLoading(true);
+    let file: File | undefined = undefined;
+    if (action.file) {
+      file = action.file;
+      action.file = undefined;
+    }
     this.userRepo.askAction(action).subscribe(
-      (dayAppList) => {
-        this.utils.changeIsLoading(false);
-        this.userStore.userDayAppList.set(
-          dayAppList.map((d) => ({
-            ...d,
-            date: new Date(d.date)
-          }))
-        );
+      (action) => {
+        if (file) {
+          this.userRepo.uploadPdf(file, action.id).subscribe(
+            () => {
+              this.utils.changeIsLoading(false);
+              this.getUserDayAppListByContratId(idContrat);
+            },
+            () => {
+              this.utils.changeIsLoading(false);
+            }
+          );
+        } else {
+          this.utils.changeIsLoading(false);
+          this.getUserDayAppListByContratId(idContrat);
+        }
       },
       () => {
         this.utils.changeIsLoading(false);

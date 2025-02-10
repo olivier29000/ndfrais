@@ -36,6 +36,7 @@ import { DaySquareDumb } from './day-square.dumb';
           [day]="day"
           (clickLast)="clickLast($event)"
           (clickDay)="selectDayApp(day)"
+          (validPeriod)="validPeriodOutput()"
           (mouseenter)="selectableDayApp(day)"
           (mouseleave)="unselectableDayApp()"></dumb-day-state>
       }
@@ -59,6 +60,7 @@ export class DayListDumb {
   selectableDayList: DayApp[] = [];
 
   @Output() selectDayList = new EventEmitter<DayApp[]>();
+  @Output() validPeriod = new EventEmitter<void>();
 
   @Input()
   set dayAppList(value: DayApp[]) {
@@ -75,6 +77,12 @@ export class DayListDumb {
     );
   }
 
+  validPeriodOutput(): void {
+    this.validPeriod.emit();
+    this.selectedDayList.set([]);
+    this.selectableDayList = [];
+  }
+
   isSelected(day: DayApp): boolean {
     return (
       this.selectedDayList().some((d) => d.id === day.id) ||
@@ -82,23 +90,28 @@ export class DayListDumb {
     );
   }
   selectableDayApp(day: DayApp): void {
-    if (this.selectedDayList().length === 0) {
-      this.selectableDayList.push(day);
-    } else if (
-      isBefore(startOfDay(day.date), startOfDay(this.selectedDayList()[0].date))
-    ) {
-      this.selectableDayList = [day];
-    } else {
-      const days = eachDayOfInterval({
-        start: this.selectedDayList()[0].date,
-        end: day.date
-      });
-      this.selectableDayList = [this.selectedDayList()[0]].concat(
-        Object.values(this.dayAppMap)
-          .flat()
-          .filter((d) => d.workState === WORK_STATE.TRAVAIL && !d.actionDay)
-          .filter((d) => days.some((da) => isSameDay(da, d.date)))
-      );
+    if (!day.actionDay) {
+      if (this.selectedDayList().length === 0) {
+        this.selectableDayList.push(day);
+      } else if (
+        isBefore(
+          startOfDay(day.date),
+          startOfDay(this.selectedDayList()[0].date)
+        )
+      ) {
+        this.selectableDayList = [day];
+      } else {
+        const days = eachDayOfInterval({
+          start: this.selectedDayList()[0].date,
+          end: day.date
+        });
+        this.selectableDayList = [this.selectedDayList()[0]].concat(
+          Object.values(this.dayAppMap)
+            .flat()
+            .filter((d) => d.workState === WORK_STATE.TRAVAIL && !d.actionDay)
+            .filter((d) => days.some((da) => isSameDay(da, d.date)))
+        );
+      }
     }
   }
   unselectableDayApp(): void {
@@ -106,33 +119,30 @@ export class DayListDumb {
   }
 
   selectDayApp(day: DayApp): void {
-    if (this.selectedDayList().length === 0) {
-      this.selectedDayList.set([day]);
-    } else if (
-      isBefore(startOfDay(day.date), startOfDay(this.selectedDayList()[0].date))
-    ) {
-      this.selectedDayList.set([day]);
-    } else {
-      const days = eachDayOfInterval({
-        start: this.selectedDayList()[0].date,
-        end: day.date
-      });
-      console.log(
-        [this.selectedDayList()[0]].concat(
-          Object.values(this.dayAppMap)
-            .flat()
-            .filter((d) => d.workState === WORK_STATE.TRAVAIL && !d.actionDay)
-            .filter((d) => days.some((da) => isSameDay(da, d.date)))
+    if (!day.actionDay) {
+      if (this.selectedDayList().length === 0) {
+        this.selectedDayList.set([day]);
+      } else if (
+        isBefore(
+          startOfDay(day.date),
+          startOfDay(this.selectedDayList()[0].date)
         )
-      );
-      this.selectedDayList.set(
-        [this.selectedDayList()[0]].concat(
-          Object.values(this.dayAppMap)
-            .flat()
-            .filter((d) => d.workState === WORK_STATE.TRAVAIL && !d.actionDay)
-            .filter((d) => days.some((da) => isSameDay(da, d.date)))
-        )
-      );
+      ) {
+        this.selectedDayList.set([day]);
+      } else {
+        const days = eachDayOfInterval({
+          start: this.selectedDayList()[0].date,
+          end: day.date
+        });
+        this.selectedDayList.set(
+          [this.selectedDayList()[0]].concat(
+            Object.values(this.dayAppMap)
+              .flat()
+              .filter((d) => d.workState === WORK_STATE.TRAVAIL && !d.actionDay)
+              .filter((d) => days.some((da) => isSameDay(da, d.date)))
+          )
+        );
+      }
     }
   }
 

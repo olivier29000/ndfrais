@@ -46,7 +46,16 @@ export class CustomDateFormats {
       @if (isLastSelected) {
         <button
           @scaleInOut
-          class="absolute -top-3 -right-1 bg-foreground shadow-xl hover:shadow-lg bg-grey"
+          class="absolute -top-3 bg-foreground shadow-xl hover:shadow-lg bg-grey"
+          color="primary"
+          mat-icon-button
+          type="button"
+          (click)="validPeriodOutput()">
+          <mat-icon svgIcon="mat:check"></mat-icon>
+        </button>
+        <button
+          @scaleInOut
+          class="absolute -top-3 -right-3 bg-foreground shadow-xl hover:shadow-lg bg-grey"
           color="primary"
           mat-icon-button
           type="button"
@@ -138,6 +147,7 @@ export class DaySquareDumb {
   @Input() isSelected: boolean = false;
   @Input() isLastSelected: boolean = false;
   @Output() clickLast = new EventEmitter<DayApp>();
+  @Output() validPeriod = new EventEmitter<void>();
   @Output() clickDay = new EventEmitter<void>();
 
   constructor() {
@@ -146,6 +156,10 @@ export class DaySquareDumb {
 
   clickLastOutput(day: DayApp): void {
     this.clickLast.emit(day);
+  }
+  validPeriodOutput(): void {
+    console.log('validPeriodOutput DaySquareDumb');
+    this.validPeriod.emit();
   }
   clickDayOutput(day: DayApp): void {
     if (!day.actionDay && day.workState === WORK_STATE.TRAVAIL) {

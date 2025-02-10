@@ -18,7 +18,7 @@ export class UserServerService {
     this.userEffect.getUserDayAppListByContratId(idContrat);
   }
 
-  askAction(action: Action): void {
-    this.userEffect.askAction(action);
+  askAction(action: Action, idContrat: string): void {
+    this.userEffect.askAction(action, idContrat);
   }
 }
