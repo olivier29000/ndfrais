@@ -22,7 +22,14 @@ const httpOptions = {
 })
 export class ManagerRepoService {
   constructor(private http: HttpClient) {}
-
+  getPdfById(idPdf: number): Observable<Blob> {
+    return this.http
+      .get<Blob>(`${URL_BACKEND}/day-app-action/get-pdf-by-id/${idPdf}`, {
+        withCredentials: true,
+        responseType: 'blob' as 'json'
+      })
+      .pipe(catchError(this.handleError));
+  }
   getAllContratUserApp(): Observable<ContratUserApp[]> {
     return this.http
       .get<

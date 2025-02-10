@@ -55,4 +55,8 @@ export class ManagerServerService {
   ): void {
     this.managerEffect.openActionListValidRefuseModal(action, type);
   }
+
+  openPdfDisplayModal(idPdf: number): void {
+    this.managerEffect.openPdfDisplayModal(idPdf);
+  }
 }

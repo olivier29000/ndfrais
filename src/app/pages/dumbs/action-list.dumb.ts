@@ -52,24 +52,19 @@ interface ActionDisplay {
             </ng-container>
 
             <ng-container
-              *ngIf="column.type === 'badge'"
+              *ngIf="column.label === 'Justificatif'"
               [matColumnDef]="column.property">
               <th *matHeaderCellDef mat-header-cell mat-sort-header>
                 {{ column.label }}
               </th>
-              <td *matCellDef="let row" [ngClass]="column.cssClasses" mat-cell>
-                <div
-                  *ngIf="row[column.property] === 'ready'"
-                  class="w-3 h-3 rounded-full bg-green-600 cursor-pointer"
-                  matTooltip="Ready to ship"></div>
-                <div
-                  *ngIf="row[column.property] === 'pending'"
-                  class="w-3 h-3 rounded-full bg-orange-600 cursor-pointer"
-                  matTooltip="Pending Payment"></div>
-                <div
-                  *ngIf="row[column.property] === 'warn'"
-                  class="w-3 h-3 rounded-full bg-red-600 cursor-pointer"
-                  matTooltip="Missing Payment"></div>
+              <td mat-cell *matCellDef="let row">
+                @if (row[column.property]) {
+                  <button
+                    mat-icon-button
+                    (click)="openPdfOutput(row[column.property])">
+                    <mat-icon svgIcon="mat:attach_file"></mat-icon>
+                  </button>
+                }
               </td>
             </ng-container>
           </ng-container>
@@ -118,6 +113,7 @@ export class ActionListDumb implements OnInit, OnChanges, AfterViewInit {
   @Output() clickAction = new EventEmitter<Action>();
   @Output() validAction = new EventEmitter<Action>();
   @Output() refuseAction = new EventEmitter<Action>();
+  @Output() openPdfById = new EventEmitter<number>();
   visibleColumns!: Array<keyof ActionDisplay | string>;
   dataSource = new MatTableDataSource<ActionDisplay>();
 
@@ -137,6 +133,10 @@ export class ActionListDumb implements OnInit, OnChanges, AfterViewInit {
     if (action) {
       this.refuseAction.emit(action);
     }
+  }
+
+  openPdfOutput(idPdf: number) {
+    this.openPdfById.emit(idPdf);
   }
 
   columns: TableColumn<ActionDisplay>[] = [
@@ -165,6 +165,18 @@ export class ActionListDumb implements OnInit, OnChanges, AfterViewInit {
       label: 'Nouveau Statut',
       property: 'nouveauStatut',
       type: 'text',
+      cssClasses: ['font-medium']
+    },
+    {
+      label: 'Notes',
+      property: 'notes',
+      type: 'text',
+      cssClasses: ['font-medium']
+    },
+    {
+      label: 'Justificatif',
+      property: 'idPdf',
+      type: 'number',
       cssClasses: ['font-medium']
     }
   ];
@@ -196,7 +208,8 @@ export class ActionListDumb implements OnInit, OnChanges, AfterViewInit {
         from: currentAction.dayAppList[0].date,
         to: currentAction.dayAppList[currentAction.dayAppList.length - 1].date,
         ancienStatut: currentAction.dayAppList[0].workState,
-        nouveauStatut: currentAction.workState
+        nouveauStatut: currentAction.workState,
+        idPdf: currentAction.idPdf
       }));
     }
   }

@@ -6,6 +6,8 @@ import { Action } from 'src/app/models/action.model';
 import { ActionListValidRefuseModal } from '../modals/action-list-valid-refuse.modal';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatDialog } from '@angular/material/dialog';
+import { PdfDisplayModal } from '../modals/pdf-display.modal';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +17,8 @@ export class ManagerEffectService {
     private dialog: MatDialog,
     private managerRepo: ManagerRepoService,
     private utils: UtilsService,
-    private managerStore: ManagerStoreService
+    private managerStore: ManagerStoreService,
+    private sanitizer: DomSanitizer
   ) {}
 
   getAllContratUserApp(): void {
@@ -61,6 +64,7 @@ export class ManagerEffectService {
     this.managerRepo.getActionListByUserApp().subscribe(
       (actionList) => {
         this.utils.changeIsLoading(false);
+        console.log(actionList);
         this.managerStore.actionList.set(actionList);
       },
       () => {
@@ -76,5 +80,32 @@ export class ManagerEffectService {
         type
       }
     });
+  }
+
+  openPdfDisplayModal(idPdf: number): void {
+    this.utils.changeIsLoading(true);
+    this.managerRepo.getPdfById(idPdf).subscribe(
+      (pdfBlob) => {
+        this.utils.changeIsLoading(false);
+        console.log('pdfBlob');
+        console.log(pdfBlob);
+        const objectUrl = URL.createObjectURL(pdfBlob);
+        console.log('Generated Blob URL:', objectUrl); // Debug
+        this.dialog.open(PdfDisplayModal, {
+          width: '90%',
+          maxWidth: '1200px',
+          data: {
+            pdfData: this.sanitizer.bypassSecurityTrustResourceUrl(objectUrl)
+          }
+        });
+
+        // const objectUrl = window.URL.createObjectURL(pdfBlob);
+        // window.open(objectUrl);
+      },
+      () => {
+        console.log('error');
+        this.utils.changeIsLoading(false);
+      }
+    );
   }
 }

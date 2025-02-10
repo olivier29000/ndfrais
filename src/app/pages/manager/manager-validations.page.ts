@@ -21,6 +21,7 @@ import { Action } from 'src/app/models/action.model';
     <dumb-action-list
       [actionList]="actionList()"
       (validAction)="openActionListValidRefuseModal($event, 'valid')"
+      (openPdfById)="openPdfById($event)"
       (refuseAction)="openActionListValidRefuseModal($event, 'refuse')"
       class="sm:col-span-2"></dumb-action-list>
   </div>`,
@@ -37,6 +38,10 @@ export class ManagerValidationListPage {
     type: 'valid' | 'refuse'
   ): void {
     this.managerServer.openActionListValidRefuseModal(action, type);
+  }
+
+  openPdfById(idPdf: number): void {
+    this.managerServer.openPdfDisplayModal(idPdf);
   }
 
   constructor(private managerServer: ManagerServerService) {}
