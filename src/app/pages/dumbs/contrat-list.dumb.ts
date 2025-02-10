@@ -153,7 +153,24 @@ import { RouterLink } from '@angular/router';
                   *matCellDef="let row"
                   [ngClass]="column.cssClasses"
                   mat-cell>
-                  {{ row['nbActions'] }}
+                  @if (row['nbActions'] > 0) {
+                    <button
+                      class="m-2 bg-green-600 text-white shadow-xl hover:shadow-lg h-screen flex items-center justify-center"
+                      color="primary"
+                      mat-icon-button
+                      type="button"
+                      style="height: 30px; width: 30px;">
+                      <span class="align-middle" style="font-size : 12px;">{{
+                        row['nbActions']
+                      }}</span>
+                    </button>
+                    <!-- <a class="vex-sidenav-item" matRipple>
+                      <span
+                        class="vex-sidenav-item__badge bg-green-600 text-white"
+                        >{{ row['nbActions'] }}</span
+                      >
+                    </a> -->
+                  }
                 </td>
               </ng-container>
               <ng-container

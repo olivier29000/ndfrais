@@ -87,10 +87,7 @@ export class ManagerEffectService {
     this.managerRepo.getPdfById(idPdf).subscribe(
       (pdfBlob) => {
         this.utils.changeIsLoading(false);
-        console.log('pdfBlob');
-        console.log(pdfBlob);
         const objectUrl = URL.createObjectURL(pdfBlob);
-        console.log('Generated Blob URL:', objectUrl); // Debug
         this.dialog.open(PdfDisplayModal, {
           width: '90%',
           maxWidth: '1200px',
@@ -103,7 +100,6 @@ export class ManagerEffectService {
         // window.open(objectUrl);
       },
       () => {
-        console.log('error');
         this.utils.changeIsLoading(false);
       }
     );

@@ -14,32 +14,39 @@ import {
   format,
   isBefore,
   isSameDay,
+  parse,
   startOfDay
 } from 'date-fns';
 import { DayApp, WORK_STATE } from 'src/app/models/day-app.model';
 import { DaySquareDumb } from './day-square.dumb';
+import { fr } from 'date-fns/esm/locale';
 @Component({
   selector: 'dumb-day-list',
-  template: `@for (item of dayAppMap | keyvalue; track $index) {
-    <div class="me-3 flex flex-wrap my-3 ">
-      <div class="border py-1 px-2">
-        <h2>{{ item.key }}</h2>
-      </div>
 
-      @for (day of item.value; track day) {
-        <dumb-day-state
-          [isLastSelected]="
-            selectedDayList().length > 0 &&
-            day.id === selectedDayList()[selectedDayList().length - 1].id
-          "
-          [isSelected]="isSelected(day)"
-          [day]="day"
-          (clickLast)="clickLast($event)"
-          (clickDay)="selectDayApp(day)"
-          (validPeriod)="validPeriodOutput()"
-          (mouseenter)="selectableDayApp(day)"
-          (mouseleave)="unselectableDayApp()"></dumb-day-state>
-      }
+  template: ` @for (item of dayAppByMonth; track $index) {
+    <div
+      class="my-1 container flex flex-col sm:flex-row items-stretch sm:items-start gap-6">
+      <div class="card p-6 flex-auto">
+        <div class="headline py-1 px-2 flex justify-center items-center">
+          <h2>{{ item.month }}</h2>
+        </div>
+        <div class="me-3 flex flex-wrap my-3 ">
+          @for (day of item.dayAppList; track day) {
+            <dumb-day-state
+              [isLastSelected]="
+                selectedDayList().length > 0 &&
+                day.id === selectedDayList()[selectedDayList().length - 1].id
+              "
+              [isSelected]="isSelected(day)"
+              [day]="day"
+              (clickLast)="clickLast($event)"
+              (clickDay)="selectDayApp(day)"
+              (validPeriod)="validPeriodOutput()"
+              (mouseenter)="selectableDayApp(day)"
+              (mouseleave)="unselectableDayApp()"></dumb-day-state>
+          }
+        </div>
+      </div>
     </div>
   }`,
   styles: [``],
@@ -52,9 +59,10 @@ export class DayListDumb {
       allowSignalWrites: true
     });
   }
-  dayAppMap!: {
-    [month: string]: DayApp[];
-  };
+  dayAppByMonth!: {
+    month: string;
+    dayAppList: DayApp[];
+  }[];
 
   selectedDayList: WritableSignal<DayApp[]> = signal([]);
   selectableDayList: DayApp[] = [];
@@ -64,17 +72,28 @@ export class DayListDumb {
 
   @Input()
   set dayAppList(value: DayApp[]) {
-    this.dayAppMap = value.reduce(
-      (acc, d) => {
-        if (acc[format(d.date, 'yyyy-MM')]) {
-          acc[format(d.date, 'yyyy-MM')].push(d);
-        } else {
-          acc[format(d.date, 'yyyy-MM')] = [d];
-        }
-        return acc;
-      },
-      {} as { [month: string]: DayApp[] }
-    );
+    this.dayAppByMonth = Object.entries(
+      value.reduce(
+        (acc, d) => {
+          if (acc[format(d.date, 'MMMM yyyy', { locale: fr })]) {
+            acc[format(d.date, 'MMMM yyyy', { locale: fr })].push(d);
+          } else {
+            acc[format(d.date, 'MMMM yyyy', { locale: fr })] = [d];
+          }
+          return acc;
+        },
+        {} as { [month: string]: DayApp[] }
+      )
+    )
+      .map(([key, value]) => ({
+        month: key,
+        dayAppList: value
+      }))
+      .sort(
+        (a, b) =>
+          parse(a.month, 'MMMM yyyy', new Date(), { locale: fr }).getTime() -
+          parse(b.month, 'MMMM yyyy', new Date(), { locale: fr }).getTime()
+      );
   }
 
   validPeriodOutput(): void {
@@ -106,7 +125,8 @@ export class DayListDumb {
           end: day.date
         });
         this.selectableDayList = [this.selectedDayList()[0]].concat(
-          Object.values(this.dayAppMap)
+          this.dayAppByMonth
+            .map((dbm) => dbm.dayAppList)
             .flat()
             .filter((d) => d.workState === WORK_STATE.TRAVAIL && !d.actionDay)
             .filter((d) => days.some((da) => isSameDay(da, d.date)))
@@ -136,7 +156,8 @@ export class DayListDumb {
         });
         this.selectedDayList.set(
           [this.selectedDayList()[0]].concat(
-            Object.values(this.dayAppMap)
+            this.dayAppByMonth
+              .map((dbm) => dbm.dayAppList)
               .flat()
               .filter((d) => d.workState === WORK_STATE.TRAVAIL && !d.actionDay)
               .filter((d) => days.some((da) => isSameDay(da, d.date)))

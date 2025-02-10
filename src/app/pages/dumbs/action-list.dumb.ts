@@ -31,10 +31,7 @@ interface ActionDisplay {
   template: `
     <div class="card overflow-hidden w-full flex flex-col">
       <div class="border-b py-2 px-6 flex items-center">
-        <h2 class="m-0 title flex-auto">Recent Sales</h2>
-        <button mat-icon-button type="button">
-          <mat-icon class="text-secondary" svgIcon="mat:more_horiz"></mat-icon>
-        </button>
+        <h2 class="m-0 title flex-auto">{{ title }}</h2>
       </div>
       <div class="overflow-auto">
         <table [dataSource]="dataSource" class="w-full" mat-table matSort>
@@ -44,10 +41,14 @@ interface ActionDisplay {
               *ngIf="column.type === 'text'"
               [matColumnDef]="column.property">
               <th *matHeaderCellDef mat-header-cell mat-sort-header>
-                {{ column.label }}
+                <span>
+                  {{ column.label }}
+                </span>
               </th>
               <td *matCellDef="let row" [ngClass]="column.cssClasses" mat-cell>
-                {{ row[column.property] }}
+                <span class="flex justify-center items-center">
+                  {{ row[column.property] }}
+                </span>
               </td>
             </ng-container>
 
@@ -109,6 +110,7 @@ interface ActionDisplay {
 export class ActionListDumb implements OnInit, OnChanges, AfterViewInit {
   @Input({ required: true }) actionList!: Action[];
   @Input() pageSize = 6;
+  @Input() title = 'Validations';
 
   @Output() clickAction = new EventEmitter<Action>();
   @Output() validAction = new EventEmitter<Action>();
@@ -153,6 +155,11 @@ export class ActionListDumb implements OnInit, OnChanges, AfterViewInit {
     {
       label: 'au',
       property: 'to',
+      type: 'text'
+    },
+    {
+      label: 'Nb jours concernés',
+      property: 'nbJours',
       type: 'text'
     },
     {
@@ -209,7 +216,9 @@ export class ActionListDumb implements OnInit, OnChanges, AfterViewInit {
         to: currentAction.dayAppList[currentAction.dayAppList.length - 1].date,
         ancienStatut: currentAction.dayAppList[0].workState,
         nouveauStatut: currentAction.workState,
-        idPdf: currentAction.idPdf
+        notes: currentAction.notes,
+        idPdf: currentAction.idPdf,
+        nbJours: currentAction.dayAppList.length
       }));
     }
   }
