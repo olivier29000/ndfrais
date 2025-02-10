@@ -37,7 +37,11 @@ export class CustomDateFormats {
       <div class="day-state" [ngClass]="day.weekState"></div>
       <div
         class="work-state"
-        [ngClass]="isSelected ? 'bg-grey' : day.workState"
+        [ngClass]="
+          isSelected
+            ? 'half-bg-' + selectedWorkstate + ' ' + day.workState
+            : day.workState
+        "
         (click)="clickDayOutput(day)"></div>
       <div class="day-text text-center" (click)="clickDayOutput(day)">
         <h2 class="">{{ day.date.getDate() }}</h2>
@@ -46,7 +50,8 @@ export class CustomDateFormats {
       @if (isLastSelected) {
         <button
           @scaleInOut
-          class="absolute -top-3 bg-foreground shadow-xl hover:shadow-lg bg-grey"
+          class="absolute -top-3 bg-foreground shadow-xl hover:shadow-lg"
+          [ngClass]="selectedWorkstate"
           color="primary"
           mat-icon-button
           type="button"
@@ -55,7 +60,8 @@ export class CustomDateFormats {
         </button>
         <button
           @scaleInOut
-          class="absolute -top-3 -right-3 bg-foreground shadow-xl hover:shadow-lg bg-grey"
+          class="absolute -top-3 -right-3 bg-foreground shadow-xl hover:shadow-lg"
+          [ngClass]="selectedWorkstate"
           color="primary"
           mat-icon-button
           type="button"
@@ -82,8 +88,29 @@ export class CustomDateFormats {
   animations: [scaleInOutAnimation],
   styles: [
     `
+      .half-bg-TRAVAIL {
+        background: linear-gradient(to bottom, #a1fb8e 50%, transparent 50%);
+      }
+      .half-bg-REPOS {
+        background: linear-gradient(to bottom, white 50%, transparent 50%);
+      }
+      .half-bg-CONGE {
+        background: linear-gradient(to bottom, #067ef5 50%, transparent 50%);
+      }
+      .half-bg-RTT {
+        background: linear-gradient(to bottom, #051ef5 50%, transparent 50%);
+      }
+      .half-bg-ARRET_MALADIE {
+        background: linear-gradient(to bottom, red 50%, transparent 50%);
+      }
+      .half-bg-CONGE_SANS_SOLDE {
+        background: linear-gradient(to bottom, purple 50%, transparent 50%);
+      }
+      .half-bg-RECUP {
+        background: linear-gradient(to bottom, orange 50%, transparent 50%);
+      }
       .bg-grey {
-        background-color: grey;
+        background: grey;
       }
       .day-square {
         position: relative; /* Nécessaire pour que les enfants en absolute soient positionnés par rapport à ce div */
@@ -144,6 +171,7 @@ export class CustomDateFormats {
 })
 export class DaySquareDumb {
   @Input() day!: DayApp;
+  @Input() selectedWorkstate!: string;
   @Input() isSelected: boolean = false;
   @Input() isLastSelected: boolean = false;
   @Output() clickLast = new EventEmitter<DayApp>();

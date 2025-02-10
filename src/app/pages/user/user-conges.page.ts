@@ -32,12 +32,14 @@ import { ValidCancelActionModal } from './modals/valid-cancel-action.modal';
           [ngStyle]="{
             border: selectedWorkState?.label === item.label ? 'solid' : ''
           }"
+          [iconClass]="item.label"
           [workState]="item"
           (click)="selectWorkState(item)"></dumb-work-state>
       }
     </div>
     <div class="container">
       <dumb-day-list
+        [selectedWorkstate]="selectedWorkState.label"
         (validPeriod)="askAction()"
         (selectDayList)="selectDayList($event)"
         [dayAppList]="userDayAppList()"></dumb-day-list>
@@ -53,27 +55,27 @@ export class UserCongesPage implements OnInit {
   workStateList: workStateItem[] = [
     {
       label: WORK_STATE.CONGE,
-      icon: 'mat:group'
+      icon: 'mat:card_travel'
     },
     {
       label: WORK_STATE.RTT,
-      icon: 'mat:group'
+      icon: 'mat:card_travel'
     },
     {
       label: WORK_STATE.ARRET_MALADIE,
-      icon: 'mat:group'
+      icon: 'mat:card_travel'
     },
     {
       label: WORK_STATE.CONGE_SANS_SOLDE,
-      icon: 'mat:group'
+      icon: 'mat:card_travel'
     },
     {
       label: WORK_STATE.RECUP,
-      icon: 'mat:group'
+      icon: 'mat:card_travel'
     },
     {
       label: WORK_STATE.TELETRAVAIL,
-      icon: 'mat:group'
+      icon: 'mat:card_travel'
     }
   ];
   selectedWorkState: workStateItem = this.workStateList[0];

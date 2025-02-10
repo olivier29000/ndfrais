@@ -37,6 +37,7 @@ import { fr } from 'date-fns/esm/locale';
                 selectedDayList().length > 0 &&
                 day.id === selectedDayList()[selectedDayList().length - 1].id
               "
+              [selectedWorkstate]="selectedWorkstate"
               [isSelected]="isSelected(day)"
               [day]="day"
               (clickLast)="clickLast($event)"
@@ -66,6 +67,8 @@ export class DayListDumb {
 
   selectedDayList: WritableSignal<DayApp[]> = signal([]);
   selectableDayList: DayApp[] = [];
+
+  @Input() selectedWorkstate!: string;
 
   @Output() selectDayList = new EventEmitter<DayApp[]>();
   @Output() validPeriod = new EventEmitter<void>();
