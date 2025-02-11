@@ -73,6 +73,7 @@ export class AdminRecapPage {
     }
   }
   openActionDayListRefuseModal(dayApp: DayApp): void {
+    console.log('openActionDayListRefuseModal');
     if (dayApp.actionDay) {
       this.adminServer.openActionDayListRefuseModal(dayApp.actionDay.idAction);
     }

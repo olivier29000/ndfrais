@@ -36,6 +36,18 @@ export class AdminEffectService {
       }
     });
   }
+  getActionList(): void {
+    this.utils.changeIsLoading(true);
+    this.adminRepo.getActionList().subscribe(
+      (actionList) => {
+        this.utils.changeIsLoading(false);
+        this.adminStore.actionList.set(actionList);
+      },
+      () => {
+        this.utils.changeIsLoading(false);
+      }
+    );
+  }
   getRecap(date: Date): void {
     this.utils.changeIsLoading(true);
     this.adminRepo

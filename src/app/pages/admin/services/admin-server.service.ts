@@ -12,7 +12,9 @@ export class AdminServerService {
   constructor(
     private adminStore: AdminStoreService,
     private adminEffect: AdminEffectService
-  ) {}
+  ) {
+    this.getActionList();
+  }
   currentDateRecap = this.adminStore.currentDateRecap;
   recapByContratDayAppList = this.adminStore.recapByContratDayAppList;
   actionList = this.adminStore.actionList;
@@ -25,9 +27,14 @@ export class AdminServerService {
   }
   openActionDayListRefuseModal(idAction: number): void {
     const action = this.actionList().find((a) => a.id === idAction);
+    console.log(action);
+    console.log(this.actionList());
     if (action) {
       this.adminEffect.openActionListValidRefuseModal(action, 'refuse');
     }
+  }
+  getActionList(): void {
+    this.adminEffect.getActionList();
   }
   previousMonth(): void {
     this.adminEffect.previousMonth();

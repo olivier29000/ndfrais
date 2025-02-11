@@ -24,6 +24,11 @@ const httpOptions = {
 })
 export class AdminRepoService {
   constructor(private http: HttpClient) {}
+  getActionList(): Observable<Action[]> {
+    return this.http
+      .get<Action[]>(`${URL_BACKEND}/day-app-action/get-all`, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
   getRecap(
     dateStr: string
   ): Observable<{ contrat: ContratUserApp; dayAppList: DayApp[] }[]> {
