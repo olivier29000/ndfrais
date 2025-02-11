@@ -25,8 +25,7 @@ import Swal from 'sweetalert2';
 import { ValidCancelActionModal } from './modals/valid-cancel-action.modal';
 @Component({
   template: `
-    <div
-      class="container p-6 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-6 gap-4">
+    <div class="px-6 p-6 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-6 gap-4">
       @for (item of workStateList; track $index) {
         <dumb-work-state
           [ngStyle]="{
@@ -37,7 +36,7 @@ import { ValidCancelActionModal } from './modals/valid-cancel-action.modal';
           (click)="selectWorkState(item)"></dumb-work-state>
       }
     </div>
-    <div class="container">
+    <div class="px-6">
       <dumb-day-list
         [selectedWorkstate]="selectedWorkState.label"
         (validPeriod)="askAction()"
@@ -81,7 +80,12 @@ export class UserCongesPage implements OnInit {
   selectedWorkState: workStateItem = this.workStateList[0];
   selectWorkState(workState: workStateItem): void {
     this.selectedWorkState = workState;
-    this.currentAction.set(undefined);
+    const currentAction = this.currentAction();
+    if (currentAction) {
+      this.currentAction.set({ ...currentAction, workState: workState.label });
+    } else {
+      this.currentAction.set(undefined);
+    }
   }
   userDayAppList = this.userServer.userDayAppList;
   currentAction: WritableSignal<Action | undefined> = signal(undefined);

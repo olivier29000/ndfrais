@@ -131,6 +131,13 @@ const navigationItemManager: NavigationSubheading = {
       route: '/manager/validations',
       icon: 'mat:thumbs_up_down',
       routerLinkActiveOptions: { exact: true }
+    },
+    {
+      type: 'link',
+      label: 'Recap',
+      route: '/manager/recap',
+      icon: 'mat:thumbs_up_down',
+      routerLinkActiveOptions: { exact: true }
     }
   ]
 };

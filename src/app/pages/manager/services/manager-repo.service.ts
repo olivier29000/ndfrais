@@ -8,6 +8,7 @@ import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from 'src/environment/environment';
 import { ContratUserApp } from 'src/app/models/contrat-employe.model';
 import { Action } from 'src/app/models/action.model';
+import { DayApp } from 'src/app/models/day-app.model';
 
 const URL_BACKEND = environment.urlBackEnd + '/manager';
 const httpOptions = {
@@ -58,6 +59,15 @@ export class ManagerRepoService {
       .get<
         Action[]
       >(`${URL_BACKEND}/day-app-action/get-all-by-user-app`, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+  getRecap(
+    dateStr: string
+  ): Observable<{ contrat: ContratUserApp; dayAppList: DayApp[] }[]> {
+    return this.http
+      .get<
+        { contrat: ContratUserApp; dayAppList: DayApp[] }[]
+      >(`${URL_BACKEND}/day-app/get-recap/${dateStr}`, httpOptions)
       .pipe(catchError(this.handleError));
   }
   private handleError(error: HttpErrorResponse) {

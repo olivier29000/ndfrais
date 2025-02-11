@@ -78,8 +78,10 @@
         class="vex-sidenav-user__image flex-none"
         src="../../../../assets/img/avatars/1.jpg" />
       <div class="vex-sidenav-user__content flex-auto">
-        <div class="vex-sidenav-user__title">David Smith</div>
-        <div class="vex-sidenav-user__subtitle">Product Manager</div>
+        <div class="vex-sidenav-user__title">{{ userConnected()?.email }}</div>
+        <div class="vex-sidenav-user__subtitle">
+          {{ userConnected()?.entreprise }}
+        </div>
       </div>
       <mat-icon
         class="vex-sidenav-user__dropdown-icon flex-none"

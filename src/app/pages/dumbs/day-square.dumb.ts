@@ -11,7 +11,7 @@ import {
   MAT_DATE_LOCALE,
   MatDateFormats
 } from '@angular/material/core';
-import { DayApp, WORK_STATE } from 'src/app/models/day-app.model';
+import { DayApp, WEEK_STATE, WORK_STATE } from 'src/app/models/day-app.model';
 import localeFr from '@angular/common/locales/fr';
 import { MatIconModule } from '@angular/material/icon';
 import { scaleInOutAnimation } from '@vex/animations/scale-in-out.animation';
@@ -33,12 +33,12 @@ export class CustomDateFormats {
 @Component({
   selector: 'dumb-day-state',
   template: `
-    <div class="card day-square  mt-1">
+    <div class="card day-square  mt-3">
       <div class="day-state" [ngClass]="day.weekState"></div>
       <div
         class="work-state"
         [ngClass]="
-          isSelected
+          isSelected && day.workState === WORK_STATE.TRAVAIL
             ? 'half-bg-' + selectedWorkstate + ' ' + day.workState
             : day.workState
         "
@@ -68,7 +68,7 @@ export class CustomDateFormats {
           (click)="clickLastOutput(day)">
           <mat-icon svgIcon="mat:highlight_off"></mat-icon>
         </button>
-      } @else if (day.actionDay) {
+      } @else if (day.actionDay && !isSelected) {
         <button
           @scaleInOut
           class="absolute -top-3 -right-1 bg-foreground shadow-xl hover:shadow-lg"
@@ -106,6 +106,9 @@ export class CustomDateFormats {
       .half-bg-CONGE_SANS_SOLDE {
         background: linear-gradient(to bottom, purple 50%, transparent 50%);
       }
+      .half-bg-TELETRAVAIL {
+        background: linear-gradient(to bottom, pink 50%, transparent 50%);
+      }
       .half-bg-RECUP {
         background: linear-gradient(to bottom, orange 50%, transparent 50%);
       }
@@ -114,8 +117,8 @@ export class CustomDateFormats {
       }
       .day-square {
         position: relative; /* Nécessaire pour que les enfants en absolute soient positionnés par rapport à ce div */
-        width: 50px;
-        height: 50px;
+        width: 40px;
+        height: 40px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -123,7 +126,7 @@ export class CustomDateFormats {
       .day-state {
         position: absolute;
         top: 0;
-        width: 50px;
+        width: 40px;
         height: 10px;
         background-color: grey;
         border: thin solid;
@@ -140,7 +143,7 @@ export class CustomDateFormats {
       .work-state {
         position: absolute;
         top: 10px;
-        width: 50px;
+        width: 40px;
         height: 40px;
         border: thin solid;
       }
@@ -151,17 +154,18 @@ export class CustomDateFormats {
         color: black; /* Optionnel, ajustez selon votre design */
 
         margin: 0; /* Supprime les marges par défaut */
+        margin-top: 5px; /* Supprime les marges par défaut */
       }
       button {
         z-index: 2;
         border-radius: 50%;
       }
       p {
-        font-size: 0.8rem;
+        font-size: 0.7rem;
         line-height: 5px;
       }
       h2 {
-        font-size: 1.2rem; /* Ajuste la taille du texte */
+        font-size: 1.1rem; /* Ajuste la taille du texte */
         font-weight: bold;
       }
     `
@@ -170,6 +174,8 @@ export class CustomDateFormats {
   imports: [CommonModule, MatIconModule]
 })
 export class DaySquareDumb {
+  WEEK_STATE = WEEK_STATE;
+  WORK_STATE = WORK_STATE;
   @Input() day!: DayApp;
   @Input() selectedWorkstate!: string;
   @Input() isSelected: boolean = false;

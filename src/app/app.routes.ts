@@ -74,6 +74,13 @@ export const appRoutes: VexRoutes = [
               import('./pages/manager/manager-validations.page').then(
                 (m) => m.ManagerValidationListPage
               )
+          },
+          {
+            path: 'recap',
+            loadComponent: () =>
+              import('./pages/manager/manager-recap.page').then(
+                (m) => m.ManagerRecapPage
+              )
           }
         ]
       },

@@ -114,9 +114,11 @@ export class ActionListValidRefuseModal implements OnInit {
   ngOnInit() {}
   validAction(): void {
     this.managerServer.validAction(this.data.action);
+    this.dialogRef.close();
   }
   refuseAction(): void {
     this.managerServer.refuseAction(this.data.action);
+    this.dialogRef.close();
   }
   close() {
     this.dialogRef.close();
