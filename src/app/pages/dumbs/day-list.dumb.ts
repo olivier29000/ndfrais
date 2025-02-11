@@ -25,7 +25,7 @@ import { fr } from 'date-fns/esm/locale';
 
   template: ` @for (item of dayAppByMonth; track $index) {
     <div
-      class="my-1 container flex flex-col sm:flex-row items-stretch sm:items-start gap-6">
+      class="my-1 px-6 flex flex-col sm:flex-row items-stretch sm:items-start gap-6">
       <div class="card p-6 flex-auto">
         <div class="headline py-1 px-2 flex justify-center items-center">
           <h2>{{ item.month }}</h2>

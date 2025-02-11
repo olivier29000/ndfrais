@@ -44,7 +44,7 @@ export class UtilsService {
     this.navigationService.loadNavigation(navigationItemList);
   }
 
-  pushChildrenAdmin(userAppList: UserApp[]): void {
+  pushChildrenAdmin(userAppList: UserApp[], nbActionList: number): void {
     this.store.navigationItemList.update((navigationItemList) => {
       return navigationItemList.map((nav) => {
         if (nav.label === navigationItemAdmin.label) {
@@ -61,7 +61,19 @@ export class UtilsService {
                     routerLinkActiveOptions: { exact: false }
                   }))
                 };
-              } else {
+              } else if (c.label === 'Validations') {
+                const nbActionListStr =
+                  nbActionList > 0 ? nbActionList + '' : '';
+                return {
+                  ...c,
+                  badge: {
+                    value: nbActionListStr,
+                    bgClass: 'bg-cyan-600',
+                    textClass: 'text-white'
+                  }
+                };
+              }
+              {
                 return c;
               }
             })
@@ -139,6 +151,18 @@ export const navigationItemAdmin: NavigationSubheading = {
       label: 'Recap',
       route: '/admin/recap',
       icon: 'mat:bubble_chart',
+      routerLinkActiveOptions: { exact: true }
+    },
+    {
+      type: 'link',
+      label: 'Validations',
+      route: '/admin/validations',
+      icon: 'mat:thumbs_up_down',
+      badge: {
+        value: '',
+        bgClass: 'bg-cyan-600',
+        textClass: 'text-white'
+      },
       routerLinkActiveOptions: { exact: true }
     }
   ]

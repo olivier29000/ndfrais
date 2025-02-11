@@ -14,9 +14,10 @@ export class AdminStoreService {
     effect(
       () => {
         const userConnected = this.utils.userConnected();
+        const nbActionList = this.actionList().length;
         if (userConnected?.roleList.includes(Role.ROLE_ADMIN)) {
           const userAppList = this.userAppList();
-          this.utils.pushChildrenAdmin(userAppList);
+          this.utils.pushChildrenAdmin(userAppList, nbActionList);
         }
       },
       { allowSignalWrites: true }

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { effect, Injectable } from '@angular/core';
 import { Action } from 'src/app/models/action.model';
 import { AdminEffectService } from './admin-effect.service';
 import { UserApp } from 'src/app/models/user.model';
@@ -33,8 +33,17 @@ export class AdminServerService {
       this.adminEffect.openActionListValidRefuseModal(action, 'refuse');
     }
   }
+  openActionListValidRefuseModal(
+    action: Action,
+    type: 'valid' | 'refuse'
+  ): void {
+    this.adminEffect.openActionListValidRefuseModal(action, type);
+  }
   getActionList(): void {
     this.adminEffect.getActionList();
+  }
+  openPdfDisplayModal(idPdf: number): void {
+    this.adminEffect.openPdfDisplayModal(idPdf);
   }
   previousMonth(): void {
     this.adminEffect.previousMonth();

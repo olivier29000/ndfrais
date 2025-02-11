@@ -43,6 +43,13 @@ export const appRoutes: VexRoutes = [
               import('./pages/admin/admin-recap.page').then(
                 (m) => m.AdminRecapPage
               )
+          },
+          {
+            path: 'validations',
+            loadComponent: () =>
+              import('./pages/admin/admin-validations.page').then(
+                (m) => m.AdminValidationListPage
+              )
           }
         ]
       },

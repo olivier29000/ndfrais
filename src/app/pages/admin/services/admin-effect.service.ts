@@ -10,6 +10,8 @@ import { CreateUpdateUserModal } from '../modals/create-update-user.modal';
 import { CreateUpdateContratModal } from '../modals/create-update-contrat.modal';
 import { addMonths, subMonths } from 'date-fns';
 import { AdminActionListValidRefuseModal } from '../modals/action-list-valid-refuse.modal';
+import { PdfDisplayModal } from '../../modals/pdf-display.modal';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +21,8 @@ export class AdminEffectService {
     private dialog: MatDialog,
     private adminRepo: AdminRepoService,
     private adminStore: AdminStoreService,
-    private utils: UtilsService
+    private utils: UtilsService,
+    private sanitizer: DomSanitizer
   ) {
     effect(
       () => {
@@ -35,6 +38,28 @@ export class AdminEffectService {
         type
       }
     });
+  }
+  openPdfDisplayModal(idPdf: number): void {
+    this.utils.changeIsLoading(true);
+    this.adminRepo.getPdfById(idPdf).subscribe(
+      (pdfBlob) => {
+        this.utils.changeIsLoading(false);
+        const objectUrl = URL.createObjectURL(pdfBlob);
+        this.dialog.open(PdfDisplayModal, {
+          width: '90%',
+          maxWidth: '1200px',
+          data: {
+            pdfData: this.sanitizer.bypassSecurityTrustResourceUrl(objectUrl)
+          }
+        });
+
+        // const objectUrl = window.URL.createObjectURL(pdfBlob);
+        // window.open(objectUrl);
+      },
+      () => {
+        this.utils.changeIsLoading(false);
+      }
+    );
   }
   getActionList(): void {
     this.utils.changeIsLoading(true);

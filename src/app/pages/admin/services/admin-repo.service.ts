@@ -29,6 +29,14 @@ export class AdminRepoService {
       .get<Action[]>(`${URL_BACKEND}/day-app-action/get-all`, httpOptions)
       .pipe(catchError(this.handleError));
   }
+  getPdfById(idPdf: number): Observable<Blob> {
+    return this.http
+      .get<Blob>(`${URL_BACKEND}/day-app-action/get-pdf-by-id/${idPdf}`, {
+        withCredentials: true,
+        responseType: 'blob' as 'json'
+      })
+      .pipe(catchError(this.handleError));
+  }
   getRecap(
     dateStr: string
   ): Observable<{ contrat: ContratUserApp; dayAppList: DayApp[] }[]> {

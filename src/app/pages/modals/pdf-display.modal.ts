@@ -2,8 +2,8 @@ import { Component, computed, Inject, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { MatListModule } from '@angular/material/list';
-import { ManagerServerService } from '../services/manager-server.service';
-import { ActionListDumb } from '../../dumbs/action-list.dumb';
+import { ManagerServerService } from '../manager/services/manager-server.service';
+import { ActionListDumb } from '../dumbs/action-list.dumb';
 import { TableColumn } from '@vex/interfaces/table-column.interface';
 import {
   MAT_DIALOG_DATA,
@@ -20,7 +20,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { SafeResourceUrl } from '@angular/platform-browser';
-import { PdfDisplayDumb } from '../../dumbs/pdf-display.dumb';
+import { PdfDisplayDumb } from '../dumbs/pdf-display.dumb';
 
 @Component({
   template: `<form>

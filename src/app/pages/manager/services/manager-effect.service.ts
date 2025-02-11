@@ -6,7 +6,7 @@ import { Action } from 'src/app/models/action.model';
 import { ActionListValidRefuseModal } from '../modals/action-list-valid-refuse.modal';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatDialog } from '@angular/material/dialog';
-import { PdfDisplayModal } from '../modals/pdf-display.modal';
+import { PdfDisplayModal } from '../../modals/pdf-display.modal';
 import { DomSanitizer } from '@angular/platform-browser';
 import { addMonths, subMonths } from 'date-fns';
 
