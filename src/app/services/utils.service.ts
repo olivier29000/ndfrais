@@ -51,7 +51,7 @@ export class UtilsService {
           return {
             ...nav,
             children: navigationItemAdmin.children.map((c) => {
-              if ((c.type = 'dropdown')) {
+              if (c.type === 'dropdown') {
                 return {
                   ...c,
                   children: userAppList.map((userApp) => ({
@@ -136,8 +136,8 @@ export const navigationItemAdmin: NavigationSubheading = {
     },
     {
       type: 'link',
-      label: 'Organigramme',
-      route: '/admin/organigramme',
+      label: 'Recap',
+      route: '/admin/recap',
       icon: 'mat:bubble_chart',
       routerLinkActiveOptions: { exact: true }
     }

@@ -105,7 +105,6 @@ export class ManagerEffectService {
       )
       .subscribe(
         (recapByContratDayAppList) => {
-          console.log(recapByContratDayAppList);
           this.utils.changeIsLoading(false);
           this.managerStore.recapByContratDayAppList.set(
             recapByContratDayAppList.map((recapByContratDayApp) => ({

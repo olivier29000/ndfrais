@@ -112,7 +112,6 @@ export class ActionListDumb implements OnInit, OnChanges, AfterViewInit {
   @Input() pageSize = 6;
   @Input() title = 'Validations';
 
-  @Output() clickAction = new EventEmitter<Action>();
   @Output() validAction = new EventEmitter<Action>();
   @Output() refuseAction = new EventEmitter<Action>();
   @Output() openPdfById = new EventEmitter<number>();
@@ -187,15 +186,6 @@ export class ActionListDumb implements OnInit, OnChanges, AfterViewInit {
       cssClasses: ['font-medium']
     }
   ];
-
-  clickActionOutput(row: ActionDisplay): void {
-    // Traitement de l'action sur la ligne
-    console.log("Bouton d'action cliqué sur la ligne :", row);
-    const action = this.actionList.find((a) => a.id === row.id);
-    if (action) {
-      this.clickAction.emit(action);
-    }
-  }
 
   ngOnInit() {
     this.visibleColumns = this.columns.map((column) => column.property);

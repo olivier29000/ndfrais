@@ -36,6 +36,13 @@ export const appRoutes: VexRoutes = [
               import('./pages/admin/admin-contrat-detail.page').then(
                 (m) => m.AdminContratUserAppPage
               )
+          },
+          {
+            path: 'recap',
+            loadComponent: () =>
+              import('./pages/admin/admin-recap.page').then(
+                (m) => m.AdminRecapPage
+              )
           }
         ]
       },

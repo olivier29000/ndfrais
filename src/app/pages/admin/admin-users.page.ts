@@ -25,7 +25,5 @@ export class AdminUsersPage implements OnInit {
     this.adminServer.updateUserModal(userApp);
   }
   constructor(private adminServer: AdminServerService) {}
-  ngOnInit(): void {
-    this.adminServer.getUserAppList();
-  }
+  ngOnInit(): void {}
 }

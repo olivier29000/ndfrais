@@ -144,12 +144,10 @@ export class EffectService {
 
   canActivate(): Observable<void | UrlTree> {
     this.store.isLoading.set(true);
-    console.log(this.store.userConnected());
     return this.repo.verifAuthenticate().pipe(
       map((userConnected) => {
         this.store.isLoading.set(false);
         this.store.userConnected.set(userConnected);
-        console.log(this.store.userConnected());
       }),
       catchError(() => {
         this.store.isLoading.set(false);

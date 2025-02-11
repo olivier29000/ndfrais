@@ -192,7 +192,6 @@ export class DaySquareDumb {
     this.clickLast.emit(day);
   }
   validPeriodOutput(): void {
-    console.log('validPeriodOutput DaySquareDumb');
     this.validPeriod.emit();
   }
   clickDayOutput(day: DayApp): void {

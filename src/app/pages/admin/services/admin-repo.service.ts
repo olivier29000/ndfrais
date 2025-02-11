@@ -8,6 +8,8 @@ import { environment } from 'src/environment/environment';
 import { ContratUserApp } from 'src/app/models/contrat-employe.model';
 import { catchError, Observable, throwError } from 'rxjs';
 import { UserApp } from 'src/app/models/user.model';
+import { Action } from 'src/app/models/action.model';
+import { DayApp } from 'src/app/models/day-app.model';
 
 const URL_BACKEND = environment.urlBackEnd + '/admin';
 const httpOptions = {
@@ -22,7 +24,30 @@ const httpOptions = {
 })
 export class AdminRepoService {
   constructor(private http: HttpClient) {}
+  getRecap(
+    dateStr: string
+  ): Observable<{ contrat: ContratUserApp; dayAppList: DayApp[] }[]> {
+    return this.http
+      .get<
+        { contrat: ContratUserApp; dayAppList: DayApp[] }[]
+      >(`${URL_BACKEND}/day-app/get-recap/${dateStr}`, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+  validAction(action: Action): Observable<Action[]> {
+    return this.http
+      .post<
+        Action[]
+      >(`${URL_BACKEND}/day-app-action/valid-action`, action, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
 
+  refuseAction(action: Action): Observable<Action[]> {
+    return this.http
+      .post<
+        Action[]
+      >(`${URL_BACKEND}/day-app-action/refuse-action`, action, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
   createContrat(contratEmploye: ContratUserApp): Observable<ContratUserApp[]> {
     return this.http
       .post<

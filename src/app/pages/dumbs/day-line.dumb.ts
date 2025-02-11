@@ -60,11 +60,9 @@ export class DayLineDumb {
         if (!dayApp.actionDay) {
           return acc;
         } else {
-          console.log(dayApp.actionDay);
           const data = acc.find(
             (a) => a.idAction === dayApp.actionDay?.idAction
           );
-          console.log(data);
           if (data) {
             data.idDayAppList.push(dayApp.id);
           } else {
@@ -78,7 +76,6 @@ export class DayLineDumb {
         idDayAppList: number[];
       })[]
     );
-    console.log(dayActionList);
     this._dayAppList = value.map((dayApp) => {
       const action = dayActionList.find(
         (a) => a.idAction === dayApp.actionDay?.idAction
@@ -94,7 +91,6 @@ export class DayLineDumb {
         return dayApp;
       }
     });
-    console.log(this._dayAppList);
   }
 
   get dayAppList(): (DayApp & {

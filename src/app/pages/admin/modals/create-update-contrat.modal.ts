@@ -308,7 +308,6 @@ export class CreateUpdateContratModal implements OnInit {
     } else {
       this.mode = 'create';
     }
-    console.log(this.currentContrat);
   }
 
   save() {

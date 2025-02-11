@@ -8,6 +8,7 @@ import { NavigationService } from '../core/navigation/navigation.service';
 import { ContratUserApp } from '../models/contrat-employe.model';
 import { Role } from '../models/user-connected.model';
 import { EffectService } from './effect.service';
+import { AdminServerService } from '../pages/admin/services/admin-server.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,17 +16,21 @@ import { EffectService } from './effect.service';
 export class ServerService {
   constructor(
     private store: StoreService,
-    private effectService: EffectService
+    private effectService: EffectService,
+    private adminServer: AdminServerService
   ) {
-    effect(() => {
-      const userConnected = this.userConnected();
-      if (userConnected?.roleList.includes(Role.ROLE_ADMIN)) {
-        // this.getUserAppList();
-      }
-      if (userConnected?.roleList.includes(Role.ROLE_USER)) {
-        this.getUserContratList();
-      }
-    });
+    effect(
+      () => {
+        const userConnected = this.userConnected();
+        if (userConnected?.roleList.includes(Role.ROLE_ADMIN)) {
+          this.adminServer.getUserAppList();
+        }
+        if (userConnected?.roleList.includes(Role.ROLE_USER)) {
+          this.getUserContratList();
+        }
+      },
+      { allowSignalWrites: true }
+    );
   }
   managerContratList = this.store.managerContratList;
   userConnected = this.store.userConnected;

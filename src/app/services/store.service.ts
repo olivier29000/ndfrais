@@ -10,52 +10,60 @@ import { NavigationService } from '../core/navigation/navigation.service';
 import { Role, UserConnected } from '../models/user-connected.model';
 import { ContratUserApp } from '../models/contrat-employe.model';
 import { navigationItemAdmin, UtilsService } from './utils.service';
+import { AdminServerService } from '../pages/admin/services/admin-server.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StoreService {
-  constructor(private readonly utils: UtilsService) {
-    effect(() => {
-      const userConnected = this.userConnected();
-      if (userConnected) {
-        const navigationItemList: NavigationItem[] = [];
-        if (userConnected.roleList.includes(Role.ROLE_USER)) {
-          const userAllContratList = this.userAllContratList();
-          console.log(userAllContratList);
-          for (let userAppContrat of userAllContratList) {
-            navigationItemList.push({
-              ...navigationItemUser,
+  constructor(private readonly navigationService: NavigationService) {
+    effect(
+      () => {
+        const userConnected = this.userConnected();
+        if (userConnected) {
+          const navigationItemList: NavigationItem[] = [];
+          if (userConnected.roleList.includes(Role.ROLE_USER)) {
+            const userAllContratList = this.userAllContratList();
+            for (let userAppContrat of userAllContratList) {
+              navigationItemList.push({
+                ...navigationItemUser,
 
-              label: userAppContrat.poste,
-              children: [
-                {
-                  type: 'link',
-                  label: 'Congés',
-                  route: '/user/conges/' + userAppContrat.id,
-                  icon: 'mat:card_travel',
-                  routerLinkActiveOptions: { exact: true }
-                }
-              ]
-            });
+                label: userAppContrat.poste,
+                children: [
+                  {
+                    type: 'link',
+                    label: 'Congés',
+                    route: '/user/conges/' + userAppContrat.id,
+                    icon: 'mat:card_travel',
+                    routerLinkActiveOptions: { exact: true }
+                  }
+                ]
+              });
+            }
+            if (userAllContratList.length === 0) {
+              navigationItemList.push({
+                type: 'subheading',
+                label: 'Aucun contrat',
+                children: []
+              });
+            }
           }
-          if (userAllContratList.length === 0) {
-            navigationItemList.push({
-              type: 'subheading',
-              label: 'Aucun contrat',
-              children: []
-            });
+          if (userConnected.roleList.includes(Role.ROLE_MANAGER)) {
+            navigationItemList.push(navigationItemManager);
           }
+          if (userConnected.roleList.includes(Role.ROLE_ADMIN)) {
+            navigationItemList.push(navigationItemAdmin);
+          }
+          navigationItemList.push(navigationItemCommun);
+          this.navigationItemList.set(navigationItemList);
         }
-        if (userConnected.roleList.includes(Role.ROLE_MANAGER)) {
-          navigationItemList.push(navigationItemManager);
-        }
-        if (userConnected.roleList.includes(Role.ROLE_ADMIN)) {
-          navigationItemList.push(navigationItemAdmin);
-        }
-        this.navigationItemList.set(navigationItemList);
-      }
-    });
+      },
+      { allowSignalWrites: true }
+    );
+
+    effect(() =>
+      this.navigationService.loadNavigation(this.navigationItemList())
+    );
   }
   navigationItemList: WritableSignal<NavigationItem[]> = signal([]);
   dayAppList: WritableSignal<DayApp[]> = signal([]);
@@ -72,7 +80,19 @@ export class StoreService {
     new Date(2025, 6, 4)
   ]);
 }
-
+export const navigationItemCommun: NavigationSubheading = {
+  type: 'subheading',
+  label: 'Commun',
+  children: [
+    {
+      type: 'link',
+      label: 'Organigramme',
+      route: '/admin/organigramme',
+      icon: 'mat:bubble_chart',
+      routerLinkActiveOptions: { exact: true }
+    }
+  ]
+};
 const navigationItemUser: NavigationSubheading = {
   type: 'subheading',
   label: 'Contrats',

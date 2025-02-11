@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { effect, Injectable } from '@angular/core';
 import { UtilsService } from 'src/app/services/utils.service';
 import { Action } from 'src/app/models/action.model';
 import { MatDialog } from '@angular/material/dialog';
@@ -8,6 +8,8 @@ import { ContratUserApp } from 'src/app/models/contrat-employe.model';
 import { UserApp } from 'src/app/models/user.model';
 import { CreateUpdateUserModal } from '../modals/create-update-user.modal';
 import { CreateUpdateContratModal } from '../modals/create-update-contrat.modal';
+import { addMonths, subMonths } from 'date-fns';
+import { AdminActionListValidRefuseModal } from '../modals/action-list-valid-refuse.modal';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +20,87 @@ export class AdminEffectService {
     private adminRepo: AdminRepoService,
     private adminStore: AdminStoreService,
     private utils: UtilsService
-  ) {}
+  ) {
+    effect(
+      () => {
+        this.getRecap(this.adminStore.currentDateRecap());
+      },
+      { allowSignalWrites: true }
+    );
+  }
+  openActionListValidRefuseModal(action: Action, type: 'valid' | 'refuse') {
+    this.dialog.open(AdminActionListValidRefuseModal, {
+      data: {
+        action,
+        type
+      }
+    });
+  }
+  getRecap(date: Date): void {
+    this.utils.changeIsLoading(true);
+    this.adminRepo
+      .getRecap(
+        (date.getMonth() < 9
+          ? '0' + (date.getMonth() + 1)
+          : date.getMonth() + 1) +
+          '-' +
+          date.getFullYear()
+      )
+      .subscribe(
+        (recapByContratDayAppList) => {
+          this.utils.changeIsLoading(false);
+          this.adminStore.recapByContratDayAppList.set(
+            recapByContratDayAppList.map((recapByContratDayApp) => ({
+              ...recapByContratDayApp,
+              dayAppList: recapByContratDayApp.dayAppList.map((d) => ({
+                ...d,
+                date: new Date(d.date)
+              }))
+            }))
+          );
+        },
+        () => {
+          this.utils.changeIsLoading(false);
+        }
+      );
+  }
+  previousMonth(): void {
+    this.adminStore.currentDateRecap.update((currentDateRecap) =>
+      subMonths(currentDateRecap, 1)
+    );
+  }
+  nextMonth(): void {
+    this.adminStore.currentDateRecap.update((currentDateRecap) =>
+      addMonths(currentDateRecap, 1)
+    );
+  }
+  validAction(action: Action): void {
+    this.utils.changeIsLoading(true);
+    this.adminRepo.validAction(action).subscribe(
+      (actionList) => {
+        this.utils.changeIsLoading(false);
+        this.adminStore.actionList.set(actionList);
+        this.getRecap(this.adminStore.currentDateRecap());
+      },
+      () => {
+        this.utils.changeIsLoading(false);
+      }
+    );
+  }
+
+  refuseAction(action: Action): void {
+    this.utils.changeIsLoading(true);
+    this.adminRepo.refuseAction(action).subscribe(
+      (actionList) => {
+        this.utils.changeIsLoading(false);
+        this.adminStore.actionList.set(actionList);
+        this.getRecap(this.adminStore.currentDateRecap());
+      },
+      () => {
+        this.utils.changeIsLoading(false);
+      }
+    );
+  }
 
   getContratListByUserId(idUserApp: string): void {
     this.utils.changeIsLoading(true);
