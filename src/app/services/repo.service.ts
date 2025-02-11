@@ -77,68 +77,6 @@ export class RepoService {
       .pipe(catchError(this.handleError));
   }
 
-  createContrat(contratEmploye: ContratUserApp): Observable<ContratUserApp[]> {
-    return this.http
-      .post<
-        ContratUserApp[]
-      >(`${URL_BACKEND}/contrat-user-app/create-contrat`, contratEmploye, httpOptions)
-      .pipe(catchError(this.handleError));
-  }
-
-  updateContrat(contratEmploye: ContratUserApp): Observable<ContratUserApp[]> {
-    return this.http
-      .post<
-        ContratUserApp[]
-      >(`${URL_BACKEND}/contrat-user-app/update-contrat`, contratEmploye, httpOptions)
-      .pipe(catchError(this.handleError));
-  }
-
-  getContratListByUserId(userAppId: string): Observable<ContratUserApp[]> {
-    return this.http
-      .get<
-        ContratUserApp[]
-      >(`${URL_BACKEND}/contrat-user-app/get-contrat-list-by-user-app-id/${userAppId}`, httpOptions)
-      .pipe(catchError(this.handleError));
-  }
-
-  getAllContrat(): Observable<ContratUserApp[]> {
-    return this.http
-      .get<
-        ContratUserApp[]
-      >(`${URL_BACKEND}/contrat-user-app/get-all-contrat`, httpOptions)
-      .pipe(catchError(this.handleError));
-  }
-
-  getUserContratList(): Observable<ContratUserApp[]> {
-    return this.http
-      .get<
-        ContratUserApp[]
-      >(`${URL_BACKEND}/contrat-user-app/get-user-contrat-list`, httpOptions)
-      .pipe(catchError(this.handleError));
-  }
-
-  createUserApp(userApp: UserApp): Observable<UserApp[]> {
-    return this.http
-      .post<
-        UserApp[]
-      >(`${URL_BACKEND}/user-app/create-user-app`, userApp, httpOptions)
-      .pipe(catchError(this.handleError));
-  }
-
-  updateUserApp(userApp: UserApp): Observable<UserApp[]> {
-    return this.http
-      .post<
-        UserApp[]
-      >(`${URL_BACKEND}/user-app/update-user-app`, userApp, httpOptions)
-      .pipe(catchError(this.handleError));
-  }
-
-  getUserAppList(): Observable<UserApp[]> {
-    return this.http
-      .get<UserApp[]>(`${URL_BACKEND}/user-app/get-user-app-list`, httpOptions)
-      .pipe(catchError(this.handleError));
-  }
-
   getDayAppListByContratId(contratId: string): Observable<DayApp[]> {
     return this.http
       .get<
@@ -150,6 +88,14 @@ export class RepoService {
   getUserConnected(): Observable<UserConnected> {
     return this.http
       .get<UserConnected>(`${URL_BACKEND}/user/get-user-connected`, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+  getUserContratList(): Observable<ContratUserApp[]> {
+    return this.http
+      .get<
+        ContratUserApp[]
+      >(`${URL_BACKEND}/contrat-user-app/get-user-contrat-list`, httpOptions)
       .pipe(catchError(this.handleError));
   }
 

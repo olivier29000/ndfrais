@@ -9,12 +9,13 @@ import {
 import { NavigationService } from '../core/navigation/navigation.service';
 import { Role, UserConnected } from '../models/user-connected.model';
 import { ContratUserApp } from '../models/contrat-employe.model';
+import { navigationItemAdmin, UtilsService } from './utils.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StoreService {
-  constructor(private readonly navigationService: NavigationService) {
+  constructor(private readonly utils: UtilsService) {
     effect(() => {
       const userConnected = this.userConnected();
       if (userConnected) {
@@ -25,6 +26,7 @@ export class StoreService {
           for (let userAppContrat of userAllContratList) {
             navigationItemList.push({
               ...navigationItemUser,
+
               label: userAppContrat.poste,
               children: [
                 {
@@ -49,38 +51,17 @@ export class StoreService {
           navigationItemList.push(navigationItemManager);
         }
         if (userConnected.roleList.includes(Role.ROLE_ADMIN)) {
-          const userAppList = this.userAppList();
-          navigationItemList.push({
-            ...navigationItemAdmin,
-            children: navigationItemAdmin.children.map((child) => {
-              if (child.type === 'dropdown' && child.label === 'Employés') {
-                return {
-                  ...child,
-                  children: userAppList.map((userApp) => ({
-                    type: 'link',
-                    label: userApp.nomPrenom,
-                    route: '/admin/employes/' + userApp.id,
-                    routerLinkActiveOptions: { exact: false }
-                  }))
-                };
-              } else {
-                return child;
-              }
-            })
-          });
+          navigationItemList.push(navigationItemAdmin);
         }
-        this.navigationService.loadNavigation(navigationItemList);
+        this.navigationItemList.set(navigationItemList);
       }
     });
   }
-
-  adminContratList: WritableSignal<ContratUserApp[]> = signal([]);
+  navigationItemList: WritableSignal<NavigationItem[]> = signal([]);
   dayAppList: WritableSignal<DayApp[]> = signal([]);
-  adminAllContratList: WritableSignal<ContratUserApp[]> = signal([]);
   userAllContratList: WritableSignal<ContratUserApp[]> = signal([]);
   managerContratList: WritableSignal<ContratUserApp[]> = signal([]);
   isLoading: WritableSignal<boolean> = signal(false);
-  navigationItemList: WritableSignal<NavigationItem[]> = signal([]);
   userConnected: WritableSignal<UserConnected | undefined> = signal(undefined);
   currentYear: WritableSignal<number> = signal(2025);
   dayListBdd: WritableSignal<DayBdd[]> = signal([]);
@@ -90,13 +71,11 @@ export class StoreService {
     new Date(2025, 5, 4),
     new Date(2025, 6, 4)
   ]);
-
-  userAppList: WritableSignal<UserApp[]> = signal([]);
 }
 
 const navigationItemUser: NavigationSubheading = {
   type: 'subheading',
-  label: 'Employé',
+  label: 'Contrats',
   children: [
     {
       type: 'link',
@@ -137,32 +116,6 @@ const navigationItemManager: NavigationSubheading = {
       label: 'Recap',
       route: '/manager/recap',
       icon: 'mat:thumbs_up_down',
-      routerLinkActiveOptions: { exact: true }
-    }
-  ]
-};
-const navigationItemAdmin: NavigationSubheading = {
-  type: 'subheading',
-  label: 'Admin',
-  children: [
-    {
-      type: 'link',
-      label: 'Users',
-      route: '/admin/users',
-      icon: 'mat:person_pin',
-      routerLinkActiveOptions: { exact: true }
-    },
-    {
-      type: 'dropdown',
-      label: 'Employés',
-      icon: 'mat:people',
-      children: []
-    },
-    {
-      type: 'link',
-      label: 'Organigramme',
-      route: '/admin/organigramme',
-      icon: 'mat:bubble_chart',
       routerLinkActiveOptions: { exact: true }
     }
   ]

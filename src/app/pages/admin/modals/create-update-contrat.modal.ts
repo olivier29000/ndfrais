@@ -25,7 +25,7 @@ import {
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { UserApp } from 'src/app/models/user.model';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { ServerService } from 'src/app/services/server.service';
+import { AdminServerService } from '../services/admin-server.service';
 
 export class CustomDateAdapter extends NativeDateAdapter {
   override parse(value: any): Date | null {
@@ -285,7 +285,7 @@ export class CreateUpdateContratModal implements OnInit {
   };
   mode: 'create' | 'update' = 'create';
   adminAllContratList = computed(() => {
-    const adminAllContratList = this.server.adminAllContratList();
+    const adminAllContratList = this.adminServer.adminAllContratList();
     this.currentContrat.contratManager =
       adminAllContratList.find(
         (contrat) => contrat.id === this.data?.contrat?.contratManager?.id
@@ -299,7 +299,7 @@ export class CreateUpdateContratModal implements OnInit {
       contrat: ContratUserApp;
     },
     private dialogRef: MatDialogRef<CreateUpdateContratModal>,
-    private server: ServerService
+    private adminServer: AdminServerService
   ) {}
 
   ngOnInit() {

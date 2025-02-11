@@ -23,7 +23,7 @@ export class AdminOrganigrammePage implements OnInit {
   constructor(private server: ServerService) {}
 
   ngOnInit(): void {
-    this.server.getAllContrat();
+    // this.server.getAllContrat();
   }
 
   // dataTreeNode = computed(() => {

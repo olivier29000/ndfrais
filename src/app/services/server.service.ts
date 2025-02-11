@@ -20,7 +20,7 @@ export class ServerService {
     effect(() => {
       const userConnected = this.userConnected();
       if (userConnected?.roleList.includes(Role.ROLE_ADMIN)) {
-        this.getUserAppList();
+        // this.getUserAppList();
       }
       if (userConnected?.roleList.includes(Role.ROLE_USER)) {
         this.getUserContratList();
@@ -29,20 +29,12 @@ export class ServerService {
   }
   managerContratList = this.store.managerContratList;
   userConnected = this.store.userConnected;
-  userAppList = this.store.userAppList;
   weekendDays = this.store.weekendDays;
   currentYear = this.store.currentYear;
   ferieList = this.store.ferieList;
   dayListBdd = this.store.dayListBdd;
-  adminAllContratList = this.store.adminAllContratList;
   getUserContratList(): void {
     this.effectService.getUserContratList();
-  }
-  getAllContrat(): void {
-    this.effectService.getAllContrat();
-  }
-  getUserAppList(): void {
-    this.effectService.getUserAppList();
   }
   creationCompte(email: string, entreprise: string, password: string): void {
     this.effectService.creationCompte(email, entreprise, password);
@@ -50,27 +42,8 @@ export class ServerService {
   authentification(email: string, password: string): void {
     this.effectService.authentification(email, password);
   }
-  getContratListByUserId(idUserApp: string) {
-    this.effectService.getContratListByUserId(idUserApp);
-  }
-  adminContratList = this.store.adminContratList;
+
   dayAppList = this.store.dayAppList;
-
-  createUser(): void {
-    this.effectService.createUserModal();
-  }
-
-  updateUserModal(userApp: UserApp) {
-    this.effectService.updateUserModal(userApp);
-  }
-
-  createContratModal(userApp: UserApp): void {
-    this.effectService.createContratModal(userApp);
-  }
-
-  updateContratModal(contrat: ContratUserApp) {
-    this.effectService.updateContratModal(contrat);
-  }
 
   getDayAppListByContratId(idContrat: string) {
     this.effectService.getDayAppListByContratId(idContrat);

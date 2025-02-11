@@ -2,12 +2,25 @@ import { Injectable, signal, WritableSignal } from '@angular/core';
 import { WEEK_STATE, DayApp, WORK_STATE } from '../models/day-app.model';
 import { DayBdd } from '../models/day-bdd.model';
 import { StoreService } from './store.service';
+import { NavigationService } from '../core/navigation/navigation.service';
+import {
+  NavigationItem,
+  NavigationLink,
+  NavigationSubheading
+} from '../core/navigation/navigation-item.interface';
+import { ContratUserApp } from '../models/contrat-employe.model';
+import { UserApp } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UtilsService {
-  constructor(private store: StoreService) {}
+  constructor(
+    private store: StoreService,
+    private readonly navigationService: NavigationService
+  ) {}
+
+  userConnected = this.store.userConnected;
 
   changeIsLoading(value: boolean): void {
     this.store.isLoading.set(value);
@@ -27,6 +40,67 @@ export class UtilsService {
     return WEEK_STATE.NORMAL;
   }
 
+  loadNavigation(navigationItemList: NavigationItem[]): void {
+    this.navigationService.loadNavigation(navigationItemList);
+  }
+
+  pushChildrenAdmin(userAppList: UserApp[]): void {
+    this.store.navigationItemList.update((navigationItemList) => {
+      return navigationItemList.map((nav) => {
+        if (nav.label === navigationItemAdmin.label) {
+          return {
+            ...nav,
+            children: navigationItemAdmin.children.map((c) => {
+              if ((c.type = 'dropdown')) {
+                return {
+                  ...c,
+                  children: userAppList.map((userApp) => ({
+                    type: 'link',
+                    label: userApp.nomPrenom,
+                    route: '/admin/employes/' + userApp.id,
+                    routerLinkActiveOptions: { exact: false }
+                  }))
+                };
+              } else {
+                return c;
+              }
+            })
+          };
+        } else {
+          return nav;
+        }
+      });
+    });
+  }
+
+  pushChildrenUser(contratUserAppList: ContratUserApp[]): void {
+    this.store.navigationItemList.update((navigationItemList) => {
+      const navContratList: NavigationItem[] = contratUserAppList.map(
+        (userAppContrat) => {
+          const item: NavigationItem = {
+            type: 'subheading',
+            label: userAppContrat.poste,
+            children: [
+              {
+                type: 'link',
+                label: 'Congés',
+                route: '/user/conges/' + userAppContrat.id,
+                icon: 'mat:card_travel',
+                routerLinkActiveOptions: { exact: true }
+              }
+            ]
+          };
+          return item;
+        }
+      );
+      return navContratList.concat(navigationItemList);
+    });
+  }
+
+  addItem(itemListToAdd: NavigationLink[], itemWhereAdd: NavigationItem): void {
+    this.navigationService.addItem(itemListToAdd, itemWhereAdd);
+  }
+
   getWorkState(
     date: Date,
     ferieList: Date[],
@@ -42,3 +116,30 @@ export class UtilsService {
     return WORK_STATE.TRAVAIL;
   }
 }
+
+export const navigationItemAdmin: NavigationSubheading = {
+  type: 'subheading',
+  label: 'Admin',
+  children: [
+    {
+      type: 'link',
+      label: 'Users',
+      route: '/admin/users',
+      icon: 'mat:person_pin',
+      routerLinkActiveOptions: { exact: true }
+    },
+    {
+      type: 'dropdown',
+      label: 'Employés',
+      icon: 'mat:people',
+      children: []
+    },
+    {
+      type: 'link',
+      label: 'Organigramme',
+      route: '/admin/organigramme',
+      icon: 'mat:bubble_chart',
+      routerLinkActiveOptions: { exact: true }
+    }
+  ]
+};

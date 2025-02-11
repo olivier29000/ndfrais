@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { UserApp } from '../../models/user.model';
-import { ServerService } from '../../services/server.service';
 import { UserListDumb } from '../dumbs/user-app-list.dumb';
+import { AdminServerService } from './services/admin-server.service';
 
 @Component({
   template: `
@@ -16,19 +16,16 @@ import { UserListDumb } from '../dumbs/user-app-list.dumb';
   imports: [UserListDumb]
 })
 export class AdminUsersPage implements OnInit {
-  userAppList = this.server.userAppList;
+  userAppList = this.adminServer.userAppList;
   createUserModal(): void {
-    this.server.createUser();
+    this.adminServer.createUser();
   }
 
   updateUserModal(userApp: UserApp) {
-    this.server.updateUserModal(userApp);
+    this.adminServer.updateUserModal(userApp);
   }
-  constructor(
-    private dialog: MatDialog,
-    private server: ServerService
-  ) {}
+  constructor(private adminServer: AdminServerService) {}
   ngOnInit(): void {
-    this.server.getUserAppList();
+    this.adminServer.getUserAppList();
   }
 }
