@@ -1,4 +1,10 @@
-import { Component, computed, Inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  Inject,
+  OnInit
+} from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MAT_DIALOG_DATA,
@@ -262,6 +268,7 @@ export const CUSTOM_DATE_FORMATS = {
     MatDatepickerModule,
     MatButtonToggleModule
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     { provide: DateAdapter, useClass: CustomDateAdapter },
     { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS },
