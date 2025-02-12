@@ -10,19 +10,7 @@ import { UtilsService } from 'src/app/services/utils.service';
   providedIn: 'root'
 })
 export class AdminStoreService {
-  constructor(private utils: UtilsService) {
-    effect(
-      () => {
-        const userConnected = this.utils.userConnected();
-        const nbActionList = this.actionList().length;
-        if (userConnected?.roleList.includes(Role.ROLE_ADMIN)) {
-          const userAppList = this.userAppList();
-          this.utils.pushChildrenAdmin(userAppList, nbActionList);
-        }
-      },
-      { allowSignalWrites: true }
-    );
-  }
+  constructor() {}
   adminAllContratList: WritableSignal<ContratUserApp[]> = signal([]);
   adminContratList: WritableSignal<ContratUserApp[]> = signal([]);
   userAppList: WritableSignal<UserApp[]> = signal([]);

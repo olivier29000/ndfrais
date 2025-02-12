@@ -210,6 +210,11 @@ export class AdminEffectService {
     );
   }
 
+  changeEnabled(userApp: UserApp) {
+    userApp.enabled = !userApp.enabled;
+    this.updateUserApp(userApp);
+  }
+
   getUserAppList(): void {
     this.utils.changeIsLoading(true);
     this.adminRepo.getUserAppList().subscribe(

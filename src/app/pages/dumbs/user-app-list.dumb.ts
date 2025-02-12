@@ -47,7 +47,7 @@ import { MatSelectModule } from '@angular/material/select';
             class="bg-app-bar px-6 h-16 border-b sticky left-0 flex items-center">
             <h2
               class="title my-0 ltr:pr-4 rtl:pl-4 ltr:mr-4 rtl:ml-4 ltr:border-r rtl:border-l hidden sm:block flex-none">
-              <span *ngIf="selection.isEmpty()">UserApps</span>
+              <span *ngIf="selection.isEmpty()">{{ title }}</span>
               <span *ngIf="selection.hasValue()"
                 >{{ selection.selected.length }} UserApp<span
                   *ngIf="selection.selected.length > 1"
@@ -277,14 +277,21 @@ import { MatSelectModule } from '@angular/material/select';
 
     <mat-menu #actionsMenu="matMenu" xPosition="before" yPosition="below">
       <ng-template let-UserApp="UserApp" matMenuContent>
-        <button mat-menu-item (click)="updateUserModalOutput(UserApp)">
-          <mat-icon svgIcon="mat:edit"></mat-icon>
-          <span>Modify</span>
-        </button>
-        <button mat-menu-item>
-          <mat-icon svgIcon="mat:delete"></mat-icon>
-          <span>Delete</span>
-        </button>
+        @if (UserApp.enabled) {
+          <button mat-menu-item (click)="updateUserModalOutput(UserApp)">
+            <mat-icon svgIcon="mat:edit"></mat-icon>
+            <span>Modifier</span>
+          </button>
+          <button mat-menu-item (click)="changeEnabledOutput(UserApp)">
+            <mat-icon svgIcon="mat:delete"></mat-icon>
+            <span>Désactiver</span>
+          </button>
+        } @else {
+          <button mat-menu-item (click)="changeEnabledOutput(UserApp)">
+            <mat-icon svgIcon="mat:delete"></mat-icon>
+            <span>Activer</span>
+          </button>
+        }
       </ng-template>
     </mat-menu> `,
   animations: [fadeInUp400ms, stagger40ms],
@@ -357,9 +364,14 @@ export class UserListDumb implements AfterViewInit {
     },
     { label: 'Actions', property: 'actions', type: 'button', visible: true }
   ];
-
+  @Input() title = '';
   @Output() createUserModal = new EventEmitter<void>();
   @Output() updateUserModal = new EventEmitter<UserApp>();
+  @Output() changeEnabled = new EventEmitter<UserApp>();
+
+  changeEnabledOutput(userApp: UserApp): void {
+    this.changeEnabled.emit(userApp);
+  }
   createUserModalOutput(): void {
     this.createUserModal.emit();
   }

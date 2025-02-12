@@ -9,6 +9,7 @@ export class UserApp {
   telephone: string;
   email: string;
   notes: string;
+  enabled: boolean;
 
   constructor(userApp: any) {
     this.id = userApp.id;
@@ -19,6 +20,7 @@ export class UserApp {
     this.telephone = userApp.telephone;
     this.email = userApp.email;
     this.notes = userApp.notes;
+    this.enabled = userApp.enabled;
   }
 
   get nomPrenom() {

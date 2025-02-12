@@ -9,7 +9,15 @@ import { AdminServerService } from './services/admin-server.service';
     <dumb-user-app-list
       (createUserModal)="createUserModal()"
       (updateUserModal)="updateUserModal($event)"
+      (changeEnabled)="changeEnabled($event)"
+      [title]="'Utilisateurs actifs'"
       [userAppList]="userAppList()"></dumb-user-app-list>
+    <hr />
+
+    <dumb-user-app-list
+      [title]="'Utilisateurs désactivés'"
+      (changeEnabled)="changeEnabled($event)"
+      [userAppList]="userAppListArchived()"></dumb-user-app-list>
   `,
   animations: [],
   standalone: true,
@@ -17,6 +25,7 @@ import { AdminServerService } from './services/admin-server.service';
 })
 export class AdminUsersPage implements OnInit {
   userAppList = this.adminServer.userAppList;
+  userAppListArchived = this.adminServer.userAppListArchived;
   createUserModal(): void {
     this.adminServer.createUser();
   }
@@ -24,6 +33,11 @@ export class AdminUsersPage implements OnInit {
   updateUserModal(userApp: UserApp) {
     this.adminServer.updateUserModal(userApp);
   }
+
+  changeEnabled(userApp: UserApp) {
+    this.adminServer.changeEnabled(userApp);
+  }
+
   constructor(private adminServer: AdminServerService) {}
   ngOnInit(): void {}
 }
