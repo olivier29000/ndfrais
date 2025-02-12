@@ -99,17 +99,22 @@ export const appRoutes: VexRoutes = [
         ]
       },
       {
-        path: 'admin/organigramme',
+        path: 'organigramme',
         loadComponent: () =>
           import('./pages/commun/admin-organigramme.page').then(
             (m) => m.AdminOrganigrammePage
           )
+      },
+      {
+        path: '**',
+        redirectTo: '/organigramme',
+        pathMatch: 'full'
       }
     ]
   },
   {
-    path: '*',
-    redirectTo: '/user/conges',
+    path: '**',
+    redirectTo: '/organigramme',
     pathMatch: 'full'
   }
 ];

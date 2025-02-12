@@ -89,7 +89,7 @@ export const navigationItemCommun: NavigationSubheading = {
     {
       type: 'link',
       label: 'Organigramme',
-      route: '/admin/organigramme',
+      route: '/organigramme',
       icon: 'mat:bubble_chart',
       routerLinkActiveOptions: { exact: true }
     }

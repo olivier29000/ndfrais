@@ -159,7 +159,6 @@ export class EffectService {
   getOrganigramme(): void {
     this.repo.getOrganigramme().subscribe(
       (dataTreeNode) => {
-        console.log(dataTreeNode);
         this.store.isLoading.set(false);
         this.store.dataTreeNode.set(dataTreeNode);
       },
