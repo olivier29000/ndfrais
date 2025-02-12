@@ -11,6 +11,7 @@ import { environment } from 'src/environment/environment';
 import { ContratUserApp } from '../models/contrat-employe.model';
 import { UserApp } from '../models/user.model';
 import { UserConnected } from '../models/user-connected.model';
+import { TreeNode } from 'primeng/api';
 
 const URL_BACKEND = environment.urlBackEnd;
 const httpOptions = {
@@ -96,6 +97,14 @@ export class RepoService {
       .get<
         ContratUserApp[]
       >(`${URL_BACKEND}/contrat-user-app/get-user-contrat-list`, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+  getOrganigramme(): Observable<TreeNode[]> {
+    return this.http
+      .get<
+        TreeNode[]
+      >(`${URL_BACKEND}/contrat-user-app/get-organigramme`, httpOptions)
       .pipe(catchError(this.handleError));
   }
 

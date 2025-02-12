@@ -11,6 +11,7 @@ import { Role, UserConnected } from '../models/user-connected.model';
 import { ContratUserApp } from '../models/contrat-employe.model';
 import { navigationItemAdmin, UtilsService } from './utils.service';
 import { AdminServerService } from '../pages/admin/services/admin-server.service';
+import { TreeNode } from 'primeng/api';
 
 @Injectable({
   providedIn: 'root'
@@ -79,6 +80,7 @@ export class StoreService {
     new Date(2025, 5, 4),
     new Date(2025, 6, 4)
   ]);
+  dataTreeNode: WritableSignal<TreeNode[]> = signal([]);
 }
 export const navigationItemCommun: NavigationSubheading = {
   type: 'subheading',

@@ -155,4 +155,16 @@ export class EffectService {
       })
     );
   }
+
+  getOrganigramme(): void {
+    this.repo.getOrganigramme().subscribe(
+      (dataTreeNode) => {
+        this.store.isLoading.set(false);
+        this.store.dataTreeNode.set(dataTreeNode);
+      },
+      () => {
+        this.store.isLoading.set(false);
+      }
+    );
+  }
 }

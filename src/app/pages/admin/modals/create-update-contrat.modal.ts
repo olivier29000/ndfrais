@@ -303,6 +303,7 @@ export class CreateUpdateContratModal implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.adminServer.getAllContrat();
     if (this.data?.contrat) {
       this.mode = 'update';
     } else {

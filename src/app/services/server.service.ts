@@ -32,6 +32,10 @@ export class ServerService {
       { allowSignalWrites: true }
     );
   }
+  getOrganigramme(): void {
+    this.effectService.getOrganigramme();
+  }
+  dataTreeNode = this.store.dataTreeNode;
   managerContratList = this.store.managerContratList;
   userConnected = this.store.userConnected;
   weekendDays = this.store.weekendDays;

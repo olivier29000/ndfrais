@@ -8,7 +8,7 @@ import { ContratUserApp } from '../../models/contrat-employe.model';
   template: `
     <!-- <dumb-organigramme [data]="dataTreeNode()"></dumb-organigramme> -->
     <div class="d-flex">
-      @for (data of []; track data) {
+      @for (data of dataTreeNode(); track data) {
         <div class="border">
           <dumb-organigramme [data]="[data]"></dumb-organigramme>
         </div>
@@ -23,8 +23,10 @@ export class AdminOrganigrammePage implements OnInit {
   constructor(private server: ServerService) {}
 
   ngOnInit(): void {
-    // this.server.getAllContrat();
+    this.server.getOrganigramme();
   }
+
+  dataTreeNode = this.server.dataTreeNode;
 
   // dataTreeNode = computed(() => {
   //   console.log(this.server.adminAllContratList());
