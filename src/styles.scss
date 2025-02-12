@@ -27,6 +27,15 @@
 .TELETRAVAIL {
   background-color: pink !important;
 }
+.HORS_CONTRAT {
+  background: repeating-linear-gradient(
+    45deg,
+    grey 0px,
+    grey 10px,
+    #ffffff 10px,
+    #ffffff 20px
+  );
+}
 
 .p-organizationchart table {
   all: unset !important; /* Réinitialise les styles hérités */

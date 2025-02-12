@@ -14,10 +14,12 @@ import {
   format,
   isBefore,
   isSameDay,
+  lastDayOfMonth,
   parse,
-  startOfDay
+  startOfDay,
+  startOfMonth
 } from 'date-fns';
-import { DayApp, WORK_STATE } from 'src/app/models/day-app.model';
+import { DayApp, WEEK_STATE, WORK_STATE } from 'src/app/models/day-app.model';
 import { DaySquareDumb } from './day-square.dumb';
 import { fr } from 'date-fns/esm/locale';
 @Component({
@@ -88,10 +90,30 @@ export class DayListDumb {
         {} as { [month: string]: DayApp[] }
       )
     )
-      .map(([key, value]) => ({
-        month: key,
-        dayAppList: value
-      }))
+      .map(([key, value]) => {
+        const dayListMonth = eachDayOfInterval({
+          start: startOfMonth(value[0].date),
+          end: lastDayOfMonth(value[0].date)
+        });
+        return {
+          month: key,
+          dayAppList: dayListMonth.map((day) => {
+            const dayApp = value.find(
+              (d) => startOfDay(d.date).getTime() === startOfDay(day).getTime()
+            );
+            if (dayApp) {
+              return dayApp;
+            } else {
+              return {
+                id: -1,
+                date: day,
+                weekState: WEEK_STATE.NORMAL,
+                workState: WORK_STATE.HORS_CONTRAT
+              };
+            }
+          })
+        };
+      })
       .sort(
         (a, b) =>
           parse(a.month, 'MMMM yyyy', new Date(), { locale: fr }).getTime() -

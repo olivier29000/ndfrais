@@ -2,6 +2,13 @@ import { computed, Injectable } from '@angular/core';
 import { ManagerEffectService } from './manager-effect.service';
 import { Action } from 'src/app/models/action.model';
 import { ManagerStoreService } from './manager-store.service';
+import {
+  eachDayOfInterval,
+  lastDayOfMonth,
+  startOfDay,
+  startOfMonth
+} from 'date-fns';
+import { WEEK_STATE, WORK_STATE } from 'src/app/models/day-app.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +22,32 @@ export class ManagerServerService {
     this.getActionListByUserApp();
   }
   currentDateRecap = this.managerStore.currentDateRecap;
-  recapByContratDayAppList = this.managerStore.recapByContratDayAppList;
+  recapByContratDayAppList = computed(() => {
+    const dayListMonth = eachDayOfInterval({
+      start: startOfMonth(this.currentDateRecap()),
+      end: lastDayOfMonth(this.currentDateRecap())
+    });
+    return this.managerStore
+      .recapByContratDayAppList()
+      .map((recapByContrat) => ({
+        ...recapByContrat,
+        dayAppList: dayListMonth.map((day) => {
+          const dayApp = recapByContrat.dayAppList.find(
+            (d) => startOfDay(d.date).getTime() === startOfDay(day).getTime()
+          );
+          if (dayApp) {
+            return dayApp;
+          } else {
+            return {
+              id: -1,
+              date: day,
+              weekState: WEEK_STATE.NORMAL,
+              workState: WORK_STATE.REPOS
+            };
+          }
+        })
+      }));
+  });
   previousMonth(): void {
     this.managerEffect.previousMonth();
   }
