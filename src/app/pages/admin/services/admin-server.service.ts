@@ -98,7 +98,12 @@ export class AdminServerService {
   getUserAppList(): void {
     this.adminEffect.getUserAppList();
   }
-  adminContratList = this.adminStore.adminContratList;
+  adminContratList = computed(() =>
+    this.adminStore.adminContratList().filter((c) => !c.archived)
+  );
+  adminContratListArchived = computed(() =>
+    this.adminStore.adminContratList().filter((c) => c.archived)
+  );
   updateUserModal(userApp: UserApp) {
     this.adminEffect.updateUserModal(userApp);
   }
@@ -113,5 +118,9 @@ export class AdminServerService {
 
   updateContratModal(contrat: ContratUserApp) {
     this.adminEffect.updateContratModal(contrat);
+  }
+
+  archiveUnarchiveContrat(contrat: ContratUserApp) {
+    this.adminEffect.archiveUnarchiveContrat(contrat);
   }
 }

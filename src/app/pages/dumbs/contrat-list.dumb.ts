@@ -52,7 +52,7 @@ import { RouterLink } from '@angular/router';
             <h2
               class="title my-0 ltr:pr-4 rtl:pl-4 ltr:mr-4 rtl:ml-4 ltr:border-r rtl:border-l hidden sm:block flex-none">
               <span *ngIf="selection.isEmpty()"
-                >{{ contratEmployeList.length }} Contrats :
+                >{{ contratEmployeList.length }} {{ title }} :
                 {{ userApp?.nomPrenom }}</span
               >
               <span *ngIf="selection.hasValue()"
@@ -349,27 +349,38 @@ import { RouterLink } from '@angular/router';
 
     <mat-menu #actionsMenu="matMenu" xPosition="before" yPosition="below">
       <ng-template let-ContratUserApp="ContratUserApp" matMenuContent>
-        <button
-          mat-menu-item
-          [routerLink]="
-            '/admin/employes/' +
-            ContratUserApp.userApp.id +
-            '/contrat-detail/' +
-            ContratUserApp.id
-          ">
-          <mat-icon svgIcon="mat:remove_red_eye"></mat-icon>
-          <span>Voir</span>
-        </button>
-        <button
-          mat-menu-item
-          (click)="updateContratModalOutput(ContratUserApp)">
-          <mat-icon svgIcon="mat:edit"></mat-icon>
-          <span>Modify</span>
-        </button>
-        <button mat-menu-item>
-          <mat-icon svgIcon="mat:delete"></mat-icon>
-          <span>Delete</span>
-        </button>
+        @if (!ContratUserApp.archived) {
+          <button
+            mat-menu-item
+            [routerLink]="
+              '/admin/employes/' +
+              ContratUserApp.userApp.id +
+              '/contrat-detail/' +
+              ContratUserApp.id
+            ">
+            <mat-icon svgIcon="mat:remove_red_eye"></mat-icon>
+            <span>Voir</span>
+          </button>
+          <button
+            mat-menu-item
+            (click)="updateContratModalOutput(ContratUserApp)">
+            <mat-icon svgIcon="mat:edit"></mat-icon>
+            <span>Modifier</span>
+          </button>
+          <button
+            mat-menu-item
+            (click)="archiveUnarchiveOutput(ContratUserApp)">
+            <mat-icon svgIcon="mat:delete"></mat-icon>
+            <span>Archiver</span>
+          </button>
+        } @else {
+          <button
+            mat-menu-item
+            (click)="archiveUnarchiveOutput(ContratUserApp)">
+            <mat-icon svgIcon="mat:delete"></mat-icon>
+            <span>Restaurer</span>
+          </button>
+        }
       </ng-template>
     </mat-menu>`,
   animations: [fadeInUp400ms, stagger40ms],
@@ -399,6 +410,7 @@ import { RouterLink } from '@angular/router';
   ]
 })
 export class ContratListDumb implements AfterViewInit {
+  @Input() title = '';
   columns: TableColumn<ContratUserApp>[] = [
     {
       label: 'Poste',
@@ -461,12 +473,16 @@ export class ContratListDumb implements AfterViewInit {
 
   @Output() createContratModal = new EventEmitter<void>();
   @Output() updateContratModal = new EventEmitter<ContratUserApp>();
+  @Output() archiveUnarchive = new EventEmitter<ContratUserApp>();
   createContratModalOutput(): void {
     this.createContratModal.emit();
   }
 
   updateContratModalOutput(contratEmploye: ContratUserApp): void {
     this.updateContratModal.emit(contratEmploye);
+  }
+  archiveUnarchiveOutput(contratEmploye: ContratUserApp): void {
+    this.archiveUnarchive.emit(contratEmploye);
   }
   dataSource!: MatTableDataSource<ContratUserApp, MatPaginator>;
   _contratEmployeList: ContratUserApp[] = [];

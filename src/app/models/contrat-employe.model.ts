@@ -12,6 +12,7 @@ export interface ContratUserApp {
   userApp: UserApp;
   contratManager?: ContratUserApp;
   nbActions?: number;
+  archived: boolean;
 }
 
 export enum DayOfWeek {

@@ -295,4 +295,9 @@ export class AdminEffectService {
         this.updateContrat(contrat);
       });
   }
+
+  archiveUnarchiveContrat(contrat: ContratUserApp) {
+    contrat.archived = !contrat.archived;
+    this.updateContrat(contrat);
+  }
 }

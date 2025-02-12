@@ -288,7 +288,8 @@ export class CreateUpdateContratModal implements OnInit {
     contratManager: this.data?.contrat?.contratManager || undefined, // Temporairement null
     userApp: this.data?.contrat?.userApp
       ? new UserApp(this.data?.contrat?.userApp)
-      : this.data?.userApp
+      : this.data?.userApp,
+    archived: this.data?.contrat?.archived || false
   };
   mode: 'create' | 'update' = 'create';
   adminAllContratList = computed(() => {
