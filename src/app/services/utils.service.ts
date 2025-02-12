@@ -44,7 +44,10 @@ export class UtilsService {
     this.navigationService.loadNavigation(navigationItemList);
   }
 
-  pushChildrenAdmin(userAppList: UserApp[], nbActionList: number): void {
+  pushChildrenAdmin(
+    userAppList: (UserApp & { nbAction: number })[],
+    nbActionList: number
+  ): void {
     this.store.navigationItemList.update((navigationItemList) => {
       return navigationItemList.map((nav) => {
         if (nav.label === navigationItemAdmin.label) {
@@ -58,7 +61,12 @@ export class UtilsService {
                     type: 'link',
                     label: userApp.nomPrenom,
                     route: '/admin/employes/' + userApp.id,
-                    routerLinkActiveOptions: { exact: false }
+                    routerLinkActiveOptions: { exact: false },
+                    badge: {
+                      value: userApp.nbAction > 0 ? userApp.nbAction + '' : '',
+                      bgClass: 'bg-cyan-600',
+                      textClass: 'text-white'
+                    }
                   }))
                 };
               } else if (c.label === 'Validations') {

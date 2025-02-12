@@ -21,8 +21,16 @@ export class AdminServerService {
       () => {
         const userConnected = this.utils.userConnected();
         const nbActionList = this.actionList().length;
+        const adminContratList = this.adminContratList();
         if (userConnected?.roleList.includes(Role.ROLE_ADMIN)) {
-          const userAppList = this.userAppList();
+          const userAppList = this.userAppList().map((userApp) => ({
+            ...userApp,
+            nomPrenom: userApp.nom + ' ' + userApp.prenom,
+            nbAction: adminContratList
+              .filter((c) => c.userApp.id === userApp.id)
+              .map((c) => c.nbActions)
+              .reduce((acc, nb) => acc + nb, 0)
+          }));
           this.utils.pushChildrenAdmin(userAppList, nbActionList);
         }
       },
@@ -98,9 +106,19 @@ export class AdminServerService {
   getUserAppList(): void {
     this.adminEffect.getUserAppList();
   }
-  adminContratList = computed(() =>
-    this.adminStore.adminContratList().filter((c) => !c.archived)
-  );
+  adminContratList = computed(() => {
+    const actionList = this.adminStore.actionList();
+    return this.adminStore
+      .adminContratList()
+      .filter((c) => !c.archived)
+      .map((c) => ({
+        ...c,
+        nbActions: actionList.filter((a) =>
+          a.dayAppList.some((d) => d.idContrat === c.id)
+        ).length
+      }));
+  });
+  contratUserAppList = computed(() => {});
   adminContratListArchived = computed(() =>
     this.adminStore.adminContratList().filter((c) => c.archived)
   );
