@@ -3,6 +3,7 @@ import { UserRepoService } from './user-repo.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { UserStoreService } from './user-store.service';
 import { Action } from 'src/app/models/action.model';
+import { ServerService } from 'src/app/services/server.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,8 @@ export class UserEffectService {
   constructor(
     private userRepo: UserRepoService,
     private userStore: UserStoreService,
-    private utils: UtilsService
+    private utils: UtilsService,
+    private server: ServerService
   ) {}
 
   getUserDayAppListByContratId(idContrat: string): void {

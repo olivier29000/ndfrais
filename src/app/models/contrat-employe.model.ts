@@ -1,3 +1,4 @@
+import { WORK_STATE } from './day-app.model';
 import { UserApp } from './user.model';
 
 export interface ContratUserApp {
@@ -6,6 +7,7 @@ export interface ContratUserApp {
   dateBegin: Date;
   dateEnd: Date;
   dayOfWeekReposList: DayOfWeek[];
+  workStateAvailableList: WORK_STATE[];
   nbJourCongeMois: number;
   nbJourRttMois: number;
   nbHeureSemaine: number;

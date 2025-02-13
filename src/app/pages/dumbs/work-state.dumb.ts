@@ -28,6 +28,9 @@ import { scaleInOutAnimation } from '@vex/animations/scale-in-out.animation';
       <h3 class="subheading-2 font-medium text-secondary m-0">
         {{ workState.label }}
       </h3>
+      <h6 class="subheading-2 font-medium text-secondary m-0">
+        {{ workState.nb }}
+      </h6>
 
       <button
         *ngIf="helpText"

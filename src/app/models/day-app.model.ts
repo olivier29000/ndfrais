@@ -33,6 +33,7 @@ export enum WORK_STATE {
 export interface workStateItem {
   label: WORK_STATE;
   icon: string;
+  nb: string;
 }
 
 export enum ACTION_STATE {

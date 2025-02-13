@@ -2,7 +2,9 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   computed,
+  effect,
   OnInit,
+  Signal,
   signal,
   WritableSignal
 } from '@angular/core';
@@ -26,10 +28,10 @@ import { ValidCancelActionModal } from './modals/valid-cancel-action.modal';
 @Component({
   template: `
     <div class="px-6 p-6 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-6 gap-4">
-      @for (item of workStateList; track $index) {
+      @for (item of workStateList(); track $index) {
         <dumb-work-state
           [ngStyle]="{
-            border: selectedWorkState?.label === item.label ? 'solid' : ''
+            border: selectedWorkState()?.label === item.label ? 'solid' : ''
           }"
           [iconClass]="item.label"
           [workState]="item"
@@ -37,11 +39,13 @@ import { ValidCancelActionModal } from './modals/valid-cancel-action.modal';
       }
     </div>
     <div class="px-6">
-      <dumb-day-list
-        [selectedWorkstate]="selectedWorkState.label"
-        (validPeriod)="askAction()"
-        (selectDayList)="selectDayList($event)"
-        [dayAppList]="userDayAppList()"></dumb-day-list>
+      @if (selectedWorkState(); as selectedWorkState) {
+        <dumb-day-list
+          [selectedWorkstate]="selectedWorkState.label"
+          (validPeriod)="askAction()"
+          (selectDayList)="selectDayList($event)"
+          [dayAppList]="userDayAppList()"></dumb-day-list>
+      }
     </div>
   `,
   styles: [``],
@@ -49,37 +53,41 @@ import { ValidCancelActionModal } from './modals/valid-cancel-action.modal';
   imports: [CommonModule, DayListDumb, WorkStateDumb]
 })
 export class UserCongesPage implements OnInit {
-  idContratUserApp: string | null = null;
+  idContratUserApp: WritableSignal<string | null> = signal(null);
   WORK_STATE = WORK_STATE;
-  workStateList: workStateItem[] = [
-    {
-      label: WORK_STATE.CONGE,
-      icon: 'mat:card_travel'
-    },
-    {
-      label: WORK_STATE.RTT,
-      icon: 'mat:card_travel'
-    },
-    {
-      label: WORK_STATE.ARRET_MALADIE,
-      icon: 'mat:card_travel'
-    },
-    {
-      label: WORK_STATE.CONGE_SANS_SOLDE,
-      icon: 'mat:card_travel'
-    },
-    {
-      label: WORK_STATE.RECUP,
-      icon: 'mat:card_travel'
-    },
-    {
-      label: WORK_STATE.TELETRAVAIL,
-      icon: 'mat:card_travel'
+  workStateList: Signal<workStateItem[]> = computed(() => {
+    const userCurrentContrat = this.userCurrentContrat();
+    if (!userCurrentContrat) {
+      return [];
+    } else {
+      const workStateList: workStateItem[] =
+        userCurrentContrat.workStateAvailableList.map((workState) => ({
+          label: workState,
+          icon: 'mat:card_travel',
+          nb: '1'
+        }));
+      return workStateList;
     }
-  ];
-  selectedWorkState: workStateItem = this.workStateList[0];
+  });
+  selectedWorkState: WritableSignal<workStateItem | undefined> =
+    signal(undefined);
+  userDayAppList = this.userServer.userDayAppList;
+  userCurrentContrat = computed(() => {
+    const idContratUserApp = this.idContratUserApp();
+    const userAllContratList = this.userServer.userAllContratList();
+    if (idContratUserApp && userAllContratList.length > 0) {
+      const userCurrentContrat = userAllContratList.find(
+        (c) => c.id === Number(idContratUserApp)
+      );
+      if (userCurrentContrat) {
+        return userCurrentContrat;
+      }
+    }
+    return undefined;
+  });
+  currentAction: WritableSignal<Action | undefined> = signal(undefined);
   selectWorkState(workState: workStateItem): void {
-    this.selectedWorkState = workState;
+    this.selectedWorkState.set(workState);
     const currentAction = this.currentAction();
     if (currentAction) {
       this.currentAction.set({ ...currentAction, workState: workState.label });
@@ -87,46 +95,24 @@ export class UserCongesPage implements OnInit {
       this.currentAction.set(undefined);
     }
   }
-  userDayAppList = this.userServer.userDayAppList;
-  currentAction: WritableSignal<Action | undefined> = signal(undefined);
-  tableData = computed(() => {
-    const currentAction = this.currentAction();
-    if (currentAction) {
-      return [
-        {
-          date: currentAction.dayAppList[0].date,
-          ancienStatut: currentAction.dayAppList[0].workState,
-          nouveauStatut: currentAction.workState
-        }
-      ];
-    } else {
-      return [];
-    }
-  });
   selectDayList(dayAppList: DayApp[]): void {
-    if (dayAppList.length > 0) {
-      if (!this.selectedWorkState) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: "Sélectionnez un type d'abscence (congé, RTT...)"
-        });
-      } else {
-        this.currentAction.set({
-          id: 0,
-          date: new Date(),
-          dayAppList,
-          workState: this.selectedWorkState.label,
-          state: ACTION_STATE.ASKING,
-          userAppAction: new UserApp({}),
-          notes: ''
-        });
-      }
+    const selectedWorkState = this.selectedWorkState();
+    if (dayAppList.length > 0 && selectedWorkState) {
+      this.currentAction.set({
+        id: 0,
+        date: new Date(),
+        dayAppList,
+        workState: selectedWorkState.label,
+        state: ACTION_STATE.ASKING,
+        userAppAction: new UserApp({}),
+        notes: ''
+      });
     }
   }
   askAction(): void {
     const currentAction = this.currentAction();
-    if (currentAction) {
+    const idContratUserApp = this.idContratUserApp();
+    if (currentAction && idContratUserApp) {
       this.dialog
         .open(ValidCancelActionModal, {
           data: {
@@ -135,10 +121,8 @@ export class UserCongesPage implements OnInit {
         })
         .afterClosed()
         .subscribe((action: Action) => {
-          if (this.idContratUserApp) {
-            this.userServer.askAction(action, this.idContratUserApp);
-            this.currentAction.set(undefined);
-          }
+          this.userServer.askAction(action, idContratUserApp);
+          this.currentAction.set(undefined);
         });
     }
   }
@@ -150,13 +134,32 @@ export class UserCongesPage implements OnInit {
     private userServer: UserServerService,
     private route: ActivatedRoute,
     private dialog: MatDialog
-  ) {}
+  ) {
+    effect(
+      () => {
+        const workStateList = this.workStateList();
+        if (workStateList && workStateList.length > 0) {
+          this.selectWorkState(workStateList[0]);
+        }
+      },
+      { allowSignalWrites: true }
+    );
+    effect(
+      () => {
+        const idContratUserApp = this.idContratUserApp();
+        if (idContratUserApp) {
+          this.userServer.getUserDayAppListByContratId(idContratUserApp);
+        }
+      },
+      { allowSignalWrites: true }
+    );
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
-      this.idContratUserApp = params.get('idContratUserApp');
-      if (this.idContratUserApp) {
-        this.userServer.getUserDayAppListByContratId(this.idContratUserApp);
+      const idContratUserApp = params.get('idContratUserApp');
+      if (idContratUserApp) {
+        this.idContratUserApp.set(idContratUserApp);
       }
     });
   }

@@ -85,8 +85,6 @@ export class AdminServerService {
   }
   openActionDayListRefuseModal(idAction: number): void {
     const action = this.actionList().find((a) => a.id === idAction);
-    console.log(action);
-    console.log(this.actionList());
     if (action) {
       this.adminEffect.openActionListValidRefuseModal(action, 'refuse');
     }

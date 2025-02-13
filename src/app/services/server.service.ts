@@ -42,6 +42,7 @@ export class ServerService {
   currentYear = this.store.currentYear;
   ferieList = this.store.ferieList;
   dayListBdd = this.store.dayListBdd;
+  userAllContratList = this.store.userAllContratList;
   getUserContratList(): void {
     this.effectService.getUserContratList();
   }

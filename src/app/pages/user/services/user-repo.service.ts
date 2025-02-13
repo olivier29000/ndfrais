@@ -8,6 +8,7 @@ import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from 'src/environment/environment';
 import { DayApp } from 'src/app/models/day-app.model';
 import { Action } from 'src/app/models/action.model';
+import { ContratUserApp } from 'src/app/models/contrat-employe.model';
 
 const URL_BACKEND = environment.urlBackEnd;
 const httpOptions = {
@@ -39,6 +40,7 @@ export class UserRepoService {
       >(`${URL_BACKEND}/day-app/get-user-day-app-list-by-contrat-id/${contratId}`, httpOptions)
       .pipe(catchError(this.handleError));
   }
+
   private handleError(error: HttpErrorResponse) {
     if (error.status === 409) {
       // Conflict: User already exists

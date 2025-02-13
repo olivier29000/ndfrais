@@ -64,7 +64,7 @@ export class UtilsService {
                     routerLinkActiveOptions: { exact: false },
                     badge: {
                       value: userApp.nbAction > 0 ? userApp.nbAction + '' : '',
-                      bgClass: 'bg-cyan-600',
+                      bgClass: 'bg-green-600',
                       textClass: 'text-white'
                     }
                   }))
@@ -76,7 +76,7 @@ export class UtilsService {
                   ...c,
                   badge: {
                     value: nbActionListStr,
-                    bgClass: 'bg-cyan-600',
+                    bgClass: 'bg-green-600',
                     textClass: 'text-white'
                   }
                 };
@@ -168,7 +168,7 @@ export const navigationItemAdmin: NavigationSubheading = {
       icon: 'mat:thumbs_up_down',
       badge: {
         value: '',
-        bgClass: 'bg-cyan-600',
+        bgClass: 'bg-green-600',
         textClass: 'text-white'
       },
       routerLinkActiveOptions: { exact: true }

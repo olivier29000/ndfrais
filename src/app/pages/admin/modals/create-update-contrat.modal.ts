@@ -17,7 +17,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
-import { NgIf } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
 import { ContratUserApp } from 'src/app/models/contrat-employe.model';
 import {
@@ -32,6 +32,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { UserApp } from 'src/app/models/user.model';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { AdminServerService } from '../services/admin-server.service';
+import { WORK_STATE } from 'src/app/models/day-app.model';
+import { WorkStateDumb } from '../../dumbs/work-state.dumb';
 
 export class CustomDateAdapter extends NativeDateAdapter {
   override parse(value: any): Date | null {
@@ -196,7 +198,30 @@ export const CUSTOM_DATE_FORMATS = {
             </mat-form-field>
           </div>
 
-          <div class="flex flex-col sm:flex-row">
+          <div>
+            <label class="mb-2 block">Demandes disponibles</label>
+            <div class="flex flex-col sm:flex-row">
+              @for (workState of workStateList; track $index) {
+                <dumb-work-state
+                  [ngStyle]="{
+                    border: currentContrat.workStateAvailableList.includes(
+                      workState
+                    )
+                      ? 'solid'
+                      : ''
+                  }"
+                  [iconClass]="workState"
+                  [workState]="{
+                    label: workState,
+                    icon: '',
+                    nb: ''
+                  }"
+                  (click)="selectWorkState(workState)"></dumb-work-state>
+              }
+            </div>
+          </div>
+
+          <div>
             <label class="mb-2 block">Jours de repos</label>
             <mat-button-toggle-group
               name="ingredients"
@@ -255,6 +280,8 @@ export const CUSTOM_DATE_FORMATS = {
     </mat-menu> `,
   standalone: true,
   imports: [
+    CommonModule,
+    WorkStateDumb,
     FormsModule,
     MatDialogModule,
     NgIf,
@@ -276,6 +303,12 @@ export const CUSTOM_DATE_FORMATS = {
   ]
 })
 export class CreateUpdateContratModal implements OnInit {
+  workStateList = Object.values(WORK_STATE).filter(
+    (state) =>
+      ![WORK_STATE.REPOS, WORK_STATE.TRAVAIL, WORK_STATE.HORS_CONTRAT].includes(
+        state
+      )
+  );
   currentContrat: ContratUserApp = {
     id: this.data?.contrat?.id || undefined,
     poste: this.data?.contrat?.poste || '',
@@ -289,7 +322,8 @@ export class CreateUpdateContratModal implements OnInit {
     userApp: this.data?.contrat?.userApp
       ? new UserApp(this.data?.contrat?.userApp)
       : this.data?.userApp,
-    archived: this.data?.contrat?.archived || false
+    archived: this.data?.contrat?.archived || false,
+    workStateAvailableList: this.data?.contrat?.workStateAvailableList || []
   };
   mode: 'create' | 'update' = 'create';
   adminAllContratList = computed(() => {
@@ -309,7 +343,16 @@ export class CreateUpdateContratModal implements OnInit {
     private dialogRef: MatDialogRef<CreateUpdateContratModal>,
     private adminServer: AdminServerService
   ) {}
-
+  selectWorkState(workState: WORK_STATE): void {
+    if (this.currentContrat.workStateAvailableList.includes(workState)) {
+      this.currentContrat.workStateAvailableList =
+        this.currentContrat.workStateAvailableList.filter(
+          (w) => w !== workState
+        );
+    } else {
+      this.currentContrat.workStateAvailableList.push(workState);
+    }
+  }
   ngOnInit() {
     this.adminServer.getAllContrat();
     if (this.data?.contrat) {
