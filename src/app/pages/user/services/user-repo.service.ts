@@ -23,6 +23,22 @@ const httpOptions = {
 })
 export class UserRepoService {
   constructor(private http: HttpClient) {}
+  userGetHistoriqueActionList(contratId: string): Observable<Action[]> {
+    return this.http
+      .get<
+        Action[]
+      >(`${URL_BACKEND}/day-app-action/get-historique-by-contrat-id/${contratId}`, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+  getPdfById(idPdf: number): Observable<Blob> {
+    return this.http
+      .get<Blob>(`${URL_BACKEND}/day-app-action/get-pdf-by-id/${idPdf}`, {
+        withCredentials: true,
+        responseType: 'blob' as 'json'
+      })
+      .pipe(catchError(this.handleError));
+  }
+
   askAction(action: Action): Observable<Action> {
     return this.http
       .post<Action>(

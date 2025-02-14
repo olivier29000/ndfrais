@@ -40,6 +40,21 @@ export class ManagerEffectService {
     );
   }
 
+  managerGetHistoriqueActionList(date: Date): void {
+    this.utils.changeIsLoading(true);
+    this.managerRepo
+      .managerGetHistoriqueActionList(date.getFullYear())
+      .subscribe(
+        (historiqueActionList) => {
+          this.utils.changeIsLoading(false);
+          this.managerStore.historiqueActionList.set(historiqueActionList);
+        },
+        () => {
+          this.utils.changeIsLoading(false);
+        }
+      );
+  }
+
   getAllContratUserApp(): void {
     this.utils.changeIsLoading(true);
     this.managerRepo.getAllContratUserApp().subscribe(
@@ -122,7 +137,10 @@ export class ManagerEffectService {
       );
   }
 
-  openActionListValidRefuseModal(action: Action, type: 'valid' | 'refuse') {
+  openActionListValidRefuseModal(
+    action: Action,
+    type: 'valid' | 'refuse' | 'watch'
+  ) {
     this.dialog.open(ActionListValidRefuseModal, {
       data: {
         action,

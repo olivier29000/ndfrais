@@ -106,7 +106,7 @@ import { AdminServerService } from '../services/admin-server.service';
 export class AdminActionListValidRefuseModal implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA)
-    public data: { action: Action; type: 'valid' | 'refuse' },
+    public data: { action: Action; type: 'valid' | 'refuse' | 'watch' },
     private dialogRef: MatDialogRef<AdminActionListValidRefuseModal>,
     private adminServer: AdminServerService
   ) {}

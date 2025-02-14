@@ -21,6 +21,13 @@ export class ManagerServerService {
     this.getAllContratUserApp();
     this.getActionListByUserApp();
   }
+  historiqueActionList = this.managerStore.historiqueActionList;
+  currentYearHistorique = this.managerStore.currentYearHistorique;
+  managerGetHistoriqueActionList(): void {
+    this.managerEffect.managerGetHistoriqueActionList(
+      this.currentYearHistorique()
+    );
+  }
   currentDateRecap = this.managerStore.currentDateRecap;
   recapByContratDayAppList = computed(() => {
     const dayListMonth = eachDayOfInterval({
@@ -86,7 +93,7 @@ export class ManagerServerService {
 
   openActionListValidRefuseModal(
     action: Action,
-    type: 'valid' | 'refuse'
+    type: 'valid' | 'refuse' | 'watch'
   ): void {
     this.managerEffect.openActionListValidRefuseModal(action, type);
   }

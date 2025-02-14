@@ -31,7 +31,10 @@ export class AdminEffectService {
       { allowSignalWrites: true }
     );
   }
-  openActionListValidRefuseModal(action: Action, type: 'valid' | 'refuse') {
+  openActionListValidRefuseModal(
+    action: Action,
+    type: 'valid' | 'refuse' | 'watch'
+  ) {
     this.dialog.open(AdminActionListValidRefuseModal, {
       data: {
         action,
@@ -221,6 +224,19 @@ export class AdminEffectService {
       (userAppList) => {
         this.utils.changeIsLoading(false);
         this.adminStore.userAppList.set(userAppList.map((u) => new UserApp(u)));
+      },
+      () => {
+        this.utils.changeIsLoading(false);
+      }
+    );
+  }
+
+  adminGetHistoriqueActionList(date: Date): void {
+    this.utils.changeIsLoading(true);
+    this.adminRepo.adminGetHistoriqueActionList(date.getFullYear()).subscribe(
+      (historiqueActionList) => {
+        this.utils.changeIsLoading(false);
+        this.adminStore.historiqueActionList.set(historiqueActionList);
       },
       () => {
         this.utils.changeIsLoading(false);

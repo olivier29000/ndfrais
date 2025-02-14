@@ -50,24 +50,38 @@ export const appRoutes: VexRoutes = [
               import('./pages/admin/admin-validations.page').then(
                 (m) => m.AdminValidationListPage
               )
+          },
+          {
+            path: 'historique',
+            loadComponent: () =>
+              import('./pages/admin/admin-historique.page').then(
+                (m) => m.AdminHistoriquePage
+              )
           }
         ]
       },
       {
         path: 'user',
         children: [
-          {
-            path: 'planning',
-            loadComponent: () =>
-              import('./pages/user/user-planning.page').then(
-                (m) => m.UserPlanningPage
-              )
-          },
+          // {
+          //   path: 'planning',
+          //   loadComponent: () =>
+          //     import('./pages/user/user-planning.page').then(
+          //       (m) => m.UserPlanningPage
+          //     )
+          // },
           {
             path: 'conges/:idContratUserApp',
             loadComponent: () =>
               import('./pages/user/user-conges.page').then(
                 (m) => m.UserCongesPage
+              )
+          },
+          {
+            path: 'historique/:idContratUserApp',
+            loadComponent: () =>
+              import('./pages/user/user-historique.page').then(
+                (m) => m.UserHistoriquePage
               )
           }
         ]
@@ -94,6 +108,13 @@ export const appRoutes: VexRoutes = [
             loadComponent: () =>
               import('./pages/manager/manager-recap.page').then(
                 (m) => m.ManagerRecapPage
+              )
+          },
+          {
+            path: 'historique',
+            loadComponent: () =>
+              import('./pages/manager/manager-historique.page').then(
+                (m) => m.ManagerHistoriquePage
               )
           }
         ]

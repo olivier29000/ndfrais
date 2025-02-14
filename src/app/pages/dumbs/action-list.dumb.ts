@@ -25,6 +25,7 @@ interface ActionDisplay {
   to: Date;
   ancienStatut: string;
   nouveauStatut: string;
+  state: string;
 }
 @Component({
   selector: 'dumb-action-list',
@@ -142,6 +143,11 @@ export class ActionListDumb implements OnInit, OnChanges, AfterViewInit {
 
   columns: TableColumn<ActionDisplay>[] = [
     {
+      label: 'Etat',
+      property: 'state',
+      type: 'text'
+    },
+    {
       label: 'de',
       property: 'user',
       type: 'text'
@@ -198,6 +204,7 @@ export class ActionListDumb implements OnInit, OnChanges, AfterViewInit {
     if (changes['actionList']) {
       this.dataSource.data = this.actionList.map((currentAction) => ({
         id: currentAction.id,
+        state: currentAction.state,
         user:
           currentAction.userAppAction.nom +
           ' ' +

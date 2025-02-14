@@ -172,6 +172,13 @@ export const navigationItemAdmin: NavigationSubheading = {
         textClass: 'text-white'
       },
       routerLinkActiveOptions: { exact: true }
+    },
+    {
+      type: 'link',
+      label: 'Historique',
+      route: '/admin/historique',
+      icon: 'mat:thumbs_up_down',
+      routerLinkActiveOptions: { exact: true }
     }
   ]
 };

@@ -106,7 +106,7 @@ import { MatSelectModule } from '@angular/material/select';
 export class ActionListValidRefuseModal implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA)
-    public data: { action: Action; type: 'valid' | 'refuse' },
+    public data: { action: Action; type: 'valid' | 'refuse' | 'watch' },
     private dialogRef: MatDialogRef<ActionListValidRefuseModal>,
     private managerServer: ManagerServerService
   ) {}

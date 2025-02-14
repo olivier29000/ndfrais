@@ -39,6 +39,14 @@ export class ManagerRepoService {
       .pipe(catchError(this.handleError));
   }
 
+  managerGetHistoriqueActionList(dateStr: number): Observable<Action[]> {
+    return this.http
+      .get<
+        Action[]
+      >(`${URL_BACKEND}/day-app-action/get-historique/${dateStr}`, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
   validAction(action: Action): Observable<Action[]> {
     return this.http
       .post<

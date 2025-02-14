@@ -47,6 +47,11 @@ export class AdminServerService {
       { allowSignalWrites: true }
     );
   }
+  historiqueActionList = this.adminStore.historiqueActionList;
+  adminGetHistoriqueActionList(): void {
+    this.adminEffect.adminGetHistoriqueActionList(this.currentYearHistorique());
+  }
+  currentYearHistorique = this.adminStore.currentYearHistorique;
   currentDateRecap = this.adminStore.currentDateRecap;
   currentMonthRecap = computed(() =>
     format(this.currentDateRecap(), 'MMMM yyyy', { locale: fr })
@@ -91,7 +96,7 @@ export class AdminServerService {
   }
   openActionListValidRefuseModal(
     action: Action,
-    type: 'valid' | 'refuse'
+    type: 'valid' | 'refuse' | 'watch'
   ): void {
     this.adminEffect.openActionListValidRefuseModal(action, type);
   }

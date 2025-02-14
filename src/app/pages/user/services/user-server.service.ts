@@ -14,7 +14,14 @@ export class UserServerService {
     private server: ServerService
   ) {}
   userAllContratList = this.server.userAllContratList;
+  historiqueActionList = this.userStore.historiqueActionList;
   userDayAppList = this.userStore.userDayAppList;
+  openPdfDisplayModal(idPdf: number): void {
+    this.userEffect.openPdfDisplayModal(idPdf);
+  }
+  userGetHistoriqueActionList(idContrat: string): void {
+    this.userEffect.userGetHistoriqueActionList(idContrat);
+  }
   getUserDayAppListByContratId(idContrat: string): void {
     this.userEffect.getUserDayAppListByContratId(idContrat);
   }

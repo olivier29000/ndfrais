@@ -4,6 +4,9 @@ import { UtilsService } from 'src/app/services/utils.service';
 import { UserStoreService } from './user-store.service';
 import { Action } from 'src/app/models/action.model';
 import { ServerService } from 'src/app/services/server.service';
+import { PdfDisplayModal } from '../../modals/pdf-display.modal';
+import { MatDialog } from '@angular/material/dialog';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +16,43 @@ export class UserEffectService {
     private userRepo: UserRepoService,
     private userStore: UserStoreService,
     private utils: UtilsService,
-    private server: ServerService
+    private dialog: MatDialog,
+    private sanitizer: DomSanitizer
   ) {}
+  userGetHistoriqueActionList(idContrat: string): void {
+    this.utils.changeIsLoading(true);
+    this.userRepo.userGetHistoriqueActionList(idContrat).subscribe(
+      (historiqueActionList) => {
+        this.utils.changeIsLoading(false);
+        this.userStore.historiqueActionList.set(historiqueActionList);
+      },
+      () => {
+        this.utils.changeIsLoading(false);
+      }
+    );
+  }
+  openPdfDisplayModal(idPdf: number): void {
+    this.utils.changeIsLoading(true);
+    this.userRepo.getPdfById(idPdf).subscribe(
+      (pdfBlob) => {
+        this.utils.changeIsLoading(false);
+        const objectUrl = URL.createObjectURL(pdfBlob);
+        this.dialog.open(PdfDisplayModal, {
+          width: '90%',
+          maxWidth: '1200px',
+          data: {
+            pdfData: this.sanitizer.bypassSecurityTrustResourceUrl(objectUrl)
+          }
+        });
+
+        // const objectUrl = window.URL.createObjectURL(pdfBlob);
+        // window.open(objectUrl);
+      },
+      () => {
+        this.utils.changeIsLoading(false);
+      }
+    );
+  }
 
   getUserDayAppListByContratId(idContrat: string): void {
     this.utils.changeIsLoading(true);

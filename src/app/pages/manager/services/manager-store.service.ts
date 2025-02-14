@@ -9,6 +9,8 @@ import { DayApp } from 'src/app/models/day-app.model';
 export class ManagerStoreService {
   constructor() {}
 
+  historiqueActionList: WritableSignal<Action[]> = signal([]);
+  currentYearHistorique: WritableSignal<Date> = signal(new Date());
   contratUserAppList: WritableSignal<ContratUserApp[]> = signal([]);
   actionList: WritableSignal<Action[]> = signal([]);
   currentDateRecap: WritableSignal<Date> = signal(new Date());

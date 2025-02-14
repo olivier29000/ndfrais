@@ -37,6 +37,13 @@ export class StoreService {
                     route: '/user/conges/' + userAppContrat.id,
                     icon: 'mat:card_travel',
                     routerLinkActiveOptions: { exact: true }
+                  },
+                  {
+                    type: 'link',
+                    label: 'Historique',
+                    route: '/user/historique/' + userAppContrat.id,
+                    icon: 'mat:card_travel',
+                    routerLinkActiveOptions: { exact: true }
                   }
                 ]
               });
@@ -137,6 +144,13 @@ const navigationItemManager: NavigationSubheading = {
       type: 'link',
       label: 'Recap',
       route: '/manager/recap',
+      icon: 'mat:thumbs_up_down',
+      routerLinkActiveOptions: { exact: true }
+    },
+    {
+      type: 'link',
+      label: 'Historique',
+      route: '/manager/historique',
       icon: 'mat:thumbs_up_down',
       routerLinkActiveOptions: { exact: true }
     }
