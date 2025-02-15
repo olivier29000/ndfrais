@@ -31,7 +31,7 @@ import { ValidCancelActionModal } from './modals/valid-cancel-action.modal';
       @for (item of workStateList(); track $index) {
         <dumb-work-state
           [ngStyle]="{
-            border: selectedWorkState()?.label === item.label ? 'solid' : ''
+            border: selectedWorkState?.label === item.label ? 'solid' : ''
           }"
           [iconClass]="item.label"
           [workState]="item"
@@ -39,11 +39,10 @@ import { ValidCancelActionModal } from './modals/valid-cancel-action.modal';
       }
     </div>
     <div class="px-6">
-      @if (selectedWorkState(); as selectedWorkState) {
+      @if (selectedWorkState) {
         <dumb-day-list
           [selectedWorkstate]="selectedWorkState.label"
-          (validPeriod)="askAction()"
-          (selectDayList)="selectDayList($event)"
+          (selectDayList)="askAction($event)"
           [dayAppList]="userDayAppList()"></dumb-day-list>
       }
     </div>
@@ -69,36 +68,42 @@ export class UserCongesPage implements OnInit {
       return workStateList;
     }
   });
-  selectedWorkState: WritableSignal<workStateItem | undefined> =
-    signal(undefined);
+  selectedWorkState: workStateItem | undefined = undefined;
   userDayAppList = this.userServer.userDayAppList;
   userCurrentContrat = computed(() => {
     const idContratUserApp = this.idContratUserApp();
     const userAllContratList = this.userServer.userAllContratList();
+    console.log(idContratUserApp);
+    console.log(userAllContratList);
     if (idContratUserApp && userAllContratList.length > 0) {
       const userCurrentContrat = userAllContratList.find(
         (c) => c.id === Number(idContratUserApp)
       );
+      console.log(userCurrentContrat);
       if (userCurrentContrat) {
         return userCurrentContrat;
       }
     }
     return undefined;
   });
-  currentAction: WritableSignal<Action | undefined> = signal(undefined);
+  currentAction: Action | undefined = undefined;
   selectWorkState(workState: workStateItem): void {
-    this.selectedWorkState.set(workState);
-    const currentAction = this.currentAction();
-    if (currentAction) {
-      this.currentAction.set({ ...currentAction, workState: workState.label });
+    this.selectedWorkState = workState;
+    if (this.currentAction) {
+      this.currentAction = {
+        ...this.currentAction,
+        workState: workState.label
+      };
     } else {
-      this.currentAction.set(undefined);
+      this.currentAction = undefined;
     }
   }
-  selectDayList(dayAppList: DayApp[]): void {
-    const selectedWorkState = this.selectedWorkState();
+  selectDayList(dayAppList: DayApp[]): void {}
+  askAction(dayAppList: DayApp[]): void {
+    console.log(dayAppList);
+    const selectedWorkState = this.selectedWorkState;
     if (dayAppList.length > 0 && selectedWorkState) {
-      this.currentAction.set({
+      this.currentAction = {
         id: 0,
         date: new Date(),
         dayAppList,
@@ -106,28 +111,26 @@ export class UserCongesPage implements OnInit {
         state: ACTION_STATE.ASKING,
         userAppAction: new UserApp({}),
         notes: ''
-      });
+      };
     }
-  }
-  askAction(): void {
-    const currentAction = this.currentAction();
     const idContratUserApp = this.idContratUserApp();
-    if (currentAction && idContratUserApp) {
+    if (this.currentAction && idContratUserApp) {
+      console.log('dialog');
       this.dialog
         .open(ValidCancelActionModal, {
           data: {
-            action: currentAction
+            action: this.currentAction
           }
         })
         .afterClosed()
         .subscribe((action: Action) => {
           this.userServer.askAction(action, idContratUserApp);
-          this.currentAction.set(undefined);
+          this.currentAction = undefined;
         });
     }
   }
   cancelAction(): void {
-    this.currentAction.set(undefined);
+    this.currentAction = undefined;
   }
 
   constructor(
@@ -135,15 +138,12 @@ export class UserCongesPage implements OnInit {
     private route: ActivatedRoute,
     private dialog: MatDialog
   ) {
-    effect(
-      () => {
-        const workStateList = this.workStateList();
-        if (workStateList && workStateList.length > 0) {
-          this.selectWorkState(workStateList[0]);
-        }
-      },
-      { allowSignalWrites: true }
-    );
+    effect(() => {
+      const workStateList = this.workStateList();
+      if (workStateList && workStateList.length > 0) {
+        this.selectWorkState(workStateList[0]);
+      }
+    });
     effect(
       () => {
         const idContratUserApp = this.idContratUserApp();

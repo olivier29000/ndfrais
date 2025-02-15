@@ -59,6 +59,7 @@ export class UserEffectService {
     this.userRepo.getUserDayAppListByContratId(idContrat).subscribe(
       (dayAppList) => {
         this.utils.changeIsLoading(false);
+        console.log(dayAppList);
         this.userStore.userDayAppList.set(
           dayAppList.map((d) => ({
             ...d,

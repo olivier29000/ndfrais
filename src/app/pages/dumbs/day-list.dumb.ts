@@ -36,8 +36,8 @@ import { fr } from 'date-fns/esm/locale';
           @for (day of item.dayAppList; track day) {
             <dumb-day-state
               [isLastSelected]="
-                selectedDayList().length > 0 &&
-                day.id === selectedDayList()[selectedDayList().length - 1].id
+                selectedDayList.length > 0 &&
+                day.id === selectedDayList[selectedDayList.length - 1].id
               "
               [selectedWorkstate]="selectedWorkstate"
               [isSelected]="isSelected(day)"
@@ -57,17 +57,13 @@ import { fr } from 'date-fns/esm/locale';
   imports: [CommonModule, DaySquareDumb]
 })
 export class DayListDumb {
-  constructor() {
-    effect(() => this.selectDayList.emit(this.selectedDayList()), {
-      allowSignalWrites: true
-    });
-  }
+  constructor() {}
   dayAppByMonth!: {
     month: string;
     dayAppList: DayApp[];
   }[];
 
-  selectedDayList: WritableSignal<DayApp[]> = signal([]);
+  selectedDayList: DayApp[] = [];
   selectableDayList: DayApp[] = [];
 
   @Input() selectedWorkstate!: string;
@@ -122,34 +118,31 @@ export class DayListDumb {
   }
 
   validPeriodOutput(): void {
-    this.validPeriod.emit();
-    this.selectedDayList.set([]);
+    this.selectDayList.emit(this.selectedDayList);
+    this.selectedDayList = [];
     this.selectableDayList = [];
   }
 
   isSelected(day: DayApp): boolean {
     return (
-      this.selectedDayList().some((d) => d.id === day.id) ||
+      this.selectedDayList.some((d) => d.id === day.id) ||
       this.selectableDayList.some((d) => d.id === day.id)
     );
   }
   selectableDayApp(day: DayApp): void {
     if (!day.actionDay) {
-      if (this.selectedDayList().length === 0) {
+      if (this.selectedDayList.length === 0) {
         this.selectableDayList.push(day);
       } else if (
-        isBefore(
-          startOfDay(day.date),
-          startOfDay(this.selectedDayList()[0].date)
-        )
+        isBefore(startOfDay(day.date), startOfDay(this.selectedDayList[0].date))
       ) {
         this.selectableDayList = [day];
       } else {
         const days = eachDayOfInterval({
-          start: this.selectedDayList()[0].date,
+          start: this.selectedDayList[0].date,
           end: day.date
         });
-        this.selectableDayList = [this.selectedDayList()[0]].concat(
+        this.selectableDayList = [this.selectedDayList[0]].concat(
           this.dayAppByMonth
             .map((dbm) => dbm.dayAppList)
             .flat()
@@ -165,35 +158,30 @@ export class DayListDumb {
 
   selectDayApp(day: DayApp): void {
     if (!day.actionDay) {
-      if (this.selectedDayList().length === 0) {
-        this.selectedDayList.set([day]);
+      if (this.selectedDayList.length === 0) {
+        this.selectedDayList = [day];
       } else if (
-        isBefore(
-          startOfDay(day.date),
-          startOfDay(this.selectedDayList()[0].date)
-        )
+        isBefore(startOfDay(day.date), startOfDay(this.selectedDayList[0].date))
       ) {
-        this.selectedDayList.set([day]);
+        this.selectedDayList = [day];
       } else {
         const days = eachDayOfInterval({
-          start: this.selectedDayList()[0].date,
+          start: this.selectedDayList[0].date,
           end: day.date
         });
-        this.selectedDayList.set(
-          [this.selectedDayList()[0]].concat(
-            this.dayAppByMonth
-              .map((dbm) => dbm.dayAppList)
-              .flat()
-              .filter((d) => d.workState === WORK_STATE.TRAVAIL && !d.actionDay)
-              .filter((d) => days.some((da) => isSameDay(da, d.date)))
-          )
+        this.selectedDayList = [this.selectedDayList[0]].concat(
+          this.dayAppByMonth
+            .map((dbm) => dbm.dayAppList)
+            .flat()
+            .filter((d) => d.workState === WORK_STATE.TRAVAIL && !d.actionDay)
+            .filter((d) => days.some((da) => isSameDay(da, d.date)))
         );
       }
     }
   }
 
   clickLast(day: DayApp): void {
-    this.selectedDayList.set([]);
+    this.selectedDayList = [];
     this.selectableDayList = [day];
   }
 }

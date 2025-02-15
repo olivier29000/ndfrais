@@ -112,8 +112,7 @@ export class ValidCancelActionModal implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA)
     public data: { action: Action },
-    private dialogRef: MatDialogRef<ValidCancelActionModal>,
-    private userServer: UserServerService
+    private dialogRef: MatDialogRef<ValidCancelActionModal>
   ) {}
 
   ngOnInit() {}
