@@ -32,6 +32,9 @@ export class ServerService {
       { allowSignalWrites: true }
     );
   }
+  logout(): void {
+    this.effectService.logout();
+  }
   getOrganigramme(): void {
     this.effectService.getOrganigramme();
   }

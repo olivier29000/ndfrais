@@ -42,7 +42,7 @@ export class StoreService {
                     type: 'link',
                     label: 'Historique',
                     route: '/user/historique/' + userAppContrat.id,
-                    icon: 'mat:card_travel',
+                    icon: 'mat:account_balance',
                     routerLinkActiveOptions: { exact: true }
                   }
                 ]
@@ -144,14 +144,14 @@ const navigationItemManager: NavigationSubheading = {
       type: 'link',
       label: 'Recap',
       route: '/manager/recap',
-      icon: 'mat:thumbs_up_down',
+      icon: 'mat:assignment',
       routerLinkActiveOptions: { exact: true }
     },
     {
       type: 'link',
       label: 'Historique',
       route: '/manager/historique',
-      icon: 'mat:thumbs_up_down',
+      icon: 'mat:account_balance',
       routerLinkActiveOptions: { exact: true }
     }
   ]

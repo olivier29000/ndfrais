@@ -158,7 +158,7 @@ export const navigationItemAdmin: NavigationSubheading = {
       type: 'link',
       label: 'Recap',
       route: '/admin/recap',
-      icon: 'mat:bubble_chart',
+      icon: 'mat:assignment',
       routerLinkActiveOptions: { exact: true }
     },
     {
@@ -177,7 +177,7 @@ export const navigationItemAdmin: NavigationSubheading = {
       type: 'link',
       label: 'Historique',
       route: '/admin/historique',
-      icon: 'mat:thumbs_up_down',
+      icon: 'mat:account_balance',
       routerLinkActiveOptions: { exact: true }
     }
   ]
