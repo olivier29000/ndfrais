@@ -17,16 +17,8 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TableColumn } from '@vex/interfaces/table-column.interface';
 import { MatMenuModule } from '@angular/material/menu';
-import { Action } from 'src/app/models/action.model';
+import { Action, ActionDisplay } from 'src/app/models/action.model';
 
-interface ActionDisplay {
-  id: number;
-  from: Date;
-  to: Date;
-  ancienStatut: string;
-  nouveauStatut: string;
-  state: string;
-}
 @Component({
   selector: 'dumb-action-list',
   template: `
@@ -141,7 +133,7 @@ export class ActionListDumb implements OnInit, OnChanges, AfterViewInit {
     this.openPdfById.emit(idPdf);
   }
 
-  columns: TableColumn<ActionDisplay>[] = [
+  @Input() columns: TableColumn<ActionDisplay>[] = [
     {
       label: 'Etat',
       property: 'state',
@@ -192,10 +184,11 @@ export class ActionListDumb implements OnInit, OnChanges, AfterViewInit {
       cssClasses: ['font-medium']
     }
   ];
+  @Input() withActions = true;
 
   ngOnInit() {
     this.visibleColumns = this.columns.map((column) => column.property);
-    if (!this.visibleColumns.includes('action')) {
+    if (this.withActions) {
       this.visibleColumns.push('action');
     }
   }

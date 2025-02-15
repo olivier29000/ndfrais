@@ -73,13 +73,10 @@ export class UserCongesPage implements OnInit {
   userCurrentContrat = computed(() => {
     const idContratUserApp = this.idContratUserApp();
     const userAllContratList = this.userServer.userAllContratList();
-    console.log(idContratUserApp);
-    console.log(userAllContratList);
     if (idContratUserApp && userAllContratList.length > 0) {
       const userCurrentContrat = userAllContratList.find(
         (c) => c.id === Number(idContratUserApp)
       );
-      console.log(userCurrentContrat);
       if (userCurrentContrat) {
         return userCurrentContrat;
       }
@@ -100,7 +97,6 @@ export class UserCongesPage implements OnInit {
   }
   selectDayList(dayAppList: DayApp[]): void {}
   askAction(dayAppList: DayApp[]): void {
-    console.log(dayAppList);
     const selectedWorkState = this.selectedWorkState;
     if (dayAppList.length > 0 && selectedWorkState) {
       this.currentAction = {
@@ -115,7 +111,6 @@ export class UserCongesPage implements OnInit {
     }
     const idContratUserApp = this.idContratUserApp();
     if (this.currentAction && idContratUserApp) {
-      console.log('dialog');
       this.dialog
         .open(ValidCancelActionModal, {
           data: {

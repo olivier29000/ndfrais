@@ -17,3 +17,12 @@ export interface ActionDay {
   idAction: number;
   workState: WORK_STATE;
 }
+
+export interface ActionDisplay {
+  id: number;
+  from: Date;
+  to: Date;
+  ancienStatut: string;
+  nouveauStatut: string;
+  state: string;
+}
