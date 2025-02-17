@@ -25,7 +25,7 @@ jobs:
         run: npm run build -- --configuration production
 
       - name: Build Docker image
-        run: docker build -t alaisedeiz-front:latest .
+        run: docker build --build-arg BACKEND_URL="https://alaisedeiz.bzh/back" -t alaisedeiz-front:latest .
 
       - name: Log in to Docker Hub
         run: echo ${{ secrets.DOCKER_HUB_PASSWORD }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin

@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  urlBackEnd: 'https://alaisedeiz.bzh/back', //
+  urlBackEnd: '@BACKEND_URL@', //
   urlFrontEnd: 'https://alaisedeiz.bzh',
   trackAnalyticID: '@TODO'
 };
