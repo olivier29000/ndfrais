@@ -44,6 +44,13 @@ export class StoreService {
                     route: '/user/historique/' + userAppContrat.id,
                     icon: 'mat:account_balance',
                     routerLinkActiveOptions: { exact: true }
+                  },
+                  {
+                    type: 'link',
+                    label: 'Equipe',
+                    route: '/user/equipe/' + userAppContrat.id,
+                    icon: 'mat:supervised_user_circle',
+                    routerLinkActiveOptions: { exact: true }
                   }
                 ]
               });

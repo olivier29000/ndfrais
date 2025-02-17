@@ -7,7 +7,7 @@ import { ContratUserApp } from '../../models/contrat-employe.model';
 @Component({
   template: `
     <!-- <dumb-organigramme [data]="dataTreeNode()"></dumb-organigramme> -->
-    <div class="d-flex">
+    <div class="flex">
       @for (data of dataTreeNode(); track data) {
         <div class="border">
           <dumb-organigramme [data]="[data]"></dumb-organigramme>

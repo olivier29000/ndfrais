@@ -88,6 +88,13 @@ export const appRoutes: VexRoutes = [
               import('./pages/user/user-historique.page').then(
                 (m) => m.UserHistoriquePage
               )
+          },
+          {
+            path: 'equipe/:idContratUserApp',
+            loadComponent: () =>
+              import('./pages/user/user-equipe.page').then(
+                (m) => m.UserEquipePage
+              )
           }
         ]
       },

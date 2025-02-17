@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { effect, Injectable } from '@angular/core';
 import { UserRepoService } from './user-repo.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { UserStoreService } from './user-store.service';
@@ -7,6 +7,7 @@ import { ServerService } from 'src/app/services/server.service';
 import { PdfDisplayModal } from '../../modals/pdf-display.modal';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
+import { addMonths, subMonths } from 'date-fns';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,55 @@ export class UserEffectService {
     private utils: UtilsService,
     private dialog: MatDialog,
     private sanitizer: DomSanitizer
-  ) {}
+  ) {
+    effect(
+      () => {
+        this.getRecap(this.userStore.currentDateRecap());
+      },
+      { allowSignalWrites: true }
+    );
+  }
+  getRecap(date: Date): void {
+    this.utils.changeIsLoading(true);
+    this.userRepo
+      .getRecap(
+        (date.getMonth() < 9
+          ? '0' + (date.getMonth() + 1)
+          : date.getMonth() + 1) +
+          '-' +
+          date.getFullYear(),
+        this.userStore.idContratUserApp() ?? ''
+      )
+      .subscribe(
+        (recapByContratDayAppList) => {
+          console.log(recapByContratDayAppList);
+          this.utils.changeIsLoading(false);
+          this.userStore.recapByContratDayAppList.set(
+            recapByContratDayAppList.map((recapByContratDayApp) => ({
+              ...recapByContratDayApp,
+              dayAppList: recapByContratDayApp.dayAppList.map((d) => ({
+                ...d,
+                date: new Date(d.date)
+              }))
+            }))
+          );
+        },
+        () => {
+          this.utils.changeIsLoading(false);
+        }
+      );
+  }
+  previousMonth(): void {
+    this.userStore.currentDateRecap.update((currentDateRecap) =>
+      subMonths(currentDateRecap, 1)
+    );
+  }
+  nextMonth(): void {
+    this.userStore.currentDateRecap.update((currentDateRecap) =>
+      addMonths(currentDateRecap, 1)
+    );
+  }
+
   userGetHistoriqueActionList(idContrat: string): void {
     this.utils.changeIsLoading(true);
     this.userRepo.userGetHistoriqueActionList(idContrat).subscribe(

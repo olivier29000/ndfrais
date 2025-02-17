@@ -443,7 +443,7 @@ export class AccueilPage {
       icon: 'mat:check',
       label: "Comment m'inscrire ou avoir plus d'informations ?",
       description:
-        'Appelez moi directement au 06 99 89 22 42 ou écrivez moi sur lasbleis.olivier&#64;yahoo.fr'
+        'Appelez moi directement au 06 99 89 22 42 ou écrivez moi sur lasbleis.olivier@yahoo.fr.'
     },
     {
       icon: 'mat:check',

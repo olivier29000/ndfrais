@@ -1,26 +1,12 @@
-import {
-  Component,
-  computed,
-  effect,
-  signal,
-  WritableSignal
-} from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { UserApp } from '../../models/user.model';
-import { ServerService } from '../../services/server.service';
-import { ActivatedRoute } from '@angular/router';
-import { ContratListDumb } from '../dumbs/contrat-list.dumb';
-import { ContratUserApp } from '../../models/contrat-employe.model';
-import { ManagerServerService } from './services/manager-server.service';
-import { DayListDumb } from '../dumbs/day-list.dumb';
+import { Component, computed, signal, WritableSignal } from '@angular/core';
 import { format } from 'date-fns';
 import { DayLineDumb } from '../dumbs/day-line.dumb';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { fr } from 'date-fns/locale';
-import { DayApp } from 'src/app/models/day-app.model';
+import { UserServerService } from './services/user-server.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   template: ` <div
@@ -50,10 +36,7 @@ import { DayApp } from 'src/app/models/day-app.model';
                   </h5>
                 </div>
               </div>
-              <dumb-day-line
-                (cancelLastOutput)="openActionDayListRefuseModal($event)"
-                (validLastOutput)="openActionDayListValidModal($event)"
-                [dayAppList]="recap.dayAppList"></dumb-day-line>
+              <dumb-day-line [dayAppList]="recap.dayAppList"></dumb-day-line>
             </div>
           }
         </div>
@@ -65,31 +48,29 @@ import { DayApp } from 'src/app/models/day-app.model';
   standalone: true,
   imports: [DayLineDumb, MatButtonModule, MatIconModule, FormsModule]
 })
-export class ManagerRecapPage {
-  recapByContratDayAppList = this.managerServer.recapByContratDayAppList;
+export class UserEquipePage {
+  recapByContratDayAppList = this.userServer.recapByContratDayAppList;
   currentMonthRecap = computed(() =>
-    format(this.managerServer.currentDateRecap(), 'MMMM yyyy', { locale: fr })
+    format(this.userServer.currentDateRecap(), 'MMMM yyyy', { locale: fr })
   );
-  ngOnInit(): void {
-    this.managerServer.getRecap();
-  }
   previousMonth(): void {
-    this.managerServer.previousMonth();
+    this.userServer.previousMonth();
   }
   nextMonth(): void {
-    this.managerServer.nextMonth();
+    this.userServer.nextMonth();
   }
-  openActionDayListValidModal(dayApp: DayApp): void {
-    if (dayApp.actionDay) {
-      this.managerServer.openActionDayListValidModal(dayApp.actionDay.idAction);
-    }
+  constructor(
+    private userServer: UserServerService,
+    private route: ActivatedRoute
+  ) {}
+
+  ngOnInit(): void {
+    this.route.paramMap.subscribe((params) => {
+      const idContratUserApp = params.get('idContratUserApp');
+      if (idContratUserApp) {
+        this.userServer.idContratUserApp.set(idContratUserApp);
+        this.userServer.getRecap();
+      }
+    });
   }
-  openActionDayListRefuseModal(dayApp: DayApp): void {
-    if (dayApp.actionDay) {
-      this.managerServer.openActionDayListRefuseModal(
-        dayApp.actionDay.idAction
-      );
-    }
-  }
-  constructor(private managerServer: ManagerServerService) {}
 }

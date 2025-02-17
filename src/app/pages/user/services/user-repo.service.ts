@@ -57,6 +57,19 @@ export class UserRepoService {
       .pipe(catchError(this.handleError));
   }
 
+  getRecap(
+    dateStr: string,
+    idContratUserApp: string
+  ): Observable<{ contrat: ContratUserApp; dayAppList: DayApp[] }[]> {
+    console.log('getRecap');
+    console.log(idContratUserApp);
+    return this.http
+      .get<
+        { contrat: ContratUserApp; dayAppList: DayApp[] }[]
+      >(`${URL_BACKEND}/day-app/get-recap/${dateStr}/${idContratUserApp}`, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
   private handleError(error: HttpErrorResponse) {
     if (error.status === 409) {
       // Conflict: User already exists
