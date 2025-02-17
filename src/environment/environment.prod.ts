@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  urlBackEnd: 'https://chronoshare.fr/back', // "https://pourdubeurre.bzh/back"//
-  urlFrontEnd: 'https://chronoshare.fr',
+  urlBackEnd: 'https://alaisedeiz.bzh/back', //
+  urlFrontEnd: 'https://alaisedeiz.bzh',
   trackAnalyticID: '@TODO'
 };
