@@ -68,7 +68,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
         <div class="space-y-12">
           <div class="text-center">
             <div class="text-2xl font-medium">Logiciel de gestion RH</div>
-            <div class="text-5xl font-extrabold">alaisedeiz.bzh</div>
+            <div class="text-5xl font-extrabold">alaisedeiz</div>
           </div>
         </div>
         <!-- PRICING -->
@@ -81,13 +81,13 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
                 <span class="text-xl font-semibold">/employé(e)/mois</span>
               </div>
               <div class="text-gray-500 font-medium">Prix avant offre</div>
-              <button
+              <!-- <button
                 class="w-full"
                 color="primary"
                 mat-flat-button
                 type="button">
                 Je veux en savoir plus
-              </button>
+              </button> -->
             </div>
 
             <div class="px-8 py-8 space-y-4">
@@ -170,13 +170,13 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
               <div class="text-gray-500 font-medium">
                 Conçu pour les TPE, PME
               </div>
-              <button
+              <!-- <button
                 class="w-full"
                 color="primary"
                 mat-flat-button
                 type="button">
                 Je veux en savoir plus
-              </button>
+              </button> -->
             </div>
 
             <div class="px-8 py-8 space-y-4">
@@ -250,13 +250,13 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
               <div class="text-gray-500 font-medium">
                 alaisedeiz + vos besoins spécifiques
               </div>
-              <button
+              <!-- <button
                 class="w-full"
                 color="primary"
                 mat-flat-button
                 type="button">
                 Je veux en savoir plus
-              </button>
+              </button> -->
             </div>
 
             <div class="px-8 py-8 space-y-4">
@@ -317,8 +317,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
           <div class="text-center">
             <div class="text-4xl font-extrabold">Questions / Réponses</div>
             <div class="text-gray-500 max-w-md mx-auto mt-4 font-medium">
-              Vous ne trouvez pas votre réponse ici ? Appelez moi au 06 99 89 22
-              42 ou prenez rdv.
+              Vous ne trouvez pas votre réponse ici ? Appelez moi directement au
+              06 99 89 22 42 ou écrivez moi sur lasbleis.olivier&#64;yahoo.fr
             </div>
           </div>
 
@@ -377,18 +377,10 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
             <div class="text-4xl font-extrabold">Envie d'en savoir plus ?</div>
             <div
               class="text-xl text-primary-700 dark:text-primary-500 font-extrabold mt-1">
-              Laissez votre contact et obtenez un rdv sur vos disponibilités
-            </div>
-            <div
-              class="text-xl text-primary-700 dark:text-primary-500 font-extrabold mt-1">
-              Ou appelez moi directement au 06 99 89 22 42
+              Appelez moi directement au 06 99 89 22 42 ou écrivez moi sur
+              lasbleis.olivier&#64;yahoo.fr
             </div>
           </div>
-
-          <button color="primary" mat-raised-button type="button">
-            Get Started
-          </button>
-          <button mat-stroked-button type="button">Learn more</button>
         </div>
         <br />
         <br />
@@ -451,7 +443,7 @@ export class AccueilPage {
       icon: 'mat:check',
       label: "Comment m'inscrire ou avoir plus d'informations ?",
       description:
-        'Vous pouvez prendre un rdv téléphonique ou visio en cliquant sur "prendre un rdv" sur cette page ou m\'appeler directement au 06 99 89 22 42.'
+        'Appelez moi directement au 06 99 89 22 42 ou écrivez moi sur lasbleis.olivier&#64;yahoo.fr'
     },
     {
       icon: 'mat:check',
