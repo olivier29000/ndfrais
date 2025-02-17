@@ -313,6 +313,24 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
           <vex-pricing-faq></vex-pricing-faq>
         </div> -->
         </div>
+        <div class="space-y-12">
+          <div class="text-center">
+            <div class="text-4xl font-extrabold">Questions / Réponses</div>
+            <div class="text-gray-500 max-w-md mx-auto mt-4 font-medium">
+              Vous ne trouvez pas votre réponse ici ? Appelez moi au 06 99 89 22
+              42 ou prenez rdv.
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8">
+            <div *ngFor="let item of items">
+              <div class="text-lg font-medium">{{ item.label }}</div>
+              <div class="text-gray-500 text-sm mt-1 leading-relaxed">
+                {{ item.description }}
+              </div>
+            </div>
+          </div>
+        </div>
         <div
           class="rounded-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
           <div class="relative">
@@ -360,6 +378,10 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
             <div
               class="text-xl text-primary-700 dark:text-primary-500 font-extrabold mt-1">
               Laissez votre contact et obtenez un rdv sur vos disponibilités
+            </div>
+            <div
+              class="text-xl text-primary-700 dark:text-primary-500 font-extrabold mt-1">
+              Ou appelez moi directement au 06 99 89 22 42
             </div>
           </div>
 
@@ -409,51 +431,65 @@ export class AccueilPage {
   }[] = [
     {
       icon: 'mat:check',
-      label: 'Quick & easy integration',
+      label: 'A quoi sert le logiciel web alaisedeiz ?',
       description:
-        'Simple to set up and integrate with popular tools such as Angular, React, Vue, Symfony and Laravel. Supports single-page applications and hash-based routing.'
+        "C'est un outil disponible sur le web qui permet de gérer facilement le planning des abscences de vos employés. Concrétement, vos employés disposent d'un espace en ligne pour faire leur demandes d'abscences (congés, arrêts maladies...) et vos manager et vous disposez d'un espace pour visualiser les demandes en cours et l'historique."
     },
     {
       icon: 'mat:check',
-      label: 'Open and flexible API',
+      label: 'Quel intêret y a t-il pour moi et mes équipes ?',
       description:
-        'Simple to set up and integrate with popular tools and applications, our open APIs make the tracking process as easy and intuitive as possible.'
+        "Vous gagnez du temps, simplifiez votre organisation et la collecte des données pour votre comptabilité. Il est conçu pour que la saisie soit intuitive et permet de centraliser les données et de visualiser facilement les informations. Il est accessible de manière sécurisée de n'importe où"
     },
     {
       icon: 'mat:check',
-      label: 'Email financial reports',
+      label: 'Quelles fonctionnalités vous prévoyez en plus ?',
       description:
-        'Keep an eye on your traffic with weekly reports. Get pre-read articles up to a month before publication. Be able to pay for your own advertising, if necessary.'
+        'Je prévois un calendrier pour les employés et ainsi simplifier le calcul hebdomadaire et mensuels des heures de travails. Si vous vous inscrivez, je serais aussi attentifs à vos propositions.'
     },
     {
       icon: 'mat:check',
-      label: 'Flexible proxy scripts',
+      label: "Comment m'inscrire ou avoir plus d'informations ?",
       description:
-        'You can set up a proxy to change the file access rights for a specific folder, if the user has some special permissions which allows modification.'
+        'Vous pouvez prendre un rdv téléphonique ou visio en cliquant sur "prendre un rdv" sur cette page ou m\'appeler directement au 06 99 89 22 42.'
     },
     {
       icon: 'mat:check',
-      label: 'You own your data',
+      label:
+        "Pourquoi je ne peux pas créer un compte directement et commencer à utiliser l'outil tout de suite ?",
       description:
-        'We only store the stuff you tell us to. And we take your privacy very seriously. Because of this, we only store the data we need to do our jobs for you. '
+        "Je ne veux pas surcharger les serveurs et je veux controller l'ajout de nouveau utilisateurs pour éviter les calculs inutiles qui ralentiraient les utilisateurs déjà présents."
     },
     {
       icon: 'mat:check',
-      label: 'Optimized workflows',
+      label: "Quel engagement je prends si je m'abonne",
       description:
-        'The best way to do things is not to do them. Automate things with our included Workflow-Manager. Enjoy easy creation of complex business operations.'
+        "Aucun, vous pouvez vous désabonner à tout moment, la seule chose que je vous demande c'est de me prévenir si vous avez un bug et de m'indiquer les axes d'améliorations. C'est dans mon intêret que alaisedeiz soit adapté à vos besoins"
     },
     {
       icon: 'mat:check',
-      label: 'Developer platform',
+      label: 'Quel engagement vous prenez de votre côté ?',
       description:
-        'Dig deep into the code and watch the magic happen. You’ll also learn a bit about JavaScript’s event loop, closures, async functions, promises, arrays, strings and much more.'
+        "Dans le cadre de l'offre de lancement, je m'engage à vous accompagner pour configurer le logiciel, à vous former pour l'utiliser et à être disponible en visio ou par téléphone en semaine sur les heures de bureau. C'est, encore une fois, dans mon intêret de comprendre les difficultés et les besoins de ma clientèle."
     },
     {
       icon: 'mat:check',
-      label: 'Third party integrations',
+      label:
+        "2€ par employé, c'est vraiment pas cher, comment comptez vous offrir un service de qualité ?",
       description:
-        "Connect third-party products like Amazon Echo, Sonos speakers, and games consoles. It's a good way to synchronize all your devices into a single app."
+        "C'est une offre de lancement, le prix augmentera pour atteindre 5€ pour les futurs adhérents tandis que vous garderez cette offre là. Mon objectif est de capter une clientèle fidèle, de comprendre leurs besoins et de rajouter des fonctionnalités qui justifieront un prix plus élevé ensuite."
+    },
+    {
+      icon: 'mat:check',
+      label: 'Vous allez réussir à gérer ?',
+      description:
+        "J'ai l'habitude et c'est mon métier. Dans mon précédent travail j'avais la gestion d'un logiciel semblable utilisé par plus de quatre mille personnes quotidiennement. En 2021 j'ai créé le même type de logiciel pour une TPE de Combrit et il fonctionne parfaitement sans qu'il n'y ait eu aucune intervention de ma part."
+    },
+    {
+      icon: 'mat:check',
+      label: 'Pourquoi le nom alaisedeiz ?',
+      description:
+        'C\'est un clin d\'oeil à ma région la Bretagne, "deiz" signifie "jour" en breton et je fais référence à l\'expréssion "à l\'aise breizh" qu\'on m\'a souvent rappelée avec mon nom de famille "lasbleis". alaisedeiz, pour moi signifie que vous organiserez vos jours plus facilement.'
     }
   ];
 }
