@@ -15,6 +15,10 @@ export interface ContratUserApp {
   contratManager?: ContratUserApp;
   nbActions?: number;
   archived: boolean;
+  compteJourConge: number;
+  compteJourRtt: number;
+  compteJourRecup: number;
+  compteJourEnfantMalade: number;
 }
 
 export enum DayOfWeek {

@@ -214,7 +214,8 @@ export const CUSTOM_DATE_FORMATS = {
                   [workState]="{
                     label: workState,
                     icon: '',
-                    nb: ''
+                    nbDispo: '',
+                    nbPrevision: ''
                   }"
                   (click)="selectWorkState(workState)"></dumb-work-state>
               }
@@ -323,7 +324,11 @@ export class CreateUpdateContratModal implements OnInit {
       ? new UserApp(this.data?.contrat?.userApp)
       : this.data?.userApp,
     archived: this.data?.contrat?.archived || false,
-    workStateAvailableList: this.data?.contrat?.workStateAvailableList || []
+    workStateAvailableList: this.data?.contrat?.workStateAvailableList || [],
+    compteJourConge: this.data?.contrat?.compteJourConge || 0,
+    compteJourRtt: this.data?.contrat?.compteJourRtt || 0,
+    compteJourRecup: this.data?.contrat?.compteJourRecup || 0,
+    compteJourEnfantMalade: this.data?.contrat?.compteJourEnfantMalade || 0
   };
   mode: 'create' | 'update' = 'create';
   adminAllContratList = computed(() => {

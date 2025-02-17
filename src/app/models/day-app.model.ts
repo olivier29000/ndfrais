@@ -27,13 +27,15 @@ export enum WORK_STATE {
   ARRET_MALADIE = 'ARRET_MALADIE',
   CONGE_SANS_SOLDE = 'CONGE_SANS_SOLDE',
   ABSCENCE = 'ABSCENCE',
-  REPOS = 'REPOS'
+  REPOS = 'REPOS',
+  ENFANT_MALADE = 'ENFANT_MALADE'
 }
 
 export interface workStateItem {
   label: WORK_STATE;
   icon: string;
-  nb: string;
+  nbDispo: string;
+  nbPrevision: string;
 }
 
 export enum ACTION_STATE {

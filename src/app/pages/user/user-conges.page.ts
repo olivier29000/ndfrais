@@ -27,7 +27,8 @@ import Swal from 'sweetalert2';
 import { ValidCancelActionModal } from './modals/valid-cancel-action.modal';
 @Component({
   template: `
-    <div class="px-6 p-6 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-6 gap-4">
+    <div
+      class="px-6 p-6 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-6 gap-4 gap-6">
       @for (item of workStateList(); track $index) {
         <dumb-work-state
           [ngStyle]="{
@@ -38,7 +39,7 @@ import { ValidCancelActionModal } from './modals/valid-cancel-action.modal';
           (click)="selectWorkState(item)"></dumb-work-state>
       }
     </div>
-    <div class="px-6">
+    <div class="px-6 ">
       @if (selectedWorkState) {
         <dumb-day-list
           [selectedWorkstate]="selectedWorkState.label"
@@ -56,15 +57,65 @@ export class UserCongesPage implements OnInit {
   WORK_STATE = WORK_STATE;
   workStateList: Signal<workStateItem[]> = computed(() => {
     const userCurrentContrat = this.userCurrentContrat();
+    const userDayAppList = this.userDayAppList();
     if (!userCurrentContrat) {
       return [];
     } else {
+      const nbPrevisionConge = userDayAppList.reduce(
+        (acc, d) =>
+          acc +
+          (d.actionDay && d.actionDay.workState === WORK_STATE.CONGE ? 1 : 0),
+        0
+      );
+      const nbPrevisionRTT = userDayAppList.reduce(
+        (acc, d) =>
+          acc +
+          (d.actionDay && d.actionDay.workState === WORK_STATE.RTT ? 1 : 0),
+        0
+      );
+      const nbPrevisionRecup = userDayAppList.reduce(
+        (acc, d) =>
+          acc +
+          (d.actionDay && d.actionDay.workState === WORK_STATE.RECUP ? 1 : 0),
+        0
+      );
+      const nbPrevisionEnfantMalade = userDayAppList.reduce(
+        (acc, d) =>
+          acc +
+          (d.actionDay && d.actionDay.workState === WORK_STATE.ENFANT_MALADE
+            ? 1
+            : 0),
+        0
+      );
       const workStateList: workStateItem[] =
-        userCurrentContrat.workStateAvailableList.map((workState) => ({
-          label: workState,
-          icon: 'mat:card_travel',
-          nb: '1'
-        }));
+        userCurrentContrat.workStateAvailableList.map((workState) => {
+          const nbDispo: number | string =
+            workState === WORK_STATE.CONGE
+              ? userCurrentContrat.compteJourConge
+              : workState === WORK_STATE.RTT
+                ? userCurrentContrat.compteJourRtt
+                : workState === WORK_STATE.RECUP
+                  ? userCurrentContrat.compteJourRecup
+                  : workState === WORK_STATE.ENFANT_MALADE
+                    ? userCurrentContrat.compteJourEnfantMalade
+                    : '';
+          const nbPrevision: number | string =
+            workState === WORK_STATE.CONGE
+              ? Number(nbDispo) - nbPrevisionConge
+              : workState === WORK_STATE.RTT
+                ? Number(nbDispo) - nbPrevisionRTT
+                : workState === WORK_STATE.RECUP
+                  ? Number(nbDispo) - nbPrevisionRecup
+                  : workState === WORK_STATE.ENFANT_MALADE
+                    ? Number(nbDispo) - nbPrevisionEnfantMalade
+                    : '';
+          return {
+            label: workState,
+            icon: 'mat:card_travel',
+            nbDispo: nbDispo + '',
+            nbPrevision: nbPrevision + ''
+          };
+        });
       return workStateList;
     }
   });
@@ -95,7 +146,6 @@ export class UserCongesPage implements OnInit {
       this.currentAction = undefined;
     }
   }
-  selectDayList(dayAppList: DayApp[]): void {}
   askAction(dayAppList: DayApp[]): void {
     const selectedWorkState = this.selectedWorkState;
     if (dayAppList.length > 0 && selectedWorkState) {

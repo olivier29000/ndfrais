@@ -50,8 +50,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
             Besoin de simplifier le planning et les abscences de vos employés ?
           </div>
           <div class="text-2xl font-medium  mb-5">
-            Plutôt qu'un long discour, je vous propose de regarde cette vidéo de
-            3 minutes pour découvrir le logiciel alaisedeiz
+            Plutôt qu'un long discours, je vous propose de regarder cette vidéo
+            de 3 minutes pour découvrir le logiciel alaisedeiz
           </div>
           <iframe
             height="560"

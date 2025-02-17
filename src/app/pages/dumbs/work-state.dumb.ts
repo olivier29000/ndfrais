@@ -1,14 +1,6 @@
 import { CommonModule, NgClass, NgIf } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  Output
-} from '@angular/core';
-import { eachDayOfInterval, eachMonthOfInterval, format } from 'date-fns';
-import { DayApp, workStateItem } from 'src/app/models/day-app.model';
-import { DaySquareDumb } from './day-square.dumb';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { workStateItem } from 'src/app/models/day-app.model';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -18,7 +10,7 @@ import { scaleInOutAnimation } from '@vex/animations/scale-in-out.animation';
   selector: 'dumb-work-state',
   template: `
     <div
-      class="card p-6 relative hover:shadow-lg transition duration-200 ease-out-swift flex flex-col items-center">
+      class="card p-6 relative hover:shadow-lg transition duration-200 ease-out-swift flex flex-col items-center h-full">
       <div
         [ngClass]="iconClass"
         class="rounded-full w-12 h-12 flex items-center justify-center">
@@ -29,7 +21,14 @@ import { scaleInOutAnimation } from '@vex/animations/scale-in-out.animation';
         {{ workState.label }}
       </h3>
       <h6 class="subheading-2 font-medium text-secondary m-0">
-        {{ workState.nb }}
+        {{ workState.nbDispo ? 'Dispo : ' + workState.nbDispo : '' }}
+      </h6>
+      <h6 class="subheading-2 font-medium text-secondary m-0">
+        {{
+          workState.nbPrevision
+            ? 'Après validations : ' + workState.nbPrevision
+            : ''
+        }}
       </h6>
 
       <button
