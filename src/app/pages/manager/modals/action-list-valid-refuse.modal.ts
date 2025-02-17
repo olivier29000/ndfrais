@@ -10,7 +10,7 @@ import {
   MatDialogModule,
   MatDialogRef
 } from '@angular/material/dialog';
-import { Action } from 'src/app/models/action.model';
+import { Action, ActionDisplay } from 'src/app/models/action.model';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
@@ -45,30 +45,11 @@ import { MatSelectModule } from '@angular/material/select';
     <mat-divider class="text-border"></mat-divider>
 
     <mat-dialog-content class="flex flex-col">
-      <table class="w-full" mat-table matSort>
-        <thead>
-          <tr>
-            <th mat-header-cell mat-sort-header>de</th>
-            <th mat-header-cell mat-sort-header>du</th>
-            <th mat-header-cell mat-sort-header>au</th>
-            <th mat-header-cell mat-sort-header>Ancien statut</th>
-            <th mat-header-cell mat-sort-header>Nouveau Statut</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>{{ data.action.userAppAction.nom }}</td>
-            <td>{{ data.action.dayAppList[0].date }}</td>
-            <td>
-              {{
-                data.action.dayAppList[data.action.dayAppList.length - 1].date
-              }}
-            </td>
-            <td>{{ data.action.dayAppList[0].workState }}</td>
-            <td>{{ data.action.workState }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <dumb-action-list
+        [actionList]="[data.action]"
+        [withActions]="false"
+        [columns]="columns"
+        class="sm:col-span-2"></dumb-action-list>
     </mat-dialog-content>
 
     <mat-dialog-actions align="end">
@@ -88,6 +69,7 @@ import { MatSelectModule } from '@angular/material/select';
   </form>`,
   standalone: true,
   imports: [
+    ActionListDumb,
     MatListModule,
     MatDialogModule,
     MatButtonModule,
@@ -123,4 +105,51 @@ export class ActionListValidRefuseModal implements OnInit {
   close() {
     this.dialogRef.close();
   }
+
+  columns: TableColumn<ActionDisplay>[] = [
+    {
+      label: 'de',
+      property: 'user',
+      type: 'text'
+    },
+    {
+      label: 'du',
+      property: 'from',
+      type: 'text'
+    },
+    {
+      label: 'au',
+      property: 'to',
+      type: 'text'
+    },
+    {
+      label: 'Nb jours concernés',
+      property: 'nbJours',
+      type: 'text'
+    },
+    {
+      label: 'Ancien statut',
+      property: 'ancienStatut',
+      type: 'text',
+      cssClasses: ['font-medium']
+    },
+    {
+      label: 'Nouveau Statut',
+      property: 'nouveauStatut',
+      type: 'text',
+      cssClasses: ['font-medium']
+    },
+    {
+      label: 'Notes',
+      property: 'notes',
+      type: 'text',
+      cssClasses: ['font-medium']
+    },
+    {
+      label: 'Justificatif',
+      property: 'idPdf',
+      type: 'number',
+      cssClasses: ['font-medium']
+    }
+  ];
 }

@@ -9,5 +9,5 @@ import { ServerService } from './services/server.service';
   imports: [RouterOutlet]
 })
 export class AppComponent {
-  constructor(private server: ServerService) {}
+  constructor() {}
 }

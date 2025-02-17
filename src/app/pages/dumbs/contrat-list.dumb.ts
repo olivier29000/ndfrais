@@ -411,7 +411,7 @@ import { RouterLink } from '@angular/router';
 })
 export class ContratListDumb implements AfterViewInit {
   @Input() title = '';
-  columns: TableColumn<ContratUserApp>[] = [
+  @Input() columns: TableColumn<ContratUserApp>[] = [
     {
       label: 'Poste',
       property: 'poste',
@@ -462,7 +462,7 @@ export class ContratListDumb implements AfterViewInit {
       cssClasses: ['text-secondary', 'font-medium']
     },
     {
-      label: 'nb actions',
+      label: 'nb demandes',
       property: 'nbActions',
       type: 'badge',
       visible: true,

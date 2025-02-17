@@ -73,9 +73,6 @@ import { Action, ActionDisplay } from 'src/app/models/action.model';
               <button mat-icon-button (click)="refuseActionOutput(row)">
                 <mat-icon svgIcon="mat:close"></mat-icon>
               </button>
-              <button mat-icon-button>
-                <mat-icon svgIcon="mat:remove_red_eye"></mat-icon>
-              </button>
             </td>
           </ng-container>
 
