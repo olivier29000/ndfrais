@@ -5,8 +5,6 @@ import { CreateAccountPage } from './unlogged-pages/create-account.page';
 import { EffectService } from './services/effect.service';
 import { inject } from '@angular/core';
 import { AccueilPage } from './accueil.page';
-import { BaseLayoutComponent } from './layouts/base-layout/base-layout.component';
-import { LayoutEmptyComponent } from './layouts/layout-empty/layout-empty.component';
 
 export const appRoutes: VexRoutes = [
   {
