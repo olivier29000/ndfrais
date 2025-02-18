@@ -73,7 +73,16 @@ export class UserEffectService {
     this.userRepo.userGetHistoriqueActionList(idContrat).subscribe(
       (historiqueActionList) => {
         this.utils.changeIsLoading(false);
-        this.userStore.historiqueActionList.set(historiqueActionList);
+        this.userStore.historiqueActionList.set(
+          historiqueActionList.map((a) => ({
+            ...a,
+            date: new Date(a.date),
+            dayAppList: a.dayAppList.map((d) => ({
+              ...d,
+              date: new Date(d.date)
+            }))
+          }))
+        );
       },
       () => {
         this.utils.changeIsLoading(false);

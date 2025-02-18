@@ -14,10 +14,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { NgIf } from '@angular/common';
 import { UserApp } from 'src/app/models/user.model';
 import { MatSelectModule } from '@angular/material/select';
-import { Action } from 'src/app/models/action.model';
+import { Action, ActionDisplay } from 'src/app/models/action.model';
 import { ServerService } from 'src/app/services/server.service';
 import { UserServerService } from '../services/user-server.service';
 import { ActionListDumb } from '../../dumbs/action-list.dumb';
+import { TableColumn } from '@vex/interfaces/table-column.interface';
 
 @Component({
   template: `<form>
@@ -36,30 +37,11 @@ import { ActionListDumb } from '../../dumbs/action-list.dumb';
     <mat-divider class="text-border"></mat-divider>
 
     <mat-dialog-content class="flex flex-col">
-      <table class="w-full" mat-table matSort>
-        <thead>
-          <tr>
-            <th mat-header-cell mat-sort-header>de</th>
-            <th mat-header-cell mat-sort-header>du</th>
-            <th mat-header-cell mat-sort-header>au</th>
-            <th mat-header-cell mat-sort-header>Ancien statut</th>
-            <th mat-header-cell mat-sort-header>Nouveau Statut</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>{{ data.action.userAppAction.nom }}</td>
-            <td>{{ data.action.dayAppList[0].date }}</td>
-            <td>
-              {{
-                data.action.dayAppList[data.action.dayAppList.length - 1].date
-              }}
-            </td>
-            <td>{{ data.action.dayAppList[0].workState }}</td>
-            <td>{{ data.action.workState }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <dumb-action-list
+        [actionList]="[data.action]"
+        [withActions]="false"
+        [columns]="columns"
+        class="sm:col-span-2"></dumb-action-list>
 
       <mat-divider class="text-border"></mat-divider>
       <!-- Champ de fichier sans <mat-form-field> -->
@@ -103,7 +85,8 @@ import { ActionListDumb } from '../../dumbs/action-list.dumb';
     MatDividerModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule
+    MatSelectModule,
+    ActionListDumb
   ]
 })
 export class ValidCancelActionModal implements OnInit {
@@ -139,4 +122,34 @@ export class ValidCancelActionModal implements OnInit {
   //     formData.append('file', this.file);
   //     this.serverService.postCV(formData);
   //   }
+
+  columns: TableColumn<ActionDisplay>[] = [
+    {
+      label: 'du',
+      property: 'from',
+      type: 'text'
+    },
+    {
+      label: 'au',
+      property: 'to',
+      type: 'text'
+    },
+    {
+      label: 'Nb jours concernés',
+      property: 'nbJours',
+      type: 'text'
+    },
+    {
+      label: 'Ancien statut',
+      property: 'ancienStatut',
+      type: 'text',
+      cssClasses: ['font-medium']
+    },
+    {
+      label: 'Nouveau Statut',
+      property: 'nouveauStatut',
+      type: 'text',
+      cssClasses: ['font-medium']
+    }
+  ];
 }

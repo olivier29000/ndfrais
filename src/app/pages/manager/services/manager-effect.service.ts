@@ -47,7 +47,16 @@ export class ManagerEffectService {
       .subscribe(
         (historiqueActionList) => {
           this.utils.changeIsLoading(false);
-          this.managerStore.historiqueActionList.set(historiqueActionList);
+          this.managerStore.historiqueActionList.set(
+            historiqueActionList.map((a) => ({
+              ...a,
+              date: new Date(a.date),
+              dayAppList: a.dayAppList.map((d) => ({
+                ...d,
+                date: new Date(d.date)
+              }))
+            }))
+          );
         },
         () => {
           this.utils.changeIsLoading(false);
@@ -73,7 +82,16 @@ export class ManagerEffectService {
     this.managerRepo.validAction(action).subscribe(
       (actionList) => {
         this.utils.changeIsLoading(false);
-        this.managerStore.actionList.set(actionList);
+        this.managerStore.actionList.set(
+          actionList.map((a) => ({
+            ...a,
+            date: new Date(a.date),
+            dayAppList: a.dayAppList.map((d) => ({
+              ...d,
+              date: new Date(d.date)
+            }))
+          }))
+        );
         this.getRecap(this.managerStore.currentDateRecap());
       },
       () => {
@@ -87,7 +105,16 @@ export class ManagerEffectService {
     this.managerRepo.refuseAction(action).subscribe(
       (actionList) => {
         this.utils.changeIsLoading(false);
-        this.managerStore.actionList.set(actionList);
+        this.managerStore.actionList.set(
+          actionList.map((a) => ({
+            ...a,
+            date: new Date(a.date),
+            dayAppList: a.dayAppList.map((d) => ({
+              ...d,
+              date: new Date(d.date)
+            }))
+          }))
+        );
         this.getRecap(this.managerStore.currentDateRecap());
       },
       () => {
@@ -100,7 +127,16 @@ export class ManagerEffectService {
     this.managerRepo.getActionListByUserApp().subscribe(
       (actionList) => {
         this.utils.changeIsLoading(false);
-        this.managerStore.actionList.set(actionList);
+        this.managerStore.actionList.set(
+          actionList.map((a) => ({
+            ...a,
+            date: new Date(a.date),
+            dayAppList: a.dayAppList.map((d) => ({
+              ...d,
+              date: new Date(d.date)
+            }))
+          }))
+        );
       },
       () => {
         this.utils.changeIsLoading(false);

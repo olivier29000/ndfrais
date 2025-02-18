@@ -20,8 +20,8 @@ export interface ActionDay {
 
 export interface ActionDisplay {
   id: number;
-  from: Date;
-  to: Date;
+  from: string;
+  to: string;
   ancienStatut: string;
   nouveauStatut: string;
   state: string;

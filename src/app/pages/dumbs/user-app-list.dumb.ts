@@ -321,13 +321,6 @@ import { MatSelectModule } from '@angular/material/select';
 export class UserListDumb implements AfterViewInit {
   columns: TableColumn<UserApp>[] = [
     {
-      label: 'Checkbox',
-      property: 'checkbox',
-      type: 'checkbox',
-      visible: true
-    },
-    { label: 'Image', property: 'image', type: 'image', visible: true },
-    {
       label: 'Nom Prénom',
       property: 'nomPrenom',
       type: 'text',

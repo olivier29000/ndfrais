@@ -18,6 +18,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TableColumn } from '@vex/interfaces/table-column.interface';
 import { MatMenuModule } from '@angular/material/menu';
 import { Action, ActionDisplay } from 'src/app/models/action.model';
+import { format } from 'date-fns';
 
 @Component({
   selector: 'dumb-action-list',
@@ -192,6 +193,7 @@ export class ActionListDumb implements OnInit, OnChanges, AfterViewInit {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['actionList']) {
+      console.log(this.actionList);
       this.dataSource.data = this.actionList.map((currentAction) => ({
         id: currentAction.id,
         state: currentAction.state,
@@ -199,8 +201,11 @@ export class ActionListDumb implements OnInit, OnChanges, AfterViewInit {
           currentAction.userAppAction.nom +
           ' ' +
           currentAction.userAppAction.prenom,
-        from: currentAction.dayAppList[0].date,
-        to: currentAction.dayAppList[currentAction.dayAppList.length - 1].date,
+        from: format(currentAction.dayAppList[0].date, 'dd-MM-yyyy'),
+        to: format(
+          currentAction.dayAppList[currentAction.dayAppList.length - 1].date,
+          'dd-MM-yyyy'
+        ),
         ancienStatut: currentAction.dayAppList[0].workState,
         nouveauStatut: currentAction.workState,
         notes: currentAction.notes,

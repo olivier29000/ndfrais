@@ -69,7 +69,16 @@ export class AdminEffectService {
     this.adminRepo.getActionList().subscribe(
       (actionList) => {
         this.utils.changeIsLoading(false);
-        this.adminStore.actionList.set(actionList);
+        this.adminStore.actionList.set(
+          actionList.map((a) => ({
+            ...a,
+            date: new Date(a.date),
+            dayAppList: a.dayAppList.map((d) => ({
+              ...d,
+              date: new Date(d.date)
+            }))
+          }))
+        );
       },
       () => {
         this.utils.changeIsLoading(false);
@@ -119,7 +128,16 @@ export class AdminEffectService {
     this.adminRepo.validAction(action).subscribe(
       (actionList) => {
         this.utils.changeIsLoading(false);
-        this.adminStore.actionList.set(actionList);
+        this.adminStore.actionList.set(
+          actionList.map((a) => ({
+            ...a,
+            date: new Date(a.date),
+            dayAppList: a.dayAppList.map((d) => ({
+              ...d,
+              date: new Date(d.date)
+            }))
+          }))
+        );
         this.getRecap(this.adminStore.currentDateRecap());
       },
       () => {
@@ -133,7 +151,16 @@ export class AdminEffectService {
     this.adminRepo.refuseAction(action).subscribe(
       (actionList) => {
         this.utils.changeIsLoading(false);
-        this.adminStore.actionList.set(actionList);
+        this.adminStore.actionList.set(
+          actionList.map((a) => ({
+            ...a,
+            date: new Date(a.date),
+            dayAppList: a.dayAppList.map((d) => ({
+              ...d,
+              date: new Date(d.date)
+            }))
+          }))
+        );
         this.getRecap(this.adminStore.currentDateRecap());
       },
       () => {
@@ -236,7 +263,16 @@ export class AdminEffectService {
     this.adminRepo.adminGetHistoriqueActionList(date.getFullYear()).subscribe(
       (historiqueActionList) => {
         this.utils.changeIsLoading(false);
-        this.adminStore.historiqueActionList.set(historiqueActionList);
+        this.adminStore.historiqueActionList.set(
+          historiqueActionList.map((a) => ({
+            ...a,
+            date: new Date(a.date),
+            dayAppList: a.dayAppList.map((d) => ({
+              ...d,
+              date: new Date(d.date)
+            }))
+          }))
+        );
       },
       () => {
         this.utils.changeIsLoading(false);
