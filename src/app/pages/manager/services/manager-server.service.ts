@@ -1,4 +1,4 @@
-import { computed, Injectable } from '@angular/core';
+import { computed, effect, Injectable } from '@angular/core';
 import { ManagerEffectService } from './manager-effect.service';
 import { Action } from 'src/app/models/action.model';
 import { ManagerStoreService } from './manager-store.service';
@@ -9,6 +9,8 @@ import {
   startOfMonth
 } from 'date-fns';
 import { WEEK_STATE, WORK_STATE } from 'src/app/models/day-app.model';
+import { UtilsService } from 'src/app/services/utils.service';
+import { Role } from 'src/app/models/user-connected.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,10 +18,21 @@ import { WEEK_STATE, WORK_STATE } from 'src/app/models/day-app.model';
 export class ManagerServerService {
   constructor(
     private managerEffect: ManagerEffectService,
-    private managerStore: ManagerStoreService
+    private managerStore: ManagerStoreService,
+    private utils: UtilsService
   ) {
     this.getAllContratUserApp();
     this.getActionListByUserApp();
+    effect(
+      () => {
+        const userConnected = this.utils.userConnected();
+        const nbActionList = this.actionList().length;
+        if (userConnected?.roleList.includes(Role.ROLE_MANAGER)) {
+          this.utils.pushManagerNbActionList(nbActionList);
+        }
+      },
+      { allowSignalWrites: true }
+    );
   }
   historiqueActionList = this.managerStore.historiqueActionList;
   currentYearHistorique = this.managerStore.currentYearHistorique;

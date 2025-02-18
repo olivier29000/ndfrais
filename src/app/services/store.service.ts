@@ -129,7 +129,7 @@ const navigationItemUser: NavigationSubheading = {
     }
   ]
 };
-const navigationItemManager: NavigationSubheading = {
+export const navigationItemManager: NavigationSubheading = {
   type: 'subheading',
   label: 'Manager',
   children: [
