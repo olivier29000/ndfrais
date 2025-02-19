@@ -50,14 +50,15 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
             Besoin de simplifier le planning et les abscences de vos employés ?
           </div>
           <div class="text-2xl font-medium  mb-5">
-            Plutôt qu'un long discours, je vous propose de regarder cette vidéo
-            de 3 minutes pour découvrir le logiciel alaisedeiz
+            Plutôt qu'un long discours, je vous propose de regarder la première
+            minute ou toute la vidéo ci-dessous pour découvrir le logiciel
+            alaisedeiz
           </div>
           <iframe
             height="560"
             width="1000"
             class="ql-video ql-align-center mx-auto"
-            src="https://www.youtube.com/embed/2pFdfjz7wNc?autoplay=1&mute=1"
+            src="https://www.youtube.com/embed/vCFVyQ_HiWQ?autoplay=1&mute=1"
             title="YouTube video player"
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -364,10 +365,15 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
               </div>
             </div>
 
-            <button class="flex-none" mat-flat-button type="button">
-              <span>Visiter mon site internet</span>
-              <mat-icon class="icon-xs" svgIcon="mat:open_in_new"></mat-icon>
-            </button>
+            <a
+              href="https://alaisedev.fr"
+              target="_blank"
+              rel="noopener noreferrer">
+              <button class="flex-none" mat-flat-button type="button">
+                <span>Visiter mon site internet</span>
+                <mat-icon class="icon-xs" svgIcon="mat:open_in_new"></mat-icon>
+              </button>
+            </a>
           </div>
         </div>
 
