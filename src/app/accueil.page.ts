@@ -54,17 +54,17 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
             minute ou toute la vidéo ci-dessous pour découvrir le logiciel
             alaisedeiz
           </div>
-          <iframe
-            height="560"
-            width="1000"
-            class="ql-video ql-align-center mx-auto"
-            src="https://www.youtube.com/embed/vCFVyQ_HiWQ?autoplay=1&mute=1"
-            title="YouTube video player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin"
-            allowfullscreen>
-          </iframe>
+          <div class="video-container">
+            <iframe
+              class="ql-video ql-align-center mx-auto"
+              src="https://www.youtube.com/embed/vCFVyQ_HiWQ?autoplay=1&mute=1"
+              title="YouTube video player"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen>
+            </iframe>
+          </div>
         </div>
         <div class="space-y-12">
           <div class="text-center">
@@ -402,6 +402,12 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
         left: 20px;
         height: 100px;
         width: 100px;
+      }
+      .video-container iframe {
+        width: 100%;
+        aspect-ratio: 16 / 9; /* Maintient le ratio de l'iframe */
+        max-width: 100vw;
+        max-height: 100vh;
       }
     `
   ],
