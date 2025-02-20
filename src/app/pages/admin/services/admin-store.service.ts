@@ -1,11 +1,9 @@
-import { effect, Injectable, signal, WritableSignal } from '@angular/core';
+import { Injectable, signal, WritableSignal } from '@angular/core';
 import { Action } from 'src/app/models/action.model';
 import { ContratUserApp } from 'src/app/models/contrat-employe.model';
 import { DayApp } from 'src/app/models/day-app.model';
-import { Role } from 'src/app/models/user-connected.model';
 import { UserApp } from 'src/app/models/user.model';
-import { UtilsService } from 'src/app/services/utils.service';
-
+import { CalendarEvent } from 'calendar-utils';
 @Injectable({
   providedIn: 'root'
 })
@@ -21,4 +19,7 @@ export class AdminStoreService {
   > = signal([]);
   actionList: WritableSignal<Action[]> = signal([]);
   historiqueActionList: WritableSignal<Action[]> = signal([]);
+  calendarViewDate: WritableSignal<Date> = signal(new Date());
+  dayAppList: WritableSignal<DayApp[]> = signal([]);
+  eventList: WritableSignal<CalendarEvent[]> = signal([]);
 }

@@ -33,7 +33,7 @@ export class CustomDateFormats {
 @Component({
   selector: 'dumb-day-state',
   template: `
-    <div class="card day-square  mt-3">
+    <div class="card day-square  mt-3" [ngClass]="isBordered ? 'scaled' : ''">
       <div class="day-state" [ngClass]="day.weekState"></div>
       <div
         class="work-state"
@@ -88,6 +88,11 @@ export class CustomDateFormats {
   animations: [scaleInOutAnimation],
   styles: [
     `
+      .scaled {
+        transform: scale(1.2); /* Agrandit l'élément de 1.5x */
+        z-index: 100;
+      }
+
       .half-bg-TRAVAIL {
         background: linear-gradient(to bottom, #a1fb8e 50%, transparent 50%);
       }
@@ -180,6 +185,8 @@ export class DaySquareDumb {
   @Input() selectedWorkstate!: string;
   @Input() isSelected: boolean = false;
   @Input() isLastSelected: boolean = false;
+  @Input() isBordered: boolean = false;
+
   @Output() clickLast = new EventEmitter<DayApp>();
   @Output() validPeriod = new EventEmitter<void>();
   @Output() clickDay = new EventEmitter<void>();

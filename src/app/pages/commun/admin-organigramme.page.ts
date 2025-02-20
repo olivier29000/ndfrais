@@ -3,10 +3,12 @@ import { ServerService } from '../../services/server.service';
 import { OrganigrammeDumb } from '../dumbs/organigramme.dumb';
 import { TreeNode } from 'primeng/api';
 import { ContratUserApp } from '../../models/contrat-employe.model';
+import { CalendarDumb } from '../dumbs/calendar/calendar.dumb';
 
 @Component({
   template: `
     <!-- <dumb-organigramme [data]="dataTreeNode()"></dumb-organigramme> -->
+
     <div class="flex">
       @for (data of dataTreeNode(); track data) {
         <div class="border">

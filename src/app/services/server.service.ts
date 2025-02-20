@@ -55,10 +55,4 @@ export class ServerService {
   authentification(email: string, password: string): void {
     this.effectService.authentification(email, password);
   }
-
-  dayAppList = this.store.dayAppList;
-
-  getDayAppListByContratId(idContrat: string) {
-    this.effectService.getDayAppListByContratId(idContrat);
-  }
 }

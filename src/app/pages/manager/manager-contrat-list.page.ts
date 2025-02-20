@@ -29,6 +29,12 @@ export class ManagerContratListPage {
 
   columns: TableColumn<ContratUserApp>[] = [
     {
+      label: 'Checkbox',
+      property: 'checkbox',
+      type: 'checkbox',
+      visible: true
+    },
+    {
       label: 'Poste',
       property: 'poste',
       type: 'text',

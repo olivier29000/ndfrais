@@ -25,7 +25,10 @@ import {
   UntypedFormControl
 } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import {
+  MatCheckboxChange,
+  MatCheckboxModule
+} from '@angular/material/checkbox';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -112,19 +115,11 @@ import { RouterLink } from '@angular/router';
             mat-table
             matSort>
             <ng-container matColumnDef="checkbox">
-              <th *matHeaderCellDef mat-header-cell>
-                <mat-checkbox
-                  (change)="$event ? masterToggle() : null"
-                  [checked]="selection.hasValue() && isAllSelected()"
-                  [indeterminate]="selection.hasValue() && !isAllSelected()"
-                  color="primary">
-                </mat-checkbox>
-              </th>
+              <th *matHeaderCellDef mat-header-cell></th>
               <td *matCellDef="let row" class="w-4" mat-cell>
                 <mat-checkbox
-                  (change)="$event ? selection.toggle(row) : null"
-                  (click)="$event.stopPropagation()"
-                  [checked]="selection.isSelected(row)"
+                  (change)="selectRow($event, row)"
+                  [checked]="selectedContrat?.id === row.id"
                   color="primary">
                 </mat-checkbox>
               </td>
@@ -353,7 +348,7 @@ import { RouterLink } from '@angular/router';
           <button
             mat-menu-item
             [routerLink]="
-              '/admin/employes/' +
+              '/admin/contrats/' +
               ContratUserApp.userApp.id +
               '/contrat-detail/' +
               ContratUserApp.id
@@ -413,6 +408,12 @@ export class ContratListDumb implements AfterViewInit {
   @Input() title = '';
   @Input() columns: TableColumn<ContratUserApp>[] = [
     {
+      label: 'Checkbox',
+      property: 'checkbox',
+      type: 'checkbox',
+      visible: true
+    },
+    {
       label: 'Poste',
       property: 'poste',
       type: 'text',
@@ -471,11 +472,25 @@ export class ContratListDumb implements AfterViewInit {
     { label: 'Actions', property: 'actions', type: 'button', visible: true }
   ];
 
+  selectedContrat: ContratUserApp | undefined = undefined;
+
   @Output() createContratModal = new EventEmitter<void>();
+  @Output() selectedContratOutput = new EventEmitter<
+    ContratUserApp | undefined
+  >();
   @Output() updateContratModal = new EventEmitter<ContratUserApp>();
   @Output() archiveUnarchive = new EventEmitter<ContratUserApp>();
   createContratModalOutput(): void {
     this.createContratModal.emit();
+  }
+
+  selectRow(event: MatCheckboxChange, row: ContratUserApp): void {
+    if (event.checked) {
+      this.selectedContrat = row;
+    } else {
+      this.selectedContrat = undefined;
+    }
+    this.selectedContratOutput.emit(this.selectedContrat);
   }
 
   updateContratModalOutput(contratEmploye: ContratUserApp): void {

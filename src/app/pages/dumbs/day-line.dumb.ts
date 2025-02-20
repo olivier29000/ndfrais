@@ -33,6 +33,7 @@ import { Action, ActionDay } from 'src/app/models/action.model';
             day.isSelected && day.actionDay ? day.actionDay.workState : ''
           "
           [isSelected]="day.isSelected ?? false"
+          [isBordered]="day.isBordered ?? false"
           [day]="day"
           (clickDay)="selectDayApp(day)"
           (clickLast)="cancelLast($event)"
@@ -49,10 +50,20 @@ import { Action, ActionDay } from 'src/app/models/action.model';
 export class DayLineDumb {
   constructor() {}
   _actionList: ActionDay[] = [];
+  _borderedDayAppList: DayApp[] = [];
   _dayAppList!: (DayApp & {
     isSelected?: boolean;
     isLastSelected?: boolean;
+    isBordered?: boolean;
   })[];
+  @Input()
+  set borderedDayAppList(value: DayApp[]) {
+    this._borderedDayAppList = value;
+    this._dayAppList = this._dayAppList.map((d) => ({
+      ...d,
+      isBordered: value.some((v) => v.id === d.id)
+    }));
+  }
   @Input()
   set dayAppList(value: DayApp[]) {
     const dayActionList = value.reduce(
@@ -85,7 +96,8 @@ export class DayLineDumb {
           ...dayApp,
           isSelected: true,
           isLastSelected:
-            action.idDayAppList[action.idDayAppList.length - 1] === dayApp.id
+            action.idDayAppList[action.idDayAppList.length - 1] === dayApp.id,
+          isBordered: this._borderedDayAppList.some((v) => v.id === dayApp.id)
         };
       } else {
         return dayApp;
@@ -96,6 +108,7 @@ export class DayLineDumb {
   get dayAppList(): (DayApp & {
     isSelected?: boolean;
     isLastSelected?: boolean;
+    isBordered?: boolean;
   })[] {
     return this._dayAppList;
   }

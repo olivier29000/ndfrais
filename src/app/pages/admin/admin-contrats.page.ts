@@ -1,10 +1,20 @@
-import { Component, effect, signal, WritableSignal } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import {
+  Component,
+  computed,
+  effect,
+  signal,
+  WritableSignal
+} from '@angular/core';
+import { fr } from 'date-fns/locale';
 import { UserApp } from '../../models/user.model';
 import { ActivatedRoute } from '@angular/router';
 import { ContratListDumb } from '../dumbs/contrat-list.dumb';
 import { ContratUserApp } from '../../models/contrat-employe.model';
 import { AdminServerService } from './services/admin-server.service';
+import { CalendarDumb } from '../dumbs/calendar/calendar.dumb';
+import { DayLineDumb } from '../dumbs/day-line.dumb';
+import { addDays, isSameWeek, subDays } from 'date-fns';
+import { CalendarNavDumb } from '../dumbs/calendar/calendar-nav.dumb';
 
 @Component({
   template: `<dumb-contrat-list
@@ -13,8 +23,23 @@ import { AdminServerService } from './services/admin-server.service';
       (updateContratModal)="updateContratModal($event)"
       (archiveUnarchive)="archiveUnarchiveContrat($event)"
       [contratEmployeList]="adminContratList()"
-      [userApp]="currentUserApp()"></dumb-contrat-list>
+      [userApp]="currentUserApp()"
+      (selectedContratOutput)="selectContrat($event)"></dumb-contrat-list>
     <hr />
+    @if (dayAppList().length > 0) {
+      <div class="container">
+        <dumb-day-line
+          [dayAppList]="dayAppList()"
+          [borderedDayAppList]="selectedDays()"></dumb-day-line>
+        <dumb-calendar-nav
+          [viewDate]="viewDate()"
+          (viewDateOutput)="calendarViewDateChange($event)"></dumb-calendar-nav>
+        <app-calendar
+          [viewDate]="viewDate()"
+          (createEventOutput)="createEvent($event)"></app-calendar>
+      </div>
+    }
+
     <dumb-contrat-list
       [title]="'Contrat(s) archivé(s)'"
       [contratEmployeList]="adminContratListArchived()"
@@ -22,9 +47,34 @@ import { AdminServerService } from './services/admin-server.service';
       [userApp]="currentUserApp()"></dumb-contrat-list>`,
   animations: [],
   standalone: true,
-  imports: [ContratListDumb]
+  imports: [ContratListDumb, CalendarDumb, DayLineDumb, CalendarNavDumb]
 })
 export class AdminContratsPage {
+  selectedContrat: WritableSignal<ContratUserApp | undefined> =
+    signal(undefined);
+  viewDate: WritableSignal<Date> = signal(new Date());
+  calendarViewDateChange(date: Date) {
+    this.viewDate.set(date);
+  }
+  createEvent(date: Date) {
+    this.adminServer.createEvent(date);
+  }
+  dayAppList = computed(() =>
+    this.adminServer
+      .dayAppList()
+      .filter(
+        (d) =>
+          d.date.getTime() > subDays(this.viewDate(), 15).getTime() &&
+          d.date.getTime() < addDays(this.viewDate(), 15).getTime()
+      )
+  );
+  selectedDays = computed(() =>
+    this.dayAppList().filter((d) =>
+      isSameWeek(d.date, this.viewDate(), { locale: fr })
+    )
+  );
+  eventList = this.adminServer.eventList;
+
   currentUserApp: WritableSignal<UserApp | undefined> = signal(undefined);
   idUserApp: WritableSignal<string | undefined> = signal(undefined);
   adminContratList = this.adminServer.adminContratList;
@@ -36,6 +86,9 @@ export class AdminContratsPage {
         this.idUserApp.set(idUserApp);
       }
     });
+  }
+  selectContrat(contrat: ContratUserApp | undefined) {
+    this.selectedContrat.set(contrat);
   }
   archiveUnarchiveContrat(contrat: ContratUserApp) {
     this.adminServer.archiveUnarchiveContrat(contrat);
@@ -52,7 +105,6 @@ export class AdminContratsPage {
   }
 
   constructor(
-    private dialog: MatDialog,
     private adminServer: AdminServerService,
     private route: ActivatedRoute
   ) {
@@ -66,6 +118,13 @@ export class AdminContratsPage {
           );
           this.adminServer.getContratListByUserId(idUserApp);
         }
+      },
+      { allowSignalWrites: true }
+    );
+
+    effect(
+      () => {
+        this.adminServer.getCalendarDayAppListByContrat(this.selectedContrat());
       },
       { allowSignalWrites: true }
     );

@@ -249,7 +249,7 @@ export const CUSTOM_DATE_FORMATS = {
             mat-flat-button
             type="submit"
             (click)="save()">
-            Create Customer
+            Créer le contrat
           </button>
           <button
             *ngIf="isUpdateMode()"
@@ -257,7 +257,7 @@ export const CUSTOM_DATE_FORMATS = {
             mat-flat-button
             type="submit"
             (click)="save()">
-            Update Customer
+            Modifier le contrat
           </button>
         </mat-dialog-actions>
       }

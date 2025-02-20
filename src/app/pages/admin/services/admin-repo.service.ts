@@ -24,6 +24,14 @@ const httpOptions = {
 })
 export class AdminRepoService {
   constructor(private http: HttpClient) {}
+
+  getDayAppListByContratId(contratId: string): Observable<DayApp[]> {
+    return this.http
+      .get<
+        DayApp[]
+      >(`${URL_BACKEND}/day-app/get-all-by-contrat-id/${contratId}`, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
   getActionList(): Observable<Action[]> {
     return this.http
       .get<Action[]>(`${URL_BACKEND}/day-app-action/get-all`, httpOptions)

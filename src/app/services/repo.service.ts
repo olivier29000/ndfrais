@@ -78,14 +78,6 @@ export class RepoService {
       .pipe(catchError(this.handleError));
   }
 
-  getDayAppListByContratId(contratId: string): Observable<DayApp[]> {
-    return this.http
-      .get<
-        DayApp[]
-      >(`${URL_BACKEND}/day-app/get-all-by-contrat-id/${contratId}`, httpOptions)
-      .pipe(catchError(this.handleError));
-  }
-
   getUserConnected(): Observable<UserConnected> {
     return this.http
       .get<UserConnected>(`${URL_BACKEND}/user/get-user-connected`, httpOptions)

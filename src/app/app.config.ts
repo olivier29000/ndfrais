@@ -20,6 +20,9 @@ import { provideNavigation } from './core/navigation/navigation.provider';
 import { vexConfigs } from '@vex/config/vex-configs';
 import { provideQuillConfig } from 'ngx-quill';
 import { OrganizationChartModule } from 'primeng/organizationchart';
+import { FlatpickrModule } from 'angularx-flatpickr';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -29,7 +32,12 @@ export const appConfig: ApplicationConfig = {
       MatBottomSheetModule,
       MatNativeDateModule,
       OrganizationChartModule,
-      BrowserAnimationsModule
+      BrowserAnimationsModule,
+      FlatpickrModule.forRoot(),
+      CalendarModule.forRoot({
+        provide: DateAdapter,
+        useFactory: adapterFactory
+      })
     ),
     provideRouter(
       appRoutes,

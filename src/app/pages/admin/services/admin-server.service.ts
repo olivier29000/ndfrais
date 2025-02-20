@@ -47,6 +47,18 @@ export class AdminServerService {
       { allowSignalWrites: true }
     );
   }
+  createEvent(date: Date) {
+    this.adminEffect.openCreateEventModal(date);
+  }
+  getDayAppListByContratId(idContrat: string) {
+    this.adminEffect.getDayAppListByContratId(idContrat);
+  }
+  dayAppList = this.adminStore.dayAppList;
+  eventList = this.adminStore.eventList;
+  calendarViewDate = this.adminStore.calendarViewDate;
+  calendarViewDateChange(viewDate: Date): void {
+    this.adminEffect.calendarViewDateChange(viewDate);
+  }
   historiqueActionList = this.adminStore.historiqueActionList;
   adminGetHistoriqueActionList(): void {
     this.adminEffect.adminGetHistoriqueActionList(this.currentYearHistorique());
@@ -148,6 +160,9 @@ export class AdminServerService {
   }
   getContratListByUserId(idUserApp: string) {
     this.adminEffect.getContratListByUserId(idUserApp);
+  }
+  getCalendarDayAppListByContrat(selectedContrat: ContratUserApp | undefined) {
+    this.adminEffect.getCalendarDayAppListByContrat(selectedContrat);
   }
 
   getAllContrat(): void {

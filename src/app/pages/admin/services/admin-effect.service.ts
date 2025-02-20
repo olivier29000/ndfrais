@@ -8,10 +8,18 @@ import { ContratUserApp } from 'src/app/models/contrat-employe.model';
 import { UserApp } from 'src/app/models/user.model';
 import { CreateUpdateUserModal } from '../modals/create-update-user.modal';
 import { CreateUpdateContratModal } from '../modals/create-update-contrat.modal';
-import { addMonths, subMonths } from 'date-fns';
+import {
+  addDays,
+  addMonths,
+  eachDayOfInterval,
+  subDays,
+  subMonths
+} from 'date-fns';
 import { AdminActionListValidRefuseModal } from '../modals/action-list-valid-refuse.modal';
 import { PdfDisplayModal } from '../../modals/pdf-display.modal';
 import { DomSanitizer } from '@angular/platform-browser';
+import { WEEK_STATE, WORK_STATE } from 'src/app/models/day-app.model';
+import { CreateEventModal } from '../../modals/createEvent.modal';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +39,11 @@ export class AdminEffectService {
       { allowSignalWrites: true }
     );
   }
+
+  calendarViewDateChange(viewDate: Date): void {
+    this.adminStore.calendarViewDate.set(viewDate);
+  }
+
   openActionListValidRefuseModal(
     action: Action,
     type: 'valid' | 'refuse' | 'watch'
@@ -39,6 +52,15 @@ export class AdminEffectService {
       data: {
         action,
         type
+      }
+    });
+  }
+  openCreateEventModal(date: Date): void {
+    this.dialog.open(CreateEventModal, {
+      width: '90%',
+      maxWidth: '1200px',
+      data: {
+        date
       }
     });
   }
@@ -167,6 +189,64 @@ export class AdminEffectService {
         this.utils.changeIsLoading(false);
       }
     );
+  }
+  getDayAppListByContratId(idContrat: string): void {
+    this.utils.changeIsLoading(true);
+    this.adminRepo.getDayAppListByContratId(idContrat).subscribe(
+      (dayAppList) => {
+        this.utils.changeIsLoading(false);
+        if (dayAppList.length > 0) {
+          this.adminStore.dayAppList.set(
+            eachDayOfInterval({
+              start: subDays(new Date(dayAppList[0].date), 15),
+              end: subDays(new Date(dayAppList[0].date), 1)
+            })
+              .map((day) => ({
+                id: -1,
+                date: day,
+                weekState: WEEK_STATE.NORMAL,
+                workState: WORK_STATE.HORS_CONTRAT
+              }))
+              .concat(
+                dayAppList.map((d) => ({
+                  ...d,
+                  date: new Date(d.date)
+                }))
+              )
+              .concat(
+                eachDayOfInterval({
+                  start: addDays(
+                    new Date(dayAppList[dayAppList.length - 1].date),
+                    1
+                  ),
+                  end: addDays(
+                    new Date(dayAppList[dayAppList.length - 1].date),
+                    15
+                  )
+                }).map((day) => ({
+                  id: -1,
+                  date: day,
+                  weekState: WEEK_STATE.NORMAL,
+                  workState: WORK_STATE.HORS_CONTRAT
+                }))
+              )
+          );
+        } else {
+          this.adminStore.dayAppList.set([]);
+        }
+      },
+      () => {
+        this.utils.changeIsLoading(false);
+      }
+    );
+  }
+  getCalendarDayAppListByContrat(selectedContrat: ContratUserApp | undefined) {
+    if (selectedContrat) {
+      this.adminStore.calendarViewDate.set(selectedContrat.dateBegin);
+      this.getDayAppListByContratId(selectedContrat.id + '');
+    } else {
+      this.adminStore.dayAppList.set([]);
+    }
   }
 
   getContratListByUserId(idUserApp: string): void {

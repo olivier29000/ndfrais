@@ -83,13 +83,13 @@ export class UtilsService {
           return {
             ...nav,
             children: navigationItemAdmin.children.map((c) => {
-              if (c.type === 'dropdown') {
+              if (c.label === 'Contrats') {
                 return {
                   ...c,
                   children: userAppList.map((userApp) => ({
                     type: 'link',
                     label: userApp.nomPrenom,
-                    route: '/admin/employes/' + userApp.id,
+                    route: '/admin/contrats/' + userApp.id,
                     routerLinkActiveOptions: { exact: false },
                     badge: {
                       value: userApp.nbAction > 0 ? userApp.nbAction + '' : '',
@@ -98,11 +98,24 @@ export class UtilsService {
                     }
                   }))
                 };
-              } else if (c.label === 'Validations') {
+              } else if (c.label === 'Congés' && c.type === 'dropdown') {
                 const nbActionListStr =
                   nbActionList > 0 ? nbActionList + '' : '';
                 return {
                   ...c,
+                  children: c.children.map((sub) => {
+                    if (sub.label === 'Validations') {
+                      return {
+                        ...sub,
+                        badge: {
+                          value: nbActionListStr,
+                          bgClass: 'bg-green-600',
+                          textClass: 'text-white'
+                        }
+                      };
+                    }
+                    return sub;
+                  }),
                   badge: {
                     value: nbActionListStr,
                     bgClass: 'bg-green-600',
@@ -110,9 +123,7 @@ export class UtilsService {
                   }
                 };
               }
-              {
-                return c;
-              }
+              return c;
             })
           };
         } else {
@@ -179,34 +190,48 @@ export const navigationItemAdmin: NavigationSubheading = {
     },
     {
       type: 'dropdown',
-      label: 'Employés',
+      label: 'Contrats',
       icon: 'mat:people',
       children: []
     },
     {
+      type: 'dropdown',
+      label: 'Congés',
+      icon: 'mat:people',
+      children: [
+        {
+          type: 'link',
+          label: 'Recap',
+          route: '/admin/recap',
+          icon: 'mat:assignment',
+          routerLinkActiveOptions: { exact: true }
+        },
+        {
+          type: 'link',
+          label: 'Validations',
+          route: '/admin/validations',
+          icon: 'mat:thumbs_up_down',
+          badge: {
+            value: '',
+            bgClass: 'bg-green-600',
+            textClass: 'text-white'
+          },
+          routerLinkActiveOptions: { exact: true }
+        },
+        {
+          type: 'link',
+          label: 'Historique',
+          route: '/admin/historique',
+          icon: 'mat:account_balance',
+          routerLinkActiveOptions: { exact: true }
+        }
+      ]
+    },
+    {
       type: 'link',
-      label: 'Recap',
-      route: '/admin/recap',
+      label: 'Plannings',
+      route: '/admin/plannings',
       icon: 'mat:assignment',
-      routerLinkActiveOptions: { exact: true }
-    },
-    {
-      type: 'link',
-      label: 'Validations',
-      route: '/admin/validations',
-      icon: 'mat:thumbs_up_down',
-      badge: {
-        value: '',
-        bgClass: 'bg-green-600',
-        textClass: 'text-white'
-      },
-      routerLinkActiveOptions: { exact: true }
-    },
-    {
-      type: 'link',
-      label: 'Historique',
-      route: '/admin/historique',
-      icon: 'mat:account_balance',
       routerLinkActiveOptions: { exact: true }
     }
   ]
