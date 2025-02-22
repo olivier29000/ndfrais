@@ -9,6 +9,8 @@ import { environment } from 'src/environment/environment';
 import { DayApp } from 'src/app/models/day-app.model';
 import { Action } from 'src/app/models/action.model';
 import { ContratUserApp } from 'src/app/models/contrat-employe.model';
+import { CalendarEvent } from 'angular-calendar';
+import { UtilsService } from 'src/app/services/utils.service';
 
 const URL_BACKEND = environment.urlBackEnd;
 const httpOptions = {
@@ -22,7 +24,21 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class UserRepoService {
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private utils: UtilsService
+  ) {}
+  getAllEventByContratIdAndPeriod(
+    start: Date,
+    end: Date,
+    contratId: string
+  ): Observable<CalendarEvent[]> {
+    return this.http
+      .get<
+        CalendarEvent[]
+      >(`${URL_BACKEND}/user/event/get-all-event-by-contrat-id-and-period/${contratId}/${this.utils.getDateString(start) + '-00-00'}/${this.utils.getDateString(end) + '-23-59'}`, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
   userGetHistoriqueActionList(contratId: string): Observable<Action[]> {
     return this.http
       .get<

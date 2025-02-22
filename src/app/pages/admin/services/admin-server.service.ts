@@ -15,6 +15,7 @@ import {
 } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { WEEK_STATE, WORK_STATE } from 'src/app/models/day-app.model';
+import { CalendarEvent } from 'angular-calendar';
 
 @Injectable({
   providedIn: 'root'
@@ -47,14 +48,24 @@ export class AdminServerService {
       { allowSignalWrites: true }
     );
   }
-  createEvent(date: Date) {
-    this.adminEffect.openCreateEventModal(date);
+  getAllEventByContratIdAndPeriod(
+    start: Date,
+    end: Date,
+    contratId: string
+  ): void {
+    this.adminEffect.getAllEventByContratIdAndPeriod(start, end, contratId);
+  }
+  openCreateEventModal(event: CalendarEvent, contratId: string) {
+    this.adminEffect.openCreateEventModal(event, contratId);
   }
   getDayAppListByContratId(idContrat: string) {
     this.adminEffect.getDayAppListByContratId(idContrat);
   }
   dayAppList = this.adminStore.dayAppList;
-  eventList = this.adminStore.eventList;
+  eventList = computed(() => {
+    console.log(this.adminStore.eventList());
+    return this.adminStore.eventList();
+  });
   calendarViewDate = this.adminStore.calendarViewDate;
   calendarViewDateChange(viewDate: Date): void {
     this.adminEffect.calendarViewDateChange(viewDate);

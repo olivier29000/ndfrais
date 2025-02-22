@@ -1,4 +1,5 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
+import { CalendarEvent } from 'angular-calendar';
 import { Action } from 'src/app/models/action.model';
 import { ContratUserApp } from 'src/app/models/contrat-employe.model';
 import { DayApp } from 'src/app/models/day-app.model';
@@ -19,4 +20,5 @@ export class UserStoreService {
   recapByContratDayAppList: WritableSignal<
     { contrat: ContratUserApp; dayAppList: DayApp[] }[]
   > = signal([]);
+  eventList: WritableSignal<CalendarEvent[]> = signal([]);
 }

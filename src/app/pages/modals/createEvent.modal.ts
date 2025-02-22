@@ -23,6 +23,7 @@ import { SafeResourceUrl } from '@angular/platform-browser';
 import { PdfDisplayDumb } from '../dumbs/pdf-display.dumb';
 import { CalendarEvent } from 'angular-calendar';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { InputDateHourMinuteDumb } from '../dumbs/input-date-hour-minute.dumb';
 
 @Component({
   template: `<form>
@@ -62,45 +63,22 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
         </mat-form-field>
       </div>
 
-      <mat-form-field>
-        <mat-label>Date de début</mat-label>
-        <input
-          [matDatepicker]="datepickerRefdateBegin"
-          [(ngModel)]="day"
-          matInput
-          name="dateBegin" />
-        <mat-datepicker-toggle
-          [for]="datepickerRefdateBegin"
-          class="block"
-          matIconPrefix></mat-datepicker-toggle>
-        <mat-datepicker #datepickerRefdateBegin></mat-datepicker>
-      </mat-form-field>
-
-      <mat-form-field appearance="fill">
-        <mat-label>Heure</mat-label>
-        <mat-select [(ngModel)]="hour" name="hour">
-          @for (hour of hourList; track hour) {
-            <mat-option [value]="hour">
-              {{ hour }}
-            </mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field appearance="fill">
-        <mat-label>Minutes</mat-label>
-        <mat-select [(ngModel)]="quart" name="quart">
-          @for (quart of minuteList; track quart) {
-            <mat-option [value]="quart">
-              {{ quart }}
-            </mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
+      <dumb-input-date-hour-minute
+        [(date)]="calendarEvent.start"></dumb-input-date-hour-minute>
+      <dumb-input-date-hour-minute
+        [(date)]="calendarEvent.end"></dumb-input-date-hour-minute>
     </mat-dialog-content>
 
     <mat-dialog-actions align="end">
       <button mat-button mat-dialog-close type="button" (click)="close()">
-        Ok
+        Cancel
+      </button>
+      <button
+        color="primary"
+        mat-flat-button
+        type="submit"
+        (click)="createEvent()">
+        Créer
       </button>
     </mat-dialog-actions>
   </form>`,
@@ -112,8 +90,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     MatMenuModule,
     MatDividerModule,
     MatInputModule,
-    MatSelectModule,
-    MatDatepickerModule
+    MatButtonModule,
+    InputDateHourMinuteDumb
   ]
 })
 export class CreateEventModal {
@@ -123,17 +101,14 @@ export class CreateEventModal {
     start: this.data?.event?.start || new Date(),
     end: this.data?.event?.end || new Date()
   };
-  day = this.data?.event?.start || new Date();
-  hourList = Array.from({ length: 24 }, (_, i) => `${i}:00`); // Liste des heures (0h - 23h)
-  minuteList = ['00', '15', '30', '45'];
-  hour = this.hourList[1];
-  quart = this.minuteList[0];
   constructor(
     @Inject(MAT_DIALOG_DATA)
     public data: { event: CalendarEvent },
     private dialogRef: MatDialogRef<CreateEventModal>
   ) {}
-
+  createEvent() {
+    this.dialogRef.close(this.calendarEvent);
+  }
   close() {
     this.dialogRef.close();
   }

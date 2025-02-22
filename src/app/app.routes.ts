@@ -102,6 +102,13 @@ export const appRoutes: VexRoutes = [
               import('./pages/user/user-equipe.page').then(
                 (m) => m.UserEquipePage
               )
+          },
+          {
+            path: 'planning/:idContratUserApp',
+            loadComponent: () =>
+              import('./pages/user/user-planning.page').then(
+                (m) => m.UserPlanningPage
+              )
           }
         ]
       },

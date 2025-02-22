@@ -9,8 +9,6 @@ import { FormsModule } from '@angular/forms';
       class="border-top border-end view-hour-segment"
       (mouseover)="segmentHoverChange(true)"
       (mouseleave)="segmentHoverChange(false)"
-      (mousedown)="onMouseDown(segment.date)"
-      (mouseup)="onMouseUp(segment.date)"
       (focus)="(hovered)">
       @if (isTimeLabel) {
         <span class="font-bold h-full w-full flex justify-center items-center">
@@ -56,17 +54,7 @@ export class HourCalendarDumb {
   @Input() locale!: string;
   @Input() isTimeLabel!: boolean;
   hovered = false;
-  onMouseDown(date: Date) {
-    console.log('Clic détecté !');
-    console.log(date);
-    // Action à exécuter au moment du clic
-  }
 
-  onMouseUp(date: Date) {
-    console.log('Clic relâché !');
-    console.log(date);
-    // Action à exécuter au moment du relâchement
-  }
   segmentHoverChange(value: boolean): void {
     this.hovered = value;
   }

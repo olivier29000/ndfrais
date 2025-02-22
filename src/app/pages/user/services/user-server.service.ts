@@ -20,6 +20,7 @@ export class UserServerService {
     private userEffect: UserEffectService,
     private server: ServerService
   ) {}
+  eventList = this.userStore.eventList;
   userAllContratList = this.server.userAllContratList;
   historiqueActionList = this.userStore.historiqueActionList;
   userDayAppList = this.userStore.userDayAppList;
@@ -48,6 +49,13 @@ export class UserServerService {
       })
     }));
   });
+  getAllEventByContratIdAndPeriod(
+    start: Date,
+    end: Date,
+    contratId: string
+  ): void {
+    this.userEffect.getAllEventByContratIdAndPeriod(start, end, contratId);
+  }
   previousMonth(): void {
     this.userEffect.previousMonth();
   }

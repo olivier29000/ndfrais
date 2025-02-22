@@ -10,6 +10,8 @@ import { catchError, Observable, throwError } from 'rxjs';
 import { UserApp } from 'src/app/models/user.model';
 import { Action } from 'src/app/models/action.model';
 import { DayApp } from 'src/app/models/day-app.model';
+import { CalendarEvent } from 'angular-calendar';
+import { UtilsService } from 'src/app/services/utils.service';
 
 const URL_BACKEND = environment.urlBackEnd + '/admin';
 const httpOptions = {
@@ -23,8 +25,32 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class AdminRepoService {
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private utils: UtilsService
+  ) {}
 
+  createNewEvent(
+    calendarEvent: CalendarEvent,
+    contratId: string
+  ): Observable<CalendarEvent[]> {
+    return this.http
+      .post<
+        CalendarEvent[]
+      >(`${URL_BACKEND}/event/create-event/${contratId}`, calendarEvent, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+  getAllEventByContratIdAndPeriod(
+    start: Date,
+    end: Date,
+    contratId: string
+  ): Observable<CalendarEvent[]> {
+    return this.http
+      .get<
+        CalendarEvent[]
+      >(`${URL_BACKEND}/event/get-all-event-by-contrat-id-and-period/${contratId}/${this.utils.getDateString(start) + '-00-00'}/${this.utils.getDateString(end) + '-23-59'}`, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
   getDayAppListByContratId(contratId: string): Observable<DayApp[]> {
     return this.http
       .get<

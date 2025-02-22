@@ -12,6 +12,8 @@ import {
   addDays,
   addMonths,
   eachDayOfInterval,
+  endOfWeek,
+  startOfWeek,
   subDays,
   subMonths
 } from 'date-fns';
@@ -20,6 +22,8 @@ import { PdfDisplayModal } from '../../modals/pdf-display.modal';
 import { DomSanitizer } from '@angular/platform-browser';
 import { WEEK_STATE, WORK_STATE } from 'src/app/models/day-app.model';
 import { CreateEventModal } from '../../modals/createEvent.modal';
+import { CalendarEvent } from 'angular-calendar';
+import { fr } from 'date-fns/locale';
 
 @Injectable({
   providedIn: 'root'
@@ -55,14 +59,49 @@ export class AdminEffectService {
       }
     });
   }
-  openCreateEventModal(date: Date): void {
-    this.dialog.open(CreateEventModal, {
-      width: '90%',
-      maxWidth: '1200px',
-      data: {
-        date
-      }
-    });
+  getAllEventByContratIdAndPeriod(
+    start: Date,
+    end: Date,
+    contratId: string
+  ): void {
+    this.adminRepo
+      .getAllEventByContratIdAndPeriod(start, end, contratId)
+      .subscribe((eventList) =>
+        this.adminStore.eventList.set(
+          eventList.map((event) => ({
+            ...event,
+            start: this.utils.getStart(event.start),
+            end: this.utils.getEnd(event.end)
+          }))
+        )
+      );
+  }
+
+  openCreateEventModal(event: CalendarEvent, contratId: string): void {
+    this.dialog
+      .open(CreateEventModal, {
+        width: '90%',
+        maxWidth: '1200px',
+        data: {
+          event
+        }
+      })
+      .afterClosed()
+      .subscribe((newEvent) => {
+        this.createNewEvent(newEvent, contratId);
+      });
+  }
+
+  createNewEvent(event: CalendarEvent, contratId: string): void {
+    this.adminRepo
+      .createNewEvent(event, contratId)
+      .subscribe(() =>
+        this.getAllEventByContratIdAndPeriod(
+          startOfWeek(event.start, { locale: fr }),
+          endOfWeek(event.start, { locale: fr }),
+          contratId
+        )
+      );
   }
   openPdfDisplayModal(idPdf: number): void {
     this.utils.changeIsLoading(true);

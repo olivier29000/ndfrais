@@ -27,6 +27,24 @@ export class UserEffectService {
       { allowSignalWrites: true }
     );
   }
+  getAllEventByContratIdAndPeriod(
+    start: Date,
+    end: Date,
+    contratId: string
+  ): void {
+    this.userRepo
+      .getAllEventByContratIdAndPeriod(start, end, contratId)
+      .subscribe((eventList) => {
+        console.log(eventList);
+        this.userStore.eventList.set(
+          eventList.map((event) => ({
+            ...event,
+            start: this.utils.getStart(event.start),
+            end: this.utils.getEnd(event.end)
+          }))
+        );
+      });
+  }
   getRecap(date: Date): void {
     this.utils.changeIsLoading(true);
     this.userRepo

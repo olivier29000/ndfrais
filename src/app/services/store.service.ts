@@ -51,6 +51,13 @@ export class StoreService {
                     route: '/user/equipe/' + userAppContrat.id,
                     icon: 'mat:supervised_user_circle',
                     routerLinkActiveOptions: { exact: true }
+                  },
+                  {
+                    type: 'link',
+                    label: 'Planning',
+                    route: '/user/planning/' + userAppContrat.id,
+                    icon: 'mat:calendar_today',
+                    routerLinkActiveOptions: { exact: true }
                   }
                 ]
               });

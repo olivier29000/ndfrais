@@ -13,8 +13,10 @@ import { ContratUserApp } from '../../models/contrat-employe.model';
 import { AdminServerService } from './services/admin-server.service';
 import { CalendarDumb } from '../dumbs/calendar/calendar.dumb';
 import { DayLineDumb } from '../dumbs/day-line.dumb';
-import { addDays, isSameWeek, subDays } from 'date-fns';
+import { addDays, endOfWeek, isSameWeek, startOfWeek, subDays } from 'date-fns';
 import { CalendarNavDumb } from '../dumbs/calendar/calendar-nav.dumb';
+import { CalendarEvent } from 'angular-calendar';
+import { start } from 'repl';
 
 @Component({
   template: `<dumb-contrat-list
@@ -36,6 +38,7 @@ import { CalendarNavDumb } from '../dumbs/calendar/calendar-nav.dumb';
           (viewDateOutput)="calendarViewDateChange($event)"></dumb-calendar-nav>
         <app-calendar
           [viewDate]="viewDate()"
+          [events]="eventList()"
           (createEventOutput)="createEvent($event)"></app-calendar>
       </div>
     }
@@ -56,8 +59,11 @@ export class AdminContratsPage {
   calendarViewDateChange(date: Date) {
     this.viewDate.set(date);
   }
-  createEvent(date: Date) {
-    this.adminServer.createEvent(date);
+  createEvent(event: CalendarEvent) {
+    const selectedContrat = this.selectedContrat();
+    if (selectedContrat) {
+      this.adminServer.openCreateEventModal(event, selectedContrat.id + '');
+    }
   }
   dayAppList = computed(() =>
     this.adminServer
@@ -125,6 +131,20 @@ export class AdminContratsPage {
     effect(
       () => {
         this.adminServer.getCalendarDayAppListByContrat(this.selectedContrat());
+      },
+      { allowSignalWrites: true }
+    );
+    effect(
+      () => {
+        const viewDate = this.viewDate();
+        const selectedContrat = this.selectedContrat();
+        if (selectedContrat && selectedContrat.id) {
+          this.adminServer.getAllEventByContratIdAndPeriod(
+            startOfWeek(viewDate, { locale: fr }),
+            endOfWeek(viewDate, { locale: fr }),
+            selectedContrat.id + ''
+          );
+        }
       },
       { allowSignalWrites: true }
     );
