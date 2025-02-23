@@ -10,14 +10,14 @@ import { MatIconModule } from '@angular/material/icon';
       <div class="flex items-center space-x-2">
         <!-- Bouton Précédent -->
         <button
-          class="btn bg-gradient-to-r from-purple-400 to-pink-500 text-white px-4 py-2 rounded-md"
+          class="btn bg-gradient-to-r text-white px-4 py-2 rounded-md"
           mwlCalendarPreviousView
           [view]="view"
           [viewDate]="viewDate"
           (viewDateChange)="calendarViewDateChange($event)">
           <mat-icon
             class="w-6 h-6 text-primary-500"
-            svgIcon="mat:check"></mat-icon>
+            svgIcon="mat:keyboard_arrow_left"></mat-icon>
         </button>
 
         <!-- Bouton Aujourd'hui -->
@@ -33,14 +33,14 @@ import { MatIconModule } from '@angular/material/icon';
 
         <!-- Bouton Suivant -->
         <button
-          class="btn bg-gradient-to-r from-purple-400 to-pink-500 text-white px-4 py-2 rounded-md"
+          class="btn bg-gradient-to-r text-white px-4 py-2 rounded-md"
           mwlCalendarNextView
           [view]="view"
           [viewDate]="viewDate"
           (viewDateChange)="calendarViewDateChange($event)">
           <mat-icon
             class="w-6 h-6 text-primary-500"
-            svgIcon="mat:check"></mat-icon>
+            svgIcon="mat:keyboard_arrow_right"></mat-icon>
         </button>
       </div>
     </div>

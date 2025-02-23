@@ -19,6 +19,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { endOfWeek, startOfWeek } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { CalendarNavDumb } from '../dumbs/calendar/calendar-nav.dumb';
 interface Display {
   label: string;
   visible: boolean;
@@ -50,7 +51,12 @@ interface Display {
             </button>
           </div>
           <div class="px-6">
-            <smart-calendar-nav></smart-calendar-nav>
+            <dumb-calendar-nav
+              [viewDate]="viewDate()"
+              (viewDateOutput)="
+                calendarViewDateChange($event)
+              "></dumb-calendar-nav>
+
             <mat-tab-group>
               <mat-tab label="PREVU">
                 <app-calendar
@@ -85,7 +91,7 @@ interface Display {
     VexPageLayoutComponent,
     VexPageLayoutContentDirective,
     CalendarDumb,
-    CalendarNavSmart,
+    CalendarNavDumb,
     MatMenuModule,
     MatIconModule,
     MatCheckboxModule,
@@ -97,12 +103,15 @@ interface Display {
 })
 export class AdminPlanningsPage {
   stateEvents: 'prevu' | 'declare' = 'prevu';
+  viewDate: WritableSignal<Date> = signal(new Date());
+  calendarViewDateChange(date: Date) {
+    this.viewDate.set(date);
+  }
   ngOnInit(): void {}
   availableContratList: WritableSignal<
     (ContratUserApp & { visible: boolean })[]
   > = signal([]);
   eventList = this.adminServer.eventList;
-  viewDate = this.adminServer.calendarViewDate;
   constructor(private adminServer: AdminServerService) {
     effect(
       () =>
