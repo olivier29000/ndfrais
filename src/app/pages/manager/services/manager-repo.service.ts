@@ -9,6 +9,8 @@ import { environment } from 'src/environment/environment';
 import { ContratUserApp } from 'src/app/models/contrat-employe.model';
 import { Action } from 'src/app/models/action.model';
 import { DayApp } from 'src/app/models/day-app.model';
+import { CalendarEvent } from 'angular-calendar';
+import { UtilsService } from 'src/app/services/utils.service';
 
 const URL_BACKEND = environment.urlBackEnd + '/manager';
 const httpOptions = {
@@ -22,7 +24,10 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class ManagerRepoService {
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private utils: UtilsService
+  ) {}
   getPdfById(idPdf: number): Observable<Blob> {
     return this.http
       .get<Blob>(`${URL_BACKEND}/day-app-action/get-pdf-by-id/${idPdf}`, {
@@ -36,6 +41,18 @@ export class ManagerRepoService {
       .get<
         ContratUserApp[]
       >(`${URL_BACKEND}/contrat-user-app/get-all-contrat`, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+  getAllEventByContratIdListAndPeriod(
+    start: Date,
+    end: Date,
+    contratIdList: number[]
+  ): Observable<CalendarEvent[]> {
+    return this.http
+      .post<
+        CalendarEvent[]
+      >(`${URL_BACKEND}/event/get-all-event-by-contrat-id-list-and-period/${this.utils.getDateString(start) + '-00-00'}/${this.utils.getDateString(end) + '-23-59'}`, contratIdList, httpOptions)
       .pipe(catchError(this.handleError));
   }
 

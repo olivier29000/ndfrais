@@ -34,6 +34,10 @@ export class ManagerServerService {
       { allowSignalWrites: true }
     );
   }
+  eventList = this.managerStore.eventList;
+  getAllEventByContratListAndPeriod(start: Date, end: Date): void {
+    this.managerEffect.getAllEventByContratListAndPeriod(start, end);
+  }
   historiqueActionList = this.managerStore.historiqueActionList;
   currentYearHistorique = this.managerStore.currentYearHistorique;
   managerGetHistoriqueActionList(): void {

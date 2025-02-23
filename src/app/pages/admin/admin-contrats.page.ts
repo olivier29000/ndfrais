@@ -37,6 +37,7 @@ import { start } from 'repl';
           [viewDate]="viewDate()"
           (viewDateOutput)="calendarViewDateChange($event)"></dumb-calendar-nav>
         <app-calendar
+          [canCreate]="true"
           [viewDate]="viewDate()"
           [events]="eventList()"
           (createEventOutput)="createEvent($event)"></app-calendar>

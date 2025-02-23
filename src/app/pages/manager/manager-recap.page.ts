@@ -13,7 +13,7 @@ import { ContratListDumb } from '../dumbs/contrat-list.dumb';
 import { ContratUserApp } from '../../models/contrat-employe.model';
 import { ManagerServerService } from './services/manager-server.service';
 import { DayListDumb } from '../dumbs/day-list.dumb';
-import { format } from 'date-fns';
+import { endOfWeek, format, startOfWeek } from 'date-fns';
 import { DayLineDumb } from '../dumbs/day-line.dumb';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { FormsModule } from '@angular/forms';
@@ -21,6 +21,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { fr } from 'date-fns/locale';
 import { DayApp } from 'src/app/models/day-app.model';
+import { CalendarNavDumb } from '../dumbs/calendar/calendar-nav.dumb';
+import { CalendarDumb } from '../dumbs/calendar/calendar.dumb';
 
 @Component({
   template: ` <div
@@ -59,11 +61,25 @@ import { DayApp } from 'src/app/models/day-app.model';
         </div>
       </div>
     </div>
-
+    <div class="container">
+      <dumb-calendar-nav
+        [viewDate]="viewDate()"
+        (viewDateOutput)="calendarViewDateChange($event)"></dumb-calendar-nav>
+      <app-calendar
+        [viewDate]="viewDate()"
+        [events]="eventList()"></app-calendar>
+    </div>
     <div class="px-6"></div>`,
   animations: [],
   standalone: true,
-  imports: [DayLineDumb, MatButtonModule, MatIconModule, FormsModule]
+  imports: [
+    DayLineDumb,
+    MatButtonModule,
+    MatIconModule,
+    FormsModule,
+    CalendarNavDumb,
+    CalendarDumb
+  ]
 })
 export class ManagerRecapPage {
   recapByContratDayAppList = this.managerServer.recapByContratDayAppList;
@@ -91,5 +107,22 @@ export class ManagerRecapPage {
       );
     }
   }
-  constructor(private managerServer: ManagerServerService) {}
+  viewDate: WritableSignal<Date> = signal(new Date());
+  calendarViewDateChange(date: Date) {
+    this.viewDate.set(date);
+  }
+  eventList = this.managerServer.eventList;
+
+  constructor(private managerServer: ManagerServerService) {
+    effect(
+      () => {
+        const viewDate = this.viewDate();
+        this.managerServer.getAllEventByContratListAndPeriod(
+          startOfWeek(viewDate, { locale: fr }),
+          endOfWeek(viewDate, { locale: fr })
+        );
+      },
+      { allowSignalWrites: true }
+    );
+  }
 }

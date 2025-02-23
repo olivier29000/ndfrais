@@ -40,6 +40,29 @@ export class ManagerEffectService {
     );
   }
 
+  getAllEventByContratListAndPeriod(start: Date, end: Date): void {
+    this.managerRepo
+      .getAllEventByContratIdListAndPeriod(
+        start,
+        end,
+        this.managerStore.contratUserAppList().reduce((acc, c) => {
+          if (c.id) {
+            acc.push(c.id);
+          }
+          return acc;
+        }, [] as number[])
+      )
+      .subscribe((eventList) => {
+        this.managerStore.eventList.set(
+          eventList.map((event) => ({
+            ...event,
+            start: this.utils.getStart(event.start),
+            end: this.utils.getEnd(event.end)
+          }))
+        );
+      });
+  }
+
   managerGetHistoriqueActionList(date: Date): void {
     this.utils.changeIsLoading(true);
     this.managerRepo

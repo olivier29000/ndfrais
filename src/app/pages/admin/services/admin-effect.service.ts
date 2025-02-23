@@ -59,6 +59,28 @@ export class AdminEffectService {
       }
     });
   }
+  getAllEventByContratListAndPeriod(start: Date, end: Date): void {
+    this.adminRepo
+      .getAllEventByContratIdListAndPeriod(
+        start,
+        end,
+        this.adminStore.adminAllContratList().reduce((acc, c) => {
+          if (c.id) {
+            acc.push(c.id);
+          }
+          return acc;
+        }, [] as number[])
+      )
+      .subscribe((eventList) => {
+        this.adminStore.eventList.set(
+          eventList.map((event) => ({
+            ...event,
+            start: this.utils.getStart(event.start),
+            end: this.utils.getEnd(event.end)
+          }))
+        );
+      });
+  }
   getAllEventByContratIdAndPeriod(
     start: Date,
     end: Date,

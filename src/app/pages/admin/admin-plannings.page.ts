@@ -17,6 +17,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ContratUserApp } from 'src/app/models/contrat-employe.model';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
+import { endOfWeek, startOfWeek } from 'date-fns';
+import { fr } from 'date-fns/locale';
 interface Display {
   label: string;
   visible: boolean;
@@ -51,7 +53,9 @@ interface Display {
             <smart-calendar-nav></smart-calendar-nav>
             <mat-tab-group>
               <mat-tab label="PREVU">
-                <app-calendar [viewDate]="viewDate()"></app-calendar>
+                <app-calendar
+                  [viewDate]="viewDate()"
+                  [events]="eventList()"></app-calendar>
               </mat-tab>
               <mat-tab label="DECLARE">
                 <!-- <pre><code [vexHighlight]="checkboxHTML"></code></pre> -->
@@ -97,6 +101,7 @@ export class AdminPlanningsPage {
   availableContratList: WritableSignal<
     (ContratUserApp & { visible: boolean })[]
   > = signal([]);
+  eventList = this.adminServer.eventList;
   viewDate = this.adminServer.calendarViewDate;
   constructor(private adminServer: AdminServerService) {
     effect(
@@ -106,6 +111,16 @@ export class AdminPlanningsPage {
             .adminAllContratList()
             .map((c) => ({ ...c, visible: true }))
         ),
+      { allowSignalWrites: true }
+    );
+    effect(
+      () => {
+        const viewDate = this.viewDate();
+        this.adminServer.getAllEventByContratListAndPeriod(
+          startOfWeek(viewDate, { locale: fr }),
+          endOfWeek(viewDate, { locale: fr })
+        );
+      },
       { allowSignalWrites: true }
     );
   }

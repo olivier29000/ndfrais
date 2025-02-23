@@ -40,6 +40,17 @@ export class AdminRepoService {
       >(`${URL_BACKEND}/event/create-event/${contratId}`, calendarEvent, httpOptions)
       .pipe(catchError(this.handleError));
   }
+  getAllEventByContratIdListAndPeriod(
+    start: Date,
+    end: Date,
+    contratIdList: number[]
+  ): Observable<CalendarEvent[]> {
+    return this.http
+      .post<
+        CalendarEvent[]
+      >(`${URL_BACKEND}/event/get-all-event-by-contrat-id-list-and-period/${this.utils.getDateString(start) + '-00-00'}/${this.utils.getDateString(end) + '-23-59'}`, contratIdList, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
   getAllEventByContratIdAndPeriod(
     start: Date,
     end: Date,

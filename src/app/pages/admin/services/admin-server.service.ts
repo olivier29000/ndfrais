@@ -48,6 +48,9 @@ export class AdminServerService {
       { allowSignalWrites: true }
     );
   }
+  getAllEventByContratListAndPeriod(start: Date, end: Date): void {
+    this.adminEffect.getAllEventByContratListAndPeriod(start, end);
+  }
   getAllEventByContratIdAndPeriod(
     start: Date,
     end: Date,

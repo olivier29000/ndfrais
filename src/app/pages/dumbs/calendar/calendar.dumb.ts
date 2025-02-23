@@ -64,6 +64,7 @@ import { subMinutes } from 'date-fns';
   ]
 })
 export class CalendarDumb {
+  @Input() canCreate = false;
   @Input() viewDate: Date = new Date();
   _events: CalendarEvent[] = [];
   @Input()
@@ -80,31 +81,37 @@ export class CalendarDumb {
 
   newEvent: CalendarEvent | undefined = undefined;
   onMouseDown(date: Date) {
-    this.newEvent = {
-      title: '',
-      start: date,
-      end: date
-    };
-    this.eventsWithNew = this.events.concat([this.newEvent]);
-  }
-  eventMouseUp() {
-    if (this.newEvent) {
-      this.createEventOutput.emit(this.newEvent);
-    }
-    this.newEvent = undefined;
-    this.eventsWithNew = this.events;
-  }
-  eventOver() {
-    if (this.newEvent && this.newEvent.end) {
+    if (this.canCreate) {
       this.newEvent = {
-        ...this.newEvent,
-        end: subMinutes(this.newEvent.end, 30)
+        title: '',
+        start: date,
+        end: date
       };
       this.eventsWithNew = this.events.concat([this.newEvent]);
     }
   }
+  eventMouseUp() {
+    if (this.canCreate) {
+      if (this.newEvent) {
+        this.createEventOutput.emit(this.newEvent);
+      }
+      this.newEvent = undefined;
+      this.eventsWithNew = this.events;
+    }
+  }
+  eventOver() {
+    if (this.canCreate) {
+      if (this.newEvent && this.newEvent.end) {
+        this.newEvent = {
+          ...this.newEvent,
+          end: subMinutes(this.newEvent.end, 30)
+        };
+        this.eventsWithNew = this.events.concat([this.newEvent]);
+      }
+    }
+  }
   onMouseOver(date: Date) {
-    if (this.newEvent) {
+    if (this.canCreate && this.newEvent) {
       this.newEvent = {
         ...this.newEvent,
         end: date
@@ -114,13 +121,15 @@ export class CalendarDumb {
   }
 
   onMouseUp(date: Date) {
-    if (this.newEvent) {
-      this.createEventOutput.emit({
-        ...this.newEvent,
-        end: date
-      });
+    if (this.canCreate) {
+      if (this.newEvent) {
+        this.createEventOutput.emit({
+          ...this.newEvent,
+          end: date
+        });
+      }
+      this.newEvent = undefined;
+      this.eventsWithNew = this.events;
     }
-    this.newEvent = undefined;
-    this.eventsWithNew = this.events;
   }
 }
