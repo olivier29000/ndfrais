@@ -193,7 +193,6 @@ export class ActionListDumb implements OnInit, OnChanges, AfterViewInit {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['actionList']) {
-      console.log(this.actionList);
       this.dataSource.data = this.actionList.map((currentAction) => ({
         id: currentAction.id,
         state: currentAction.state,

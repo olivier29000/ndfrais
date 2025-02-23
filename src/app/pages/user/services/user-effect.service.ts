@@ -35,7 +35,6 @@ export class UserEffectService {
     this.userRepo
       .getAllEventByContratIdAndPeriod(start, end, contratId)
       .subscribe((eventList) => {
-        console.log(eventList);
         this.userStore.eventList.set(
           eventList.map((event) => ({
             ...event,
@@ -58,7 +57,6 @@ export class UserEffectService {
       )
       .subscribe(
         (recapByContratDayAppList) => {
-          console.log(recapByContratDayAppList);
           this.utils.changeIsLoading(false);
           this.userStore.recapByContratDayAppList.set(
             recapByContratDayAppList.map((recapByContratDayApp) => ({
