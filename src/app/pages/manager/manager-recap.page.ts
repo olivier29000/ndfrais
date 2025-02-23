@@ -13,16 +13,27 @@ import { ContratListDumb } from '../dumbs/contrat-list.dumb';
 import { ContratUserApp } from '../../models/contrat-employe.model';
 import { ManagerServerService } from './services/manager-server.service';
 import { DayListDumb } from '../dumbs/day-list.dumb';
-import { endOfWeek, format, startOfWeek } from 'date-fns';
+import {
+  addMonths,
+  eachMonthOfInterval,
+  endOfWeek,
+  format,
+  isFirstDayOfMonth,
+  startOfDay,
+  startOfMonth,
+  startOfWeek,
+  subMonths
+} from 'date-fns';
 import { DayLineDumb } from '../dumbs/day-line.dumb';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { fr } from 'date-fns/locale';
+import { fr, frCA } from 'date-fns/locale';
 import { DayApp } from 'src/app/models/day-app.model';
 import { CalendarNavDumb } from '../dumbs/calendar/calendar-nav.dumb';
 import { CalendarDumb } from '../dumbs/calendar/calendar.dumb';
+import { CommonModule } from '@angular/common';
 
 @Component({
   template: ` <div
@@ -41,7 +52,13 @@ import { CalendarDumb } from '../dumbs/calendar/calendar.dumb';
         <div class="me-3 flex flex-wrap my-3 ">
           @for (recap of recapByContratDayAppList(); track recap) {
             <div class="flex">
-              <div class="card flex items-center mt-3 px-2" style="width:130px">
+              <div
+                class="card flex items-center mt-3 px-2"
+                style="width:130px"
+                [style.border]="
+                  '3px solid ' +
+                  convertHexToRgba(recap.contrat.color || '#000000', 1)
+                ">
                 <div class="flex-auto">
                   <h4 class="body-2 m-0 leading-snug">
                     {{ recap.contrat.poste }}
@@ -78,7 +95,8 @@ import { CalendarDumb } from '../dumbs/calendar/calendar.dumb';
     MatIconModule,
     FormsModule,
     CalendarNavDumb,
-    CalendarDumb
+    CalendarDumb,
+    CommonModule
   ]
 })
 export class ManagerRecapPage {
@@ -91,9 +109,31 @@ export class ManagerRecapPage {
   }
   previousMonth(): void {
     this.managerServer.previousMonth();
+    this.viewDate.set(subMonths(this.viewDate(), 1));
   }
   nextMonth(): void {
     this.managerServer.nextMonth();
+    this.viewDate.set(addMonths(this.viewDate(), 1));
+  }
+  calendarViewDateChange(date: Date) {
+    const viewStartOfWeek = startOfWeek(this.viewDate().getTime(), {
+      locale: fr
+    });
+    const dateStartOfWeek = startOfWeek(date.getTime(), {
+      locale: fr
+    });
+    if (
+      viewStartOfWeek.getTime() > dateStartOfWeek.getTime() &&
+      viewStartOfWeek.getMonth() !== dateStartOfWeek.getMonth()
+    ) {
+      this.managerServer.previousMonth();
+    } else if (
+      viewStartOfWeek.getTime() < dateStartOfWeek.getTime() &&
+      viewStartOfWeek.getMonth() !== dateStartOfWeek.getMonth()
+    ) {
+      this.managerServer.nextMonth();
+    }
+    this.viewDate.set(date);
   }
   openActionDayListValidModal(dayApp: DayApp): void {
     if (dayApp.actionDay) {
@@ -108,9 +148,7 @@ export class ManagerRecapPage {
     }
   }
   viewDate: WritableSignal<Date> = signal(new Date());
-  calendarViewDateChange(date: Date) {
-    this.viewDate.set(date);
-  }
+
   eventList = this.managerServer.eventList;
 
   constructor(private managerServer: ManagerServerService) {
@@ -124,5 +162,16 @@ export class ManagerRecapPage {
       },
       { allowSignalWrites: true }
     );
+  }
+
+  convertHexToRgba(colorHexa: string, opacity: number): string {
+    const hex = colorHexa.replace('#', '');
+    // Convertir en valeurs RGB
+    const bigint = parseInt(hex, 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+    // Retourner le format rgba
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
   }
 }

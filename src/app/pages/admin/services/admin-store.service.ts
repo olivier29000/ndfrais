@@ -15,7 +15,7 @@ export class AdminStoreService {
   currentDateRecap: WritableSignal<Date> = signal(new Date());
   currentYearHistorique: WritableSignal<Date> = signal(new Date());
   recapByContratDayAppList: WritableSignal<
-    { contrat: ContratUserApp; dayAppList: DayApp[] }[]
+    { contrat: ContratUserApp; dayAppList: DayApp[]; nbHours: number }[]
   > = signal([]);
   actionList: WritableSignal<Action[]> = signal([]);
   historiqueActionList: WritableSignal<Action[]> = signal([]);

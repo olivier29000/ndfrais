@@ -46,6 +46,13 @@ import { subMinutes } from 'date-fns';
         [ngClass]="weekEvent.event.avaibility ? 'event-avaibility' : ''"
         [style.height]="weekEvent.height + 'px'"
         [style.cursor]="weekEvent.event.id ? 'grab' : 'default'"
+        [style.border]="
+          '3px solid ' +
+          convertHexToRgba(weekEvent.event.color?.primary || '#000000', 1)
+        "
+        [style.backgroundColor]="
+          convertHexToRgba(weekEvent.event.color?.primary || '#000000', 0.1)
+        "
         (mouseup)="eventMouseUp()"
         (mouseover)="eventOver()">
         <div class="text-center mt-1">
@@ -64,11 +71,23 @@ import { subMinutes } from 'date-fns';
   ]
 })
 export class CalendarDumb {
+  convertHexToRgba(colorHexa: string, opacity: number): string {
+    const hex = colorHexa.replace('#', '');
+    // Convertir en valeurs RGB
+    const bigint = parseInt(hex, 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+    // Retourner le format rgba
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+  }
+
   @Input() canCreate = false;
   @Input() viewDate: Date = new Date();
   _events: CalendarEvent[] = [];
   @Input()
   set events(value: CalendarEvent[]) {
+    console.log(value);
     this.eventsWithNew = value;
     this._events = value;
   }
@@ -85,7 +104,8 @@ export class CalendarDumb {
       this.newEvent = {
         title: '',
         start: date,
-        end: date
+        end: date,
+        color: { primary: '#111827', secondary: '#111827' }
       };
       this.eventsWithNew = this.events.concat([this.newEvent]);
     }

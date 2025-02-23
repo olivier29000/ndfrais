@@ -43,6 +43,7 @@ export class UserPlanningPage {
         const viewDate = this.viewDate();
         const idContrat = this.idContrat();
         if (idContrat) {
+          this.userServer.getUserDayAppListByContratId(idContrat);
           this.userServer.getAllEventByContratIdAndPeriod(
             startOfWeek(viewDate, { locale: fr }),
             endOfWeek(viewDate, { locale: fr }),

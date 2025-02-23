@@ -4,6 +4,7 @@ import { UserApp } from './user.model';
 export interface ContratUserApp {
   id?: number;
   poste: string;
+  color: string;
   dateBegin: Date;
   dateEnd: Date;
   dayOfWeekReposList: DayOfWeek[];

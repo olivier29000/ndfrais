@@ -34,6 +34,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { AdminServerService } from '../services/admin-server.service';
 import { WORK_STATE } from 'src/app/models/day-app.model';
 import { WorkStateDumb } from '../../dumbs/work-state.dumb';
+import { Subject } from 'rxjs';
 
 export class CustomDateAdapter extends NativeDateAdapter {
   override parse(value: any): Date | null {
@@ -196,6 +197,17 @@ export const CUSTOM_DATE_FORMATS = {
 
               <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
             </mat-form-field>
+            <mat-form-field class="sm:ml-4 flex-auto">
+              <mat-label>Couleur</mat-label>
+              <input
+                matInput
+                type="color"
+                name="color"
+                [(ngModel)]="currentContrat.color"
+                (change)="refresh.next()" />
+
+              <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
+            </mat-form-field>
           </div>
 
           <div>
@@ -304,6 +316,7 @@ export const CUSTOM_DATE_FORMATS = {
   ]
 })
 export class CreateUpdateContratModal implements OnInit {
+  refresh = new Subject<void>();
   workStateList = Object.values(WORK_STATE).filter(
     (state) =>
       ![WORK_STATE.REPOS, WORK_STATE.TRAVAIL, WORK_STATE.HORS_CONTRAT].includes(
@@ -313,6 +326,7 @@ export class CreateUpdateContratModal implements OnInit {
   currentContrat: ContratUserApp = {
     id: this.data?.contrat?.id || undefined,
     poste: this.data?.contrat?.poste || '',
+    color: this.data?.contrat?.color || '',
     dateBegin: this.data?.contrat?.dateBegin || new Date(),
     dateEnd: this.data?.contrat?.dateEnd || new Date(),
     dayOfWeekReposList: this.data?.contrat?.dayOfWeekReposList || [],

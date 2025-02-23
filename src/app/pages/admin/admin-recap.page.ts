@@ -36,6 +36,10 @@ import { AdminServerService } from './services/admin-server.service';
                     {{ recap.contrat.userApp.nom }}
                     {{ recap.contrat.userApp.prenom }}
                   </h5>
+
+                  <h4 class="body-2 m-0 leading-snug">
+                    {{ recap.nbHours }}
+                  </h4>
                 </div>
               </div>
               <dumb-day-line
