@@ -69,6 +69,13 @@ export const appRoutes: VexRoutes = [
               import('./pages/admin/admin-plannings.page').then(
                 (m) => m.AdminPlanningsPage
               )
+          },
+          {
+            path: 'abonnement',
+            loadComponent: () =>
+              import('./pages/admin/admin-abonnement.page').then(
+                (m) => m.AdminAbonnementPage
+              )
           }
         ]
       },

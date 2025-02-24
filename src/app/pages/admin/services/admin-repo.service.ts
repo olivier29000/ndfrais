@@ -12,6 +12,7 @@ import { Action } from 'src/app/models/action.model';
 import { DayApp } from 'src/app/models/day-app.model';
 import { CalendarEvent } from 'angular-calendar';
 import { UtilsService } from 'src/app/services/utils.service';
+import { Abonnement, UserConnected } from 'src/app/models/user-connected.model';
 
 const URL_BACKEND = environment.urlBackEnd + '/admin';
 const httpOptions = {
@@ -32,6 +33,14 @@ export class AdminRepoService {
   verifDispoPseudo(pseudo: string): Observable<void> {
     return this.http
       .get<void>(`${URL_BACKEND}/user-app/verif-pseudo/${pseudo}`, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+  selectAbonnement(abonnement: Abonnement): Observable<UserConnected> {
+    return this.http
+      .get<UserConnected>(
+        `${environment.urlBackEnd}/user/select-abonnement/${abonnement}`,
+        httpOptions
+      )
       .pipe(catchError(this.handleError));
   }
   createNewEvent(

@@ -5,7 +5,7 @@ import { UserApp } from 'src/app/models/user.model';
 import { ContratUserApp } from 'src/app/models/contrat-employe.model';
 import { AdminStoreService } from './admin-store.service';
 import { UtilsService } from 'src/app/services/utils.service';
-import { Role } from 'src/app/models/user-connected.model';
+import { Abonnement, Role } from 'src/app/models/user-connected.model';
 import {
   eachDayOfInterval,
   format,
@@ -48,6 +48,10 @@ export class AdminServerService {
       { allowSignalWrites: true }
     );
   }
+  selectAbonnement(abonnement: Abonnement): void {
+    this.adminEffect.selectAbonnement(abonnement);
+  }
+  userConnected = this.utils.userConnected;
   canChoosePseudo = this.adminStore.canChoosePseudo;
   verifDispoPseudo(pseudo: string): void {
     this.adminEffect.verifDispoPseudo(pseudo);

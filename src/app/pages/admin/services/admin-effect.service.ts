@@ -25,6 +25,7 @@ import { CreateEventModal } from '../../modals/createEvent.modal';
 import { CalendarEvent } from 'angular-calendar';
 import { fr } from 'date-fns/locale';
 import { of } from 'rxjs';
+import { Abonnement } from 'src/app/models/user-connected.model';
 
 @Injectable({
   providedIn: 'root'
@@ -52,6 +53,18 @@ export class AdminEffectService {
       () => {
         this.adminStore.canChoosePseudo.set(false);
         return of();
+      }
+    );
+  }
+  selectAbonnement(abonnement: Abonnement): void {
+    this.utils.changeIsLoading(true);
+    this.adminRepo.selectAbonnement(abonnement).subscribe(
+      (userConnected) => {
+        this.utils.userConnected.set(userConnected);
+        this.utils.changeIsLoading(false);
+      },
+      () => {
+        this.utils.changeIsLoading(false);
       }
     );
   }
