@@ -35,7 +35,6 @@
     "date-fns": "~2.30.0",
     "highlight.js": "~11.9.0",
     "luxon": "~3.4.3",
-    "ngx-mat-datetime-picker": "^3.0.0",
     "ngx-quill": "~24.0.0",
     "primeicons": "^7.0.0",
     "primeng": "^17.18.15",
