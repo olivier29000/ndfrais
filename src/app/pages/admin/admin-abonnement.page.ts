@@ -69,7 +69,7 @@ import { Abonnement } from 'src/app/models/user-connected.model';
                   class="icon-sm text-primary-500"
                   style="overflow: visible;"
                   svgIcon="mat:check"></mat-icon>
-                <div>Module Abscences</div>
+                <div>Module Absences</div>
               </div>
 
               <div class="flex items-center gap-3 text-sm ms-3">
@@ -78,7 +78,7 @@ import { Abonnement } from 'src/app/models/user-connected.model';
                   style="overflow: visible;"
                   svgIcon="mat:check_box"></mat-icon>
                 <div>
-                  Gestion des abscences (calendrier, demande,
+                  Gestion des absences (calendrier, demande,
                   validation/refus...)
                 </div>
               </div>
@@ -95,7 +95,7 @@ import { Abonnement } from 'src/app/models/user-connected.model';
                   style="overflow: visible;"
                   svgIcon="mat:check_box_outline_blank"></mat-icon>
                 <div>
-                  Envoi d'email sur demande et confirmation/refus d'une abscence
+                  Envoi d'email sur demande et confirmation/refus d'une absence
                 </div>
               </div>
               <div class="flex items-center gap-3 text-sm ms-3">
@@ -196,7 +196,7 @@ import { Abonnement } from 'src/app/models/user-connected.model';
                   class="icon-sm text-primary-500"
                   style="overflow: visible;"
                   svgIcon="mat:check"></mat-icon>
-                <div>Module Abscences</div>
+                <div>Module Absences</div>
               </div>
 
               <div class="flex items-center gap-3 text-sm ms-3">
@@ -205,7 +205,7 @@ import { Abonnement } from 'src/app/models/user-connected.model';
                   style="overflow: visible;"
                   svgIcon="mat:check_box"></mat-icon>
                 <div>
-                  Gestion des abscences (calendrier, demande,
+                  Gestion des absences (calendrier, demande,
                   validation/refus...)
                 </div>
               </div>
@@ -222,7 +222,7 @@ import { Abonnement } from 'src/app/models/user-connected.model';
                   style="overflow: visible;"
                   svgIcon="mat:check_box"></mat-icon>
                 <div>
-                  Envoi d'email sur demande et confirmation/refus d'une abscence
+                  Envoi d'email sur demande et confirmation/refus d'une absence
                 </div>
               </div>
               <div class="flex items-center gap-3 text-sm ms-3">
@@ -324,7 +324,7 @@ import { Abonnement } from 'src/app/models/user-connected.model';
                   class="icon-sm text-primary-500"
                   style="overflow: visible;"
                   svgIcon="mat:check"></mat-icon>
-                <div>Module Abscences</div>
+                <div>Module Absences</div>
               </div>
 
               <div class="flex items-center gap-3 text-sm ms-3">
@@ -333,7 +333,7 @@ import { Abonnement } from 'src/app/models/user-connected.model';
                   style="overflow: visible;"
                   svgIcon="mat:check_box"></mat-icon>
                 <div>
-                  Gestion des abscences (calendrier, demande,
+                  Gestion des absences (calendrier, demande,
                   validation/refus...)
                 </div>
               </div>
@@ -350,7 +350,7 @@ import { Abonnement } from 'src/app/models/user-connected.model';
                   style="overflow: visible;"
                   svgIcon="mat:check_box"></mat-icon>
                 <div>
-                  Envoi d'email sur demande et confirmation/refus d'une abscence
+                  Envoi d'email sur demande et confirmation/refus d'une absence
                 </div>
               </div>
               <div class="flex items-center gap-3 text-sm ms-3">

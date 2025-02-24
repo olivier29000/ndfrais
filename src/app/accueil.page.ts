@@ -47,7 +47,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
         <div class=" px-8 text-center rounded-2xl">
           <div class="text-5xl font-extrabold mb-5">
-            Besoin de simplifier le planning et les abscences de vos employés ?
+            Besoin de simplifier le planning et les absences de vos employés ?
           </div>
           <div class="text-2xl font-medium  mb-5">
             Plutôt qu'un long discours, je vous propose de regarder la première
@@ -99,7 +99,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
                   class="icon-sm text-primary-500"
                   style="overflow: visible;"
                   svgIcon="mat:check"></mat-icon>
-                <div>alaisedeiz - Gestion des abscences</div>
+                <div>alaisedeiz - Gestion des absences</div>
               </div>
               <div class="flex items-center gap-3 text-sm">
                 <mat-icon
@@ -128,7 +128,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
                   style="overflow: visible;"
                   svgIcon="mat:add_shopping_cart"></mat-icon>
                 <div>
-                  Vos employés peuvent demander des abscences et y inclure des
+                  Vos employés peuvent demander des absences et y inclure des
                   pièces jointes
                 </div>
               </div>
@@ -188,7 +188,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
                   class="icon-sm text-primary-500"
                   style="overflow: visible;"
                   svgIcon="mat:check"></mat-icon>
-                <div>alaisedeiz - Gestion des abscences</div>
+                <div>alaisedeiz - Gestion des absences</div>
               </div>
               <div class="flex items-center gap-3 text-sm">
                 <mat-icon
@@ -215,7 +215,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
                   style="overflow: visible;"
                   svgIcon="mat:add_shopping_cart"></mat-icon>
                 <div>
-                  Vos employés peuvent demander des abscences et y inclure des
+                  Vos employés peuvent demander des absences et y inclure des
                   pièces jointes
                 </div>
               </div>
@@ -268,7 +268,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
                   class="icon-sm text-primary-500"
                   style="overflow: visible;"
                   svgIcon="mat:check"></mat-icon>
-                <div>alaisedeiz - Gestion des abscences</div>
+                <div>alaisedeiz - Gestion des absences</div>
               </div>
               <div class="flex items-center gap-3 text-sm">
                 <mat-icon
@@ -355,7 +355,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
               </div>
               <div class="text-gray-300 mt-3 leading-relaxed">
                 J'ai créé alaisedev.bzh après avoir remarqué que la gestion des
-                abscences et du planning des employés peut être chronophage pour
+                absences et du planning des employés peut être chronophage pour
                 un manager, en plus de créer des tensions du coté des employés.
               </div>
               <div class="text-gray-300 mt-3 leading-relaxed">
@@ -437,7 +437,7 @@ export class AccueilPage {
       icon: 'mat:check',
       label: 'A quoi sert le logiciel web alaisedeiz ?',
       description:
-        "C'est un outil disponible sur le web qui permet de gérer facilement le planning des abscences de vos employés. Concrétement, vos employés disposent d'un espace en ligne pour faire leur demandes d'abscences (congés, arrêts maladies...) et vos manager et vous disposez d'un espace pour visualiser les demandes en cours et l'historique."
+        "C'est un outil disponible sur le web qui permet de gérer facilement le planning des absences de vos employés. Concrétement, vos employés disposent d'un espace en ligne pour faire leur demandes d'absences (congés, arrêts maladies...) et vos manager et vous disposez d'un espace pour visualiser les demandes en cours et l'historique."
     },
     {
       icon: 'mat:check',

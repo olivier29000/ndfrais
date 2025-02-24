@@ -11,6 +11,8 @@ import { CreateUpdateContratModal } from '../pages/admin/modals/create-update-co
 import { Router, UrlTree } from '@angular/router';
 import Swal from 'sweetalert2';
 import { catchError, map, Observable, of } from 'rxjs';
+import { Email } from '../models/email.model';
+import { EmailSupportModal } from './modals/email-support.modal';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +21,8 @@ export class EffectService {
   constructor(
     private store: StoreService,
     private repo: RepoService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) {}
 
   authentification(email: string, password: string): void {
@@ -151,6 +154,18 @@ export class EffectService {
     );
   }
 
+  sendEmail(email: Email): void {
+    this.store.isLoading.set(true);
+    this.repo.sendEmail(email).subscribe(
+      () => {
+        this.store.isLoading.set(false);
+      },
+      () => {
+        this.store.isLoading.set(false);
+      }
+    );
+  }
+
   verifDispoNomEntreprise(nomEntreprise: string): void {
     this.repo.verifDispoNomEntreprise(nomEntreprise).subscribe(
       () => {
@@ -161,5 +176,13 @@ export class EffectService {
         return of();
       }
     );
+  }
+
+  openSendEmailModal(mode: 'bug' | 'information' | 'fonctionnality') {
+    this.dialog.open(EmailSupportModal, {
+      data: {
+        mode
+      }
+    });
   }
 }

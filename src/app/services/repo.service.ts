@@ -12,6 +12,7 @@ import { ContratUserApp } from '../models/contrat-employe.model';
 import { UserApp } from '../models/user.model';
 import { UserConnected } from '../models/user-connected.model';
 import { TreeNode } from 'primeng/api';
+import { Email } from '../models/email.model';
 
 const URL_BACKEND = environment.urlBackEnd;
 const httpOptions = {
@@ -97,6 +98,12 @@ export class RepoService {
       .get<
         TreeNode[]
       >(`${URL_BACKEND}/contrat-user-app/get-organigramme`, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+  sendEmail(email: Email): Observable<void> {
+    return this.http
+      .post<void>(`${URL_BACKEND}/user/email`, email, httpOptions)
       .pipe(catchError(this.handleError));
   }
 

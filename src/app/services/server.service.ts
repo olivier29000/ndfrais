@@ -9,6 +9,7 @@ import { ContratUserApp } from '../models/contrat-employe.model';
 import { Role } from '../models/user-connected.model';
 import { EffectService } from './effect.service';
 import { AdminServerService } from '../pages/admin/services/admin-server.service';
+import { Email } from '../models/email.model';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +32,12 @@ export class ServerService {
       },
       { allowSignalWrites: true }
     );
+  }
+  openSendEmailModal(mode: 'bug' | 'information' | 'fonctionnality') {
+    this.effectService.openSendEmailModal(mode);
+  }
+  sendEmail(email: Email): void {
+    this.effectService.sendEmail(email);
   }
   canChooseNomEntreprise = this.store.canChooseNomEntreprise;
   verifDispoNomEntreprise(nomEntreprise: string): void {
