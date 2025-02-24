@@ -22,4 +22,5 @@ export class AdminStoreService {
   calendarViewDate: WritableSignal<Date> = signal(new Date());
   dayAppList: WritableSignal<DayApp[]> = signal([]);
   eventList: WritableSignal<CalendarEvent[]> = signal([]);
+  canChoosePseudo: WritableSignal<boolean | undefined> = signal(undefined);
 }

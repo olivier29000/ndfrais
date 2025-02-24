@@ -24,6 +24,7 @@ import { WEEK_STATE, WORK_STATE } from 'src/app/models/day-app.model';
 import { CreateEventModal } from '../../modals/createEvent.modal';
 import { CalendarEvent } from 'angular-calendar';
 import { fr } from 'date-fns/locale';
+import { of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -43,7 +44,17 @@ export class AdminEffectService {
       { allowSignalWrites: true }
     );
   }
-
+  verifDispoPseudo(pseudo: string): void {
+    this.adminRepo.verifDispoPseudo(pseudo).subscribe(
+      () => {
+        this.adminStore.canChoosePseudo.set(true);
+      },
+      () => {
+        this.adminStore.canChoosePseudo.set(false);
+        return of();
+      }
+    );
+  }
   calendarViewDateChange(viewDate: Date): void {
     this.adminStore.calendarViewDate.set(viewDate);
   }

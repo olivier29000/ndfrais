@@ -1,7 +1,7 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, effect, OnInit } from '@angular/core';
 import { ServerService } from '../services/server.service';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,6 +10,7 @@ import { NgIf } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { RouterLink } from '@angular/router';
+import { debounceTime, distinctUntilChanged, tap } from 'rxjs';
 
 @Component({
   template: `
@@ -23,10 +24,8 @@ import { RouterLink } from '@angular/router';
         </div>
 
         <div class="text-center mt-4">
-          <h2 class="title m-0">Register for an account</h2>
-          <h4 class="body-2 text-secondary m-0">
-            Simply fill out the form below
-          </h4>
+          <h2 class="title m-0">Créer un compte alaisedeiz</h2>
+          <h4 class="body-2 text-secondary m-0">C'est gratuit</h4>
         </div>
 
         <div class="p-6 flex flex-col gap-4 flex-auto flex flex-col">
@@ -34,10 +33,22 @@ import { RouterLink } from '@angular/router';
             <mat-form-field class="flex-1 block">
               <mat-label>Entreprise</mat-label>
               <input
-                [(ngModel)]="entreprise"
+                [formControl]="nomEntreprise"
+                [value]="entreprise"
                 name="entreprise"
                 matInput
                 required />
+              @if (canChooseNomEntreprise() === true) {
+                <mat-hint class="text-green"
+                  >Ce nom d'entreprise est disponible</mat-hint
+                >
+              } @else if (canChooseNomEntreprise() === false) {
+                <mat-hint class="text-red"
+                  >Ce nom d'entreprise est indisponible</mat-hint
+                >
+              } @else {
+                <mat-hint>Vérification de la disponibilité du nom</mat-hint>
+              }
             </mat-form-field>
             <mat-form-field class="flex-1 block">
               <mat-label>E-Mail</mat-label>
@@ -45,7 +56,7 @@ import { RouterLink } from '@angular/router';
             </mat-form-field>
 
             <mat-form-field class="flex-1 block">
-              <mat-label>Password</mat-label>
+              <mat-label>Mot de passe</mat-label>
               <input
                 [type]="inputType"
                 [(ngModel)]="password"
@@ -66,13 +77,19 @@ import { RouterLink } from '@angular/router';
             </mat-form-field>
 
             <mat-form-field class="flex-1 block">
-              <mat-label>Password (Confirm)</mat-label>
+              <mat-label>Confirmation du mot de passe</mat-label>
               <input
                 [type]="inputType"
                 [(ngModel)]="passwordConfirm"
                 name="passwordConfirm"
                 matInput
                 required />
+              @if (password !== passwordConfirm) {
+                <mat-hint class="text-red"
+                  >La confirmation est différente du mot de passe</mat-hint
+                >
+              }
+
               <button
                 (click)="toggleVisibility()"
                 mat-icon-button
@@ -89,25 +106,41 @@ import { RouterLink } from '@angular/router';
 
           <div class="flex items-center justify-center">
             <mat-checkbox class="caption"
-              >I accept the <a>terms and conditions.</a></mat-checkbox
+              >J'accepte les <a>CGV</a></mat-checkbox
             >
           </div>
           <button
             (click)="creationCompte()"
+            [disabled]="
+              !canChooseNomEntreprise() ||
+              email === '' ||
+              password === '' ||
+              password !== passwordConfirm
+            "
             color="primary"
             mat-raised-button
             type="button">
-            CREATE ACCOUNT
+            Créer mon compte
           </button>
           <p class="text-secondary text-center">
-            Already have an account?<br />
-            <a [routerLink]="['/login']">Sign in here</a>
+            Vous êtes déjà inscrits ?<br />
+            <a [routerLink]="['/login']">Connectez vous ici</a>
           </p>
         </div>
       </div>
     </div>
   `,
-  styles: [``],
+  styles: [
+    `
+      .text-green {
+        color: green;
+      }
+
+      .text-red {
+        color: red;
+      }
+    `
+  ],
   animations: [fadeInUp400ms],
   standalone: true,
   imports: [
@@ -119,21 +152,40 @@ import { RouterLink } from '@angular/router';
     NgIf,
     MatIconModule,
     MatCheckboxModule,
-    RouterLink
+    RouterLink,
+    ReactiveFormsModule
   ]
 })
 export class CreateAccountPage {
   inputType = 'password';
   visible = false;
   entreprise = '';
+  nomEntreprise = new FormControl('');
   email = '';
   password = '';
   passwordConfirm = '';
 
+  canChooseNomEntreprise = this.serverService.canChooseNomEntreprise;
+
   constructor(
     private serverService: ServerService,
     private cd: ChangeDetectorRef
-  ) {}
+  ) {
+    effect(() => {
+      this.nomEntreprise.valueChanges
+        .pipe(
+          tap(() => this.serverService.canChooseNomEntreprise.set(undefined)),
+          debounceTime(500),
+          distinctUntilChanged()
+        )
+        .subscribe((res) => {
+          if (res) {
+            this.serverService.verifDispoNomEntreprise(res);
+            this.entreprise = res;
+          }
+        });
+    });
+  }
 
   creationCompte(): void {
     this.serverService.creationCompte(

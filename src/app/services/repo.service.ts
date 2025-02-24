@@ -100,6 +100,15 @@ export class RepoService {
       .pipe(catchError(this.handleError));
   }
 
+  verifDispoNomEntreprise(nomEntreprise: string): Observable<void> {
+    return this.http
+      .get<void>(
+        `${URL_BACKEND}/user/verif-nom-entreprise/${nomEntreprise}`,
+        httpOptions
+      )
+      .pipe(catchError(this.handleError));
+  }
+
   private handleError(error: HttpErrorResponse) {
     if (error.status === 409) {
       // Conflict: User already exists

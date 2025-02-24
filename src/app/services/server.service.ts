@@ -32,6 +32,10 @@ export class ServerService {
       { allowSignalWrites: true }
     );
   }
+  canChooseNomEntreprise = this.store.canChooseNomEntreprise;
+  verifDispoNomEntreprise(nomEntreprise: string): void {
+    this.effectService.verifDispoNomEntreprise(nomEntreprise);
+  }
   logout(): void {
     this.effectService.logout();
   }

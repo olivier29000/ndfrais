@@ -150,4 +150,16 @@ export class EffectService {
       }
     );
   }
+
+  verifDispoNomEntreprise(nomEntreprise: string): void {
+    this.repo.verifDispoNomEntreprise(nomEntreprise).subscribe(
+      () => {
+        this.store.canChooseNomEntreprise.set(true);
+      },
+      () => {
+        this.store.canChooseNomEntreprise.set(false);
+        return of();
+      }
+    );
+  }
 }

@@ -29,7 +29,11 @@ export class AdminRepoService {
     private http: HttpClient,
     private utils: UtilsService
   ) {}
-
+  verifDispoPseudo(pseudo: string): Observable<void> {
+    return this.http
+      .get<void>(`${URL_BACKEND}/user-app/verif-pseudo/${pseudo}`, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
   createNewEvent(
     calendarEvent: CalendarEvent,
     contratId: string

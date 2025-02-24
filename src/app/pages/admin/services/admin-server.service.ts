@@ -48,6 +48,10 @@ export class AdminServerService {
       { allowSignalWrites: true }
     );
   }
+  canChoosePseudo = this.adminStore.canChoosePseudo;
+  verifDispoPseudo(pseudo: string): void {
+    this.adminEffect.verifDispoPseudo(pseudo);
+  }
   getAllEventByContratListAndPeriod(start: Date, end: Date): void {
     this.adminEffect.getAllEventByContratListAndPeriod(start, end);
   }

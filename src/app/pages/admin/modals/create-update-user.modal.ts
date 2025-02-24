@@ -1,5 +1,10 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, effect, Inject, OnInit } from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  FormsModule,
+  ReactiveFormsModule
+} from '@angular/forms';
 import {
   MAT_DIALOG_DATA,
   MatDialogModule,
@@ -14,6 +19,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { NgIf } from '@angular/common';
 import { UserApp } from 'src/app/models/user.model';
 import { MatSelectModule } from '@angular/material/select';
+import { debounceTime, distinctUntilChanged, tap } from 'rxjs';
+import { AdminServerService } from '../services/admin-server.service';
 
 @Component({
   template: `<form>
@@ -67,7 +74,26 @@ import { MatSelectModule } from '@angular/material/select';
 
         <mat-form-field class="flex-auto">
           <mat-label>Nom d'utilisateur</mat-label>
-          <input [(ngModel)]="currentUserApp.pseudo" name="pseudo" matInput />
+          <input
+            [formControl]="pseudo"
+            [value]="currentUserApp.pseudo"
+            name="pseudo"
+            matInput
+            required />
+          @if (isCreateMode()) {
+            @if (canChoosePseudo() === true) {
+              <mat-hint class="text-green"
+                >Ce nom d'utilisateur est disponible</mat-hint
+              >
+            } @else if (canChoosePseudo() === false) {
+              <mat-hint class="text-red"
+                >Ce nom d'utilisateur est indisponible, choisissez en un
+                autre</mat-hint
+              >
+            } @else {
+              <mat-hint>Vérification de la disponibilité du nom</mat-hint>
+            }
+          }
 
           <mat-icon matIconPrefix svgIcon="mat:edit_location"></mat-icon>
         </mat-form-field>
@@ -98,14 +124,15 @@ import { MatSelectModule } from '@angular/material/select';
       </mat-dialog-content>
 
       <mat-dialog-actions align="end">
-        <button mat-button mat-dialog-close type="button">Cancel</button>
+        <button mat-button mat-dialog-close type="button">Annuler</button>
         <button
           *ngIf="isCreateMode()"
           color="primary"
           mat-flat-button
           type="submit"
-          (click)="save()">
-          Create Customer
+          (click)="save()"
+          [disabled]="!canChoosePseudo() || currentUserApp.email === ''">
+          Créer utilisateur
         </button>
         <button
           *ngIf="isUpdateMode()"
@@ -113,7 +140,7 @@ import { MatSelectModule } from '@angular/material/select';
           mat-flat-button
           type="submit"
           (click)="save()">
-          Update Customer
+          Modifier l'utilisateur
         </button>
       </mat-dialog-actions>
     </form>
@@ -145,7 +172,19 @@ import { MatSelectModule } from '@angular/material/select';
     MatDividerModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule
+    MatSelectModule,
+    ReactiveFormsModule
+  ],
+  styles: [
+    `
+      .text-green {
+        color: green;
+      }
+
+      .text-red {
+        color: red;
+      }
+    `
   ]
 })
 export class CreateUpdateUserModal implements OnInit {
@@ -161,12 +200,42 @@ export class CreateUpdateUserModal implements OnInit {
   });
 
   mode: 'create' | 'update' = 'create';
-
+  canChoosePseudo = this.adminServer.canChoosePseudo;
+  pseudo = new FormControl(this.data?.userApp?.pseudo);
   constructor(
     @Inject(MAT_DIALOG_DATA)
     public data: { userApp: UserApp; userAppList: UserApp[] },
-    private dialogRef: MatDialogRef<CreateUpdateUserModal>
-  ) {}
+    private dialogRef: MatDialogRef<CreateUpdateUserModal>,
+    private adminServer: AdminServerService
+  ) {
+    effect(
+      () => {
+        this.pseudo.valueChanges
+          .pipe(
+            tap(() => this.adminServer.canChoosePseudo.set(undefined)),
+            debounceTime(500),
+            distinctUntilChanged()
+          )
+          .subscribe((res) => {
+            if (res) {
+              this.adminServer.verifDispoPseudo(res);
+              this.currentUserApp.pseudo = res;
+            }
+          });
+      },
+      { allowSignalWrites: true }
+    );
+    effect(
+      () => {
+        if (this.isCreateMode()) {
+          this.pseudo.enable();
+        } else {
+          this.pseudo.disable();
+        }
+      },
+      { allowSignalWrites: true }
+    );
+  }
 
   ngOnInit() {
     if (this.data?.userApp) {

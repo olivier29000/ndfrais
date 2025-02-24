@@ -87,6 +87,9 @@ export class StoreService {
       this.navigationService.loadNavigation(this.navigationItemList())
     );
   }
+  canChooseNomEntreprise: WritableSignal<boolean | undefined> =
+    signal(undefined);
+
   navigationItemList: WritableSignal<NavigationItem[]> = signal([]);
   userAllContratList: WritableSignal<ContratUserApp[]> = signal([]);
   managerContratList: WritableSignal<ContratUserApp[]> = signal([]);
