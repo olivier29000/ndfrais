@@ -30,7 +30,7 @@ interface Display {
         <div
           class="my-1 px-6 flex flex-col sm:flex-row items-stretch sm:items-start gap-6">
           <div class="me-3 flex flex-wrap m-3 ">
-            @for (contrat of availableContratList(); track contrat) {
+            @for (contrat of displayedContratList(); track contrat) {
               <div class="flex mx-3">
                 <div
                   class="card flex items-center mt-3 px-2"
@@ -102,14 +102,13 @@ interface Display {
     >
     <mat-menu #columnFilterMenu="matMenu" xPosition="before" yPosition="below">
       @for (contrat of availableContratList(); track contrat) {
-        <button
-          (click)="toggleContratVisibility(contrat, $event)"
-          class="mat-menu-item block">
+        <button class="mat-menu-item block">
           <mat-checkbox
-            (click)="$event.stopPropagation()"
-            [(ngModel)]="contrat.visible"
+            (click)="toggleContratVisibility(contrat, $event)"
+            [ngModel]="contrat.visible"
             color="primary">
-            {{ contrat.userApp.nom }}
+            {{ contrat.poste }}-{{ contrat.userApp.nom }}
+            {{ contrat.userApp.prenom }}
           </mat-checkbox>
         </button>
       }
@@ -137,11 +136,11 @@ export class AdminPlanningsPage {
     this.viewDate.set(date);
   }
   hourSemaineMap = computed(() => {
-    const availableContratList = this.availableContratList();
+    const displayedContratList = this.displayedContratList();
     const hourSemaineMap: { [coontratId: string]: number } = {};
-    for (let availableContrat of availableContratList) {
-      if (availableContrat.id) {
-        hourSemaineMap[availableContrat.id] = 0;
+    for (let displayedContrat of displayedContratList) {
+      if (displayedContrat.id) {
+        hourSemaineMap[displayedContrat.id] = 0;
       }
     }
     const eventList = this.eventList();
@@ -158,7 +157,16 @@ export class AdminPlanningsPage {
   availableContratList: WritableSignal<
     (ContratUserApp & { visible: boolean })[]
   > = signal([]);
-  eventList = this.adminServer.eventList;
+  displayedContratList = computed(() => {
+    return this.availableContratList().filter((c) => c.visible);
+  });
+  eventList = computed(() => {
+    return this.adminServer
+      .eventList()
+      .filter((e) =>
+        this.displayedContratList().some((c) => c.id && c.id + '' === e.title)
+      );
+  });
   constructor(private adminServer: AdminServerService) {
     effect(
       () =>
@@ -187,11 +195,11 @@ export class AdminPlanningsPage {
   ) {
     event.stopPropagation();
     event.stopImmediatePropagation();
-    this.availableContratList.update((availableContratList) =>
-      availableContratList.map((c) =>
-        c.id === contrat.id ? { ...c, visible: c.visible } : c
+    this.availableContratList.set([
+      ...this.availableContratList().map((c) =>
+        c.id === contrat.id ? { ...c, visible: !c.visible } : c
       )
-    );
+    ]);
   }
 
   convertHexToRgba(colorHexa: string, opacity: number): string {
