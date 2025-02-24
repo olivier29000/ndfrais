@@ -67,6 +67,13 @@ import { CommonModule } from '@angular/common';
                     {{ recap.contrat.userApp.nom }}
                     {{ recap.contrat.userApp.prenom }}
                   </h5>
+
+                  <h4 class="body-2 m-0 leading-snug">
+                    Mois : {{ recap.nbHours }}h
+                  </h4>
+                  <h4 class="body-2 m-0 leading-snug">
+                    Semaine : {{ hourSemaineMap()[recap.contrat.id ?? ''] }}h
+                  </h4>
                 </div>
               </div>
               <dumb-day-line
@@ -101,6 +108,24 @@ import { CommonModule } from '@angular/common';
 })
 export class ManagerRecapPage {
   recapByContratDayAppList = this.managerServer.recapByContratDayAppList;
+  hourSemaineMap = computed(() => {
+    const recapByContratDayAppList = this.recapByContratDayAppList();
+    const hourSemaineMap: { [coontratId: string]: number } = {};
+    for (let recapByContratDayApp of recapByContratDayAppList) {
+      if (recapByContratDayApp.contrat.id) {
+        hourSemaineMap[recapByContratDayApp.contrat.id] = 0;
+      }
+    }
+    const eventList = this.eventList();
+    return eventList.reduce((acc, e) => {
+      if (e.end) {
+        acc[e.title] =
+          acc[e.title] + (e.end.getTime() - e.start.getTime()) / 3600000;
+      }
+
+      return acc;
+    }, hourSemaineMap);
+  });
   currentMonthRecap = computed(() =>
     format(this.managerServer.currentDateRecap(), 'MMMM yyyy', { locale: fr })
   );

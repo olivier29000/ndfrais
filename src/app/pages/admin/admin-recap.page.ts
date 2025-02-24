@@ -11,7 +11,7 @@ import { DayApp } from 'src/app/models/day-app.model';
 import { AdminServerService } from './services/admin-server.service';
 
 @Component({
-  template: ` <div
+  template: `<div
       class="my-1 px-6 flex flex-col sm:flex-row items-stretch sm:items-start gap-6">
       <div class="card p-6 flex-auto">
         <div class="headline py-1 px-2 flex justify-center items-center">
@@ -38,7 +38,7 @@ import { AdminServerService } from './services/admin-server.service';
                   </h5>
 
                   <h4 class="body-2 m-0 leading-snug">
-                    {{ recap.nbHours }}
+                    Mois : {{ recap.nbHours }}h
                   </h4>
                 </div>
               </div>
@@ -59,6 +59,7 @@ import { AdminServerService } from './services/admin-server.service';
 })
 export class AdminRecapPage {
   recapByContratDayAppList = this.adminServer.recapByContratDayAppList;
+
   currentMonthRecap = computed(() =>
     format(this.adminServer.currentDateRecap(), 'MMMM yyyy', { locale: fr })
   );

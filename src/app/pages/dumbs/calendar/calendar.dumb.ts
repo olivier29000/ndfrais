@@ -56,7 +56,7 @@ import { subMinutes } from 'date-fns';
         (mouseup)="eventMouseUp()"
         (mouseover)="eventOver()">
         <div class="text-center mt-1">
-          <b>{{ weekEvent.event.title }}</b>
+          <!-- <b>{{ weekEvent.event.title }}</b> -->
         </div>
       </div>
     </ng-template>
@@ -87,7 +87,6 @@ export class CalendarDumb {
   _events: CalendarEvent[] = [];
   @Input()
   set events(value: CalendarEvent[]) {
-    console.log(value);
     this.eventsWithNew = value;
     this._events = value;
   }

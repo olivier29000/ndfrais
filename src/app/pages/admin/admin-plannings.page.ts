@@ -25,8 +25,37 @@ interface Display {
   visible: boolean;
 }
 @Component({
-  template: `<vex-page-layout>
+  template: ` <vex-page-layout>
       <vex-page-layout-content class="-mt-6 container">
+        <div
+          class="my-1 px-6 flex flex-col sm:flex-row items-stretch sm:items-start gap-6">
+          <div class="me-3 flex flex-wrap m-3 ">
+            @for (contrat of availableContratList(); track contrat) {
+              <div class="flex mx-3">
+                <div
+                  class="card flex items-center mt-3 px-2"
+                  style="width:130px"
+                  [style.border]="
+                    '3px solid ' +
+                    convertHexToRgba(contrat.color || '#000000', 1)
+                  ">
+                  <div class="flex-auto">
+                    <h4 class="body-2 m-0 leading-snug">
+                      {{ contrat.poste }}
+                    </h4>
+                    <h5 class="text-secondary m-0 caption leading-none">
+                      {{ contrat.userApp.nom }}
+                      {{ contrat.userApp.prenom }}
+                    </h5>
+                    <h4 class="body-2 m-0 leading-snug">
+                      Semaine : {{ hourSemaineMap()[contrat.id ?? ''] }}h
+                    </h4>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
         <div class="card overflow-auto -mt-16" style="margin-top : 50px">
           <div
             class="bg-app-bar px-6 h-16 border-b sticky left-0 flex items-center">
@@ -107,6 +136,24 @@ export class AdminPlanningsPage {
   calendarViewDateChange(date: Date) {
     this.viewDate.set(date);
   }
+  hourSemaineMap = computed(() => {
+    const availableContratList = this.availableContratList();
+    const hourSemaineMap: { [coontratId: string]: number } = {};
+    for (let availableContrat of availableContratList) {
+      if (availableContrat.id) {
+        hourSemaineMap[availableContrat.id] = 0;
+      }
+    }
+    const eventList = this.eventList();
+    return eventList.reduce((acc, e) => {
+      if (e.end) {
+        acc[e.title] =
+          acc[e.title] + (e.end.getTime() - e.start.getTime()) / 3600000;
+      }
+
+      return acc;
+    }, hourSemaineMap);
+  });
   ngOnInit(): void {}
   availableContratList: WritableSignal<
     (ContratUserApp & { visible: boolean })[]
@@ -145,5 +192,16 @@ export class AdminPlanningsPage {
         c.id === contrat.id ? { ...c, visible: c.visible } : c
       )
     );
+  }
+
+  convertHexToRgba(colorHexa: string, opacity: number): string {
+    const hex = colorHexa.replace('#', '');
+    // Convertir en valeurs RGB
+    const bigint = parseInt(hex, 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+    // Retourner le format rgba
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
   }
 }

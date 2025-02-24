@@ -16,7 +16,7 @@ export class ManagerStoreService {
   actionList: WritableSignal<Action[]> = signal([]);
   currentDateRecap: WritableSignal<Date> = signal(new Date());
   recapByContratDayAppList: WritableSignal<
-    { contrat: ContratUserApp; dayAppList: DayApp[] }[]
+    { contrat: ContratUserApp; dayAppList: DayApp[]; nbHours: number }[]
   > = signal([]);
   eventList: WritableSignal<CalendarEvent[]> = signal([]);
 }

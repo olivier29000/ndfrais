@@ -88,10 +88,12 @@ export class ManagerRepoService {
   }
   getRecap(
     dateStr: string
-  ): Observable<{ contrat: ContratUserApp; dayAppList: DayApp[] }[]> {
+  ): Observable<
+    { contrat: ContratUserApp; dayAppList: DayApp[]; nbHours: number }[]
+  > {
     return this.http
       .get<
-        { contrat: ContratUserApp; dayAppList: DayApp[] }[]
+        { contrat: ContratUserApp; dayAppList: DayApp[]; nbHours: number }[]
       >(`${URL_BACKEND}/day-app/get-recap/${dateStr}`, httpOptions)
       .pipe(catchError(this.handleError));
   }
