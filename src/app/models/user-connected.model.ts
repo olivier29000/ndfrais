@@ -15,5 +15,6 @@ export enum Abonnement {
   EMPLOYE = 'EMPLOYE',
   ESSENTIEL = 'ESSENTIEL',
   PRO = 'PRO',
-  PREMIUM = 'PREMIUM'
+  PREMIUM = 'PREMIUM',
+  GOLD = 'GOLD'
 }
