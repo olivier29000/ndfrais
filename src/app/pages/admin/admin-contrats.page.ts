@@ -35,6 +35,7 @@ import { start } from 'repl';
           [borderedDayAppList]="selectedDays()"></dumb-day-line>
         <dumb-calendar-nav
           [viewDate]="viewDate()"
+          [canCopyWeek]="true"
           (viewDateOutput)="calendarViewDateChange($event)"></dumb-calendar-nav>
         <app-calendar
           [canCreate]="true"

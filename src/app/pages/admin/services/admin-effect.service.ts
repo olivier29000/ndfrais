@@ -74,6 +74,26 @@ export class AdminEffectService {
       }
     );
   }
+  sendEmailContact(contact: string): void {
+    this.adminRepo.sendEmailContact(contact).subscribe(
+      () => {
+        this.utils.changeIsLoading(false);
+        Swal.fire({
+          title: 'Merci !',
+          text: 'Nous vous contacterons bientôt.',
+          icon: 'success'
+        });
+      },
+      (error) => {
+        this.utils.changeIsLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error
+        });
+      }
+    );
+  }
   calendarViewDateChange(viewDate: Date): void {
     this.adminStore.calendarViewDate.set(viewDate);
   }

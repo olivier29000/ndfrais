@@ -30,6 +30,14 @@ export class AdminRepoService {
     private http: HttpClient,
     private utils: UtilsService
   ) {}
+  sendEmailContact(contact: string): Observable<void> {
+    return this.http
+      .get<void>(
+        `${URL_BACKEND}/user-app/send-email-contact/${contact}`,
+        httpOptions
+      )
+      .pipe(catchError(this.handleError));
+  }
   verifDispoPseudo(pseudo: string): Observable<void> {
     return this.http
       .get<void>(`${URL_BACKEND}/user-app/verif-pseudo/${pseudo}`, httpOptions)

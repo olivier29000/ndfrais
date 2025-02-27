@@ -48,6 +48,9 @@ export class AdminServerService {
       { allowSignalWrites: true }
     );
   }
+  sendEmailContact(contact: string): void {
+    this.adminEffect.sendEmailContact(contact);
+  }
   selectAbonnement(abonnement: Abonnement): void {
     this.adminEffect.selectAbonnement(abonnement);
   }

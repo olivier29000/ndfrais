@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { Abonnement } from 'src/app/models/user-connected.model';
 import { AbonnementListDumb } from 'src/app/dumbs/abonnements.dumb';
+import Swal from 'sweetalert2';
 
 @Component({
   template: `
@@ -29,9 +30,8 @@ import { AbonnementListDumb } from 'src/app/dumbs/abonnements.dumb';
         <!-- PRICING -->
         <dumb-abonnement-list
           [currentAbonnement]="currentAbonnement()"
-          (clickAbonnementOutput)="
-            selectAbonnement($event)
-          "></dumb-abonnement-list>
+          (clickAbonnementOutput)="selectAbonnement($event)"
+          (clickContactOutput)="clickContact()"></dumb-abonnement-list>
       </div>
     </div>
   `,
@@ -48,5 +48,39 @@ export class AdminAbonnementPage {
 
   selectAbonnement(abonnement: Abonnement): void {
     this.adminServer.selectAbonnement(abonnement);
+  }
+  clickContact(): void {
+    Swal.fire({
+      title:
+        'Laissez-nous votre contact et on vous rappelle (téléphone ou email)',
+      input: 'text',
+      inputPlaceholder: 'Entrez votre e-mail ou votre numéro',
+      inputAttributes: {
+        autocapitalize: 'off'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Envoyer',
+      showLoaderOnConfirm: true,
+      preConfirm: async (inputValue) => {
+        // Expression régulière pour un email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        // Expression régulière pour un numéro de téléphone (10 à 15 chiffres avec option + au début)
+        const phoneRegex = /^(\+?\d{1,3}[-.\s]?)?\d{10,15}$/;
+
+        // Vérification de la validité
+        if (!emailRegex.test(inputValue) && !phoneRegex.test(inputValue)) {
+          return Swal.showValidationMessage(
+            'Veuillez entrer un e-mail ou un numéro valide !'
+          );
+        }
+
+        // Simulation d'une requête API fictive (ex: sauvegarde du contact)
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.adminServer.sendEmailContact(result.value);
+      }
+    });
   }
 }
