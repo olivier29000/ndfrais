@@ -69,6 +69,9 @@ export class AdminServerService {
   openCreateEventModal(event: CalendarEvent, contratId: string) {
     this.adminEffect.openCreateEventModal(event, contratId);
   }
+  deleteEvent(event: CalendarEvent, contratId: string) {
+    this.adminEffect.deleteEvent(event, contratId);
+  }
   getDayAppListByContratId(idContrat: string) {
     this.adminEffect.getDayAppListByContratId(idContrat);
   }

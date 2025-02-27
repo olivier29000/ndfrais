@@ -40,7 +40,8 @@ import { start } from 'repl';
           [canCreate]="true"
           [viewDate]="viewDate()"
           [events]="eventList()"
-          (createEventOutput)="createEvent($event)"></app-calendar>
+          (createEventOutput)="createEvent($event)"
+          (deleteEventOutput)="deleteEvent($event)"></app-calendar>
       </div>
     }
 
@@ -64,6 +65,12 @@ export class AdminContratsPage {
     const selectedContrat = this.selectedContrat();
     if (selectedContrat) {
       this.adminServer.openCreateEventModal(event, selectedContrat.id + '');
+    }
+  }
+  deleteEvent(event: CalendarEvent) {
+    const selectedContrat = this.selectedContrat();
+    if (selectedContrat) {
+      this.adminServer.deleteEvent(event, selectedContrat.id + '');
     }
   }
   dayAppList = computed(() =>

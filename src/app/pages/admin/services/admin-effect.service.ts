@@ -146,6 +146,18 @@ export class AdminEffectService {
       });
   }
 
+  deleteEvent(event: CalendarEvent, contratId: string) {
+    this.adminRepo
+      .deleteEvent(event)
+      .subscribe(() =>
+        this.getAllEventByContratIdAndPeriod(
+          startOfWeek(event.start, { locale: fr }),
+          endOfWeek(event.start, { locale: fr }),
+          contratId
+        )
+      );
+  }
+
   createNewEvent(event: CalendarEvent, contratId: string): void {
     this.adminRepo
       .createNewEvent(event, contratId)
@@ -314,7 +326,6 @@ export class AdminEffectService {
       (dayAppList) => {
         this.utils.changeIsLoading(false);
         if (dayAppList.length > 0) {
-          console.log(dayAppList);
           this.adminStore.dayAppList.set(
             eachDayOfInterval({
               start: subDays(new Date(dayAppList[0].date), 15),

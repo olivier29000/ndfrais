@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { HourCalendarDumb } from './hour-calendar-dumb';
 import { DayCalendarDumb } from './day-calendar.dumb';
 import { subMinutes } from 'date-fns';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   standalone: true,
@@ -58,10 +60,27 @@ import { subMinutes } from 'date-fns';
         <div class="text-center mt-1">
           <!-- <b>{{ weekEvent.event.title }}</b> -->
         </div>
+        @if (canCreate) {
+          <div class="mt-auto flex content-center mb-1 w-full">
+            <button
+              mat-icon-button
+              (click)="deleteEvent(weekEvent.event)"
+              class="mx-auto">
+              <mat-icon svgIcon="mat:restore_from_trash"></mat-icon>
+            </button>
+          </div>
+        }
       </div>
     </ng-template>
   `,
-  imports: [CommonModule, CalendarModule, HourCalendarDumb, DayCalendarDumb],
+  imports: [
+    CommonModule,
+    CalendarModule,
+    HourCalendarDumb,
+    DayCalendarDumb,
+    MatIconModule,
+    MatButtonModule
+  ],
   styles: [
     `
       .custom-event {
@@ -95,6 +114,12 @@ export class CalendarDumb {
     return this._events;
   }
   @Output() createEventOutput = new EventEmitter<CalendarEvent>();
+  @Output() deleteEventOutput = new EventEmitter<CalendarEvent>();
+
+  deleteEvent(event: CalendarEvent) {
+    this.deleteEventOutput.emit(event);
+  }
+
   eventsWithNew: CalendarEvent[] = this.events;
 
   newEvent: CalendarEvent | undefined = undefined;
