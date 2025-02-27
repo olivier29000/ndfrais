@@ -86,20 +86,11 @@ interface Display {
                 calendarViewDateChange($event)
               "></dumb-calendar-nav>
 
-            <mat-tab-group>
-              <mat-tab label="PREVU">
-                <app-calendar
-                  [viewDate]="viewDate()"
-                  [events]="eventList()"></app-calendar>
-              </mat-tab>
-              <mat-tab label="DECLARE">
-                <!-- <pre><code [vexHighlight]="checkboxHTML"></code></pre> -->
-              </mat-tab>
-            </mat-tab-group>
-          </div>
-        </div></vex-page-layout-content
-      ></vex-page-layout
-    >
+            <app-calendar
+              [viewDate]="viewDate()"
+              [events]="eventList()"></app-calendar>
+          </div></div></vex-page-layout-content
+    ></vex-page-layout>
     <mat-menu #columnFilterMenu="matMenu" xPosition="before" yPosition="below">
       @for (contrat of availableContratList(); track contrat) {
         <button class="mat-menu-item block">

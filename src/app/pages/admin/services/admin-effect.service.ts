@@ -26,6 +26,7 @@ import { CalendarEvent } from 'angular-calendar';
 import { fr } from 'date-fns/locale';
 import { of } from 'rxjs';
 import { Abonnement } from 'src/app/models/user-connected.model';
+import Swal from 'sweetalert2';
 
 @Injectable({
   providedIn: 'root'
@@ -63,8 +64,13 @@ export class AdminEffectService {
         this.utils.userConnected.set(userConnected);
         this.utils.changeIsLoading(false);
       },
-      () => {
+      (error) => {
         this.utils.changeIsLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error
+        });
       }
     );
   }
@@ -134,7 +140,9 @@ export class AdminEffectService {
       })
       .afterClosed()
       .subscribe((newEvent) => {
-        this.createNewEvent(newEvent, contratId);
+        if (newEvent) {
+          this.createNewEvent(newEvent, contratId);
+        }
       });
   }
 
@@ -166,8 +174,13 @@ export class AdminEffectService {
         // const objectUrl = window.URL.createObjectURL(pdfBlob);
         // window.open(objectUrl);
       },
-      () => {
+      (error) => {
         this.utils.changeIsLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error
+        });
       }
     );
   }
@@ -187,8 +200,13 @@ export class AdminEffectService {
           }))
         );
       },
-      () => {
+      (error) => {
         this.utils.changeIsLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error
+        });
       }
     );
   }
@@ -215,8 +233,13 @@ export class AdminEffectService {
             }))
           );
         },
-        () => {
+        (error) => {
           this.utils.changeIsLoading(false);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: error
+          });
         }
       );
   }
@@ -247,8 +270,13 @@ export class AdminEffectService {
         );
         this.getRecap(this.adminStore.currentDateRecap());
       },
-      () => {
+      (error) => {
         this.utils.changeIsLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error
+        });
       }
     );
   }
@@ -270,8 +298,13 @@ export class AdminEffectService {
         );
         this.getRecap(this.adminStore.currentDateRecap());
       },
-      () => {
+      (error) => {
         this.utils.changeIsLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error
+        });
       }
     );
   }
@@ -281,6 +314,7 @@ export class AdminEffectService {
       (dayAppList) => {
         this.utils.changeIsLoading(false);
         if (dayAppList.length > 0) {
+          console.log(dayAppList);
           this.adminStore.dayAppList.set(
             eachDayOfInterval({
               start: subDays(new Date(dayAppList[0].date), 15),
@@ -320,8 +354,13 @@ export class AdminEffectService {
           this.adminStore.dayAppList.set([]);
         }
       },
-      () => {
+      (error) => {
         this.utils.changeIsLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error
+        });
       }
     );
   }
@@ -342,13 +381,18 @@ export class AdminEffectService {
         this.adminStore.adminContratList.set(
           adminContratList.map((c) => ({
             ...c,
-            dateBegin: new Date(c.dateBegin),
-            dateEnd: new Date(c.dateEnd)
+            dateBegin: this.utils.getStart(c.dateBegin),
+            dateEnd: this.utils.getEnd(c.dateEnd)
           }))
         );
       },
-      () => {
+      (error) => {
         this.utils.changeIsLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error
+        });
       }
     );
   }
@@ -358,10 +402,21 @@ export class AdminEffectService {
     this.adminRepo.createContrat(contratEmploye).subscribe(
       (adminContratList) => {
         this.utils.changeIsLoading(false);
-        this.adminStore.adminContratList.set(adminContratList);
+        this.adminStore.adminContratList.set(
+          adminContratList.map((c) => ({
+            ...c,
+            dateBegin: this.utils.getStart(c.dateBegin),
+            dateEnd: this.utils.getEnd(c.dateEnd)
+          }))
+        );
       },
-      () => {
+      (error) => {
         this.utils.changeIsLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error
+        });
       }
     );
   }
@@ -371,10 +426,21 @@ export class AdminEffectService {
     this.adminRepo.updateContrat(contratEmploye).subscribe(
       (adminContratList) => {
         this.utils.changeIsLoading(false);
-        this.adminStore.adminContratList.set(adminContratList);
+        this.adminStore.adminContratList.set(
+          adminContratList.map((c) => ({
+            ...c,
+            dateBegin: this.utils.getStart(c.dateBegin),
+            dateEnd: this.utils.getEnd(c.dateEnd)
+          }))
+        );
       },
-      () => {
+      (error) => {
         this.utils.changeIsLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error
+        });
       }
     );
   }
@@ -386,8 +452,13 @@ export class AdminEffectService {
         this.utils.changeIsLoading(false);
         this.adminStore.userAppList.set(userAppList.map((u) => new UserApp(u)));
       },
-      () => {
+      (error) => {
         this.utils.changeIsLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error
+        });
       }
     );
   }
@@ -399,8 +470,13 @@ export class AdminEffectService {
         this.utils.changeIsLoading(false);
         this.adminStore.userAppList.set(userAppList.map((u) => new UserApp(u)));
       },
-      () => {
+      (error) => {
         this.utils.changeIsLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error
+        });
       }
     );
   }
@@ -417,8 +493,13 @@ export class AdminEffectService {
         this.utils.changeIsLoading(false);
         this.adminStore.userAppList.set(userAppList.map((u) => new UserApp(u)));
       },
-      () => {
+      (error) => {
         this.utils.changeIsLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error
+        });
       }
     );
   }
@@ -439,8 +520,13 @@ export class AdminEffectService {
           }))
         );
       },
-      () => {
+      (error) => {
         this.utils.changeIsLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error
+        });
       }
     );
   }
@@ -450,10 +536,21 @@ export class AdminEffectService {
     this.adminRepo.getAllContrat().subscribe(
       (adminAllContratList) => {
         this.utils.changeIsLoading(false);
-        this.adminStore.adminAllContratList.set(adminAllContratList);
+        this.adminStore.adminAllContratList.set(
+          adminAllContratList.map((c) => ({
+            ...c,
+            dateBegin: this.utils.getStart(c.dateBegin),
+            dateEnd: this.utils.getEnd(c.dateEnd)
+          }))
+        );
       },
-      () => {
+      (error) => {
         this.utils.changeIsLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error
+        });
       }
     );
   }
@@ -467,7 +564,9 @@ export class AdminEffectService {
       })
       .afterClosed()
       .subscribe((userApp: UserApp) => {
-        this.createUserApp(userApp);
+        if (userApp) {
+          this.createUserApp(userApp);
+        }
       });
   }
 
@@ -495,7 +594,9 @@ export class AdminEffectService {
       })
       .afterClosed()
       .subscribe((contrat: ContratUserApp) => {
-        this.createContrat(contrat);
+        if (contrat) {
+          this.createContrat(contrat);
+        }
       });
   }
 
