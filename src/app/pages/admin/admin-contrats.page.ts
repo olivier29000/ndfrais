@@ -36,7 +36,8 @@ import { start } from 'repl';
         <dumb-calendar-nav
           [viewDate]="viewDate()"
           [canCopyWeek]="true"
-          (viewDateOutput)="calendarViewDateChange($event)"></dumb-calendar-nav>
+          (viewDateOutput)="calendarViewDateChange($event)"
+          (copyWeekDateOutput)="copyPasteWeek($event)"></dumb-calendar-nav>
         <app-calendar
           [canCreate]="true"
           [viewDate]="viewDate()"
@@ -61,6 +62,16 @@ export class AdminContratsPage {
   viewDate: WritableSignal<Date> = signal(new Date());
   calendarViewDateChange(date: Date) {
     this.viewDate.set(date);
+  }
+  copyPasteWeek(date: Date): void {
+    const selectedContrat = this.selectedContrat();
+    if (selectedContrat) {
+      this.adminServer.copyPasteWeek(
+        date,
+        this.viewDate(),
+        selectedContrat.id + ''
+      );
+    }
   }
   createEvent(event: CalendarEvent) {
     const selectedContrat = this.selectedContrat();

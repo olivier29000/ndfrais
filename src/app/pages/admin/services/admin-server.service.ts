@@ -48,6 +48,9 @@ export class AdminServerService {
       { allowSignalWrites: true }
     );
   }
+  copyPasteWeek(dateToCopy: Date, dateToPaste: Date, idContrat: string): void {
+    this.adminEffect.copyPasteWeek(dateToCopy, dateToPaste, idContrat);
+  }
   sendEmailContact(contact: string): void {
     this.adminEffect.sendEmailContact(contact);
   }

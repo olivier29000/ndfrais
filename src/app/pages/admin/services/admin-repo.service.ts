@@ -61,6 +61,18 @@ export class AdminRepoService {
       >(`${URL_BACKEND}/event/create-event/${contratId}`, calendarEvent, httpOptions)
       .pipe(catchError(this.handleError));
   }
+  copyPasteWeek(
+    dateToCopy: Date,
+    dateToPaste: Date,
+    contratId: string
+  ): Observable<void> {
+    return this.http
+      .get<void>(
+        `${URL_BACKEND}/event/copy-paste-week/${this.utils.getDateString(dateToCopy)}/${this.utils.getDateString(dateToPaste)}/${contratId}`,
+        httpOptions
+      )
+      .pipe(catchError(this.handleError));
+  }
   deleteEvent(calendarEvent: CalendarEvent): Observable<void> {
     return this.http
       .get<void>(

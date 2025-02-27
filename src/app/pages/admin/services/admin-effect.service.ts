@@ -46,6 +46,7 @@ export class AdminEffectService {
       { allowSignalWrites: true }
     );
   }
+
   verifDispoPseudo(pseudo: string): void {
     this.adminRepo.verifDispoPseudo(pseudo).subscribe(
       () => {
@@ -131,6 +132,7 @@ export class AdminEffectService {
         );
       });
   }
+
   getAllEventByContratIdAndPeriod(
     start: Date,
     end: Date,
@@ -185,6 +187,17 @@ export class AdminEffectService {
         this.getAllEventByContratIdAndPeriod(
           startOfWeek(event.start, { locale: fr }),
           endOfWeek(event.start, { locale: fr }),
+          contratId
+        )
+      );
+  }
+  copyPasteWeek(dateToCopy: Date, dateToPaste: Date, contratId: string): void {
+    this.adminRepo
+      .copyPasteWeek(dateToCopy, dateToPaste, contratId)
+      .subscribe(() =>
+        this.getAllEventByContratIdAndPeriod(
+          startOfWeek(dateToPaste, { locale: fr }),
+          endOfWeek(dateToPaste, { locale: fr }),
           contratId
         )
       );
