@@ -49,12 +49,12 @@ export class UserServerService {
       })
     }));
   });
-  getAllEventByContratIdAndPeriod(
-    start: Date,
-    end: Date,
-    contratId: string
-  ): void {
-    this.userEffect.getAllEventByContratIdAndPeriod(start, end, contratId);
+  recapMonth = this.userStore.recapCurrentContrat;
+  getAllEventByContratIdAndPeriod(start: Date, end: Date): void {
+    const contratId = this.idContratUserApp();
+    if (contratId) {
+      this.userEffect.getAllEventByContratIdAndPeriod(start, end, contratId);
+    }
   }
   previousMonth(): void {
     this.userEffect.previousMonth();
@@ -63,8 +63,11 @@ export class UserServerService {
     this.userEffect.nextMonth();
   }
   idContratUserApp = this.userStore.idContratUserApp;
-  getRecap(): void {
-    this.userEffect.getRecap(this.currentDateRecap());
+  getRecapEquipe(): void {
+    this.userEffect.getRecapEquipe(this.currentDateRecap());
+  }
+  getRecapContrat(date: Date): void {
+    this.userEffect.getRecapContrat(date);
   }
 
   openPdfDisplayModal(idPdf: number): void {

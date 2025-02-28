@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { fr } from 'date-fns/locale';
 import { DayApp } from 'src/app/models/day-app.model';
 import { AdminServerService } from './services/admin-server.service';
+import { MonthLineRecapDumb } from '../dumbs/month-line-recap.dumb';
 
 @Component({
   template: `<div
@@ -26,27 +27,10 @@ import { AdminServerService } from './services/admin-server.service';
         </div>
         <div class="me-3 my-3 ">
           @for (recap of recapByContratDayAppList(); track recap) {
-            <div class="flex">
-              <div class="card flex items-center mt-3 px-2" style="width:130px">
-                <div class="flex-auto">
-                  <h4 class="body-2 m-0 leading-snug">
-                    {{ recap.contrat.poste }}
-                  </h4>
-                  <h5 class="text-secondary m-0 caption leading-none">
-                    {{ recap.contrat.userApp.nom }}
-                    {{ recap.contrat.userApp.prenom }}
-                  </h5>
-
-                  <h4 class="body-2 m-0 leading-snug">
-                    Mois : {{ recap.nbHours }}h
-                  </h4>
-                </div>
-              </div>
-              <dumb-day-line
-                (cancelLastOutput)="openActionDayListRefuseModal($event)"
-                (validLastOutput)="openActionDayListValidModal($event)"
-                [dayAppList]="recap.dayAppList"></dumb-day-line>
-            </div>
+            <dumb-month-line-recap
+              (cancelLastOutput)="openActionDayListRefuseModal($event)"
+              (validLastOutput)="openActionDayListValidModal($event)"
+              [recapMonth]="recap"></dumb-month-line-recap>
           }
         </div>
       </div>
@@ -55,7 +39,7 @@ import { AdminServerService } from './services/admin-server.service';
     <div class="px-6"></div>`,
   animations: [],
   standalone: true,
-  imports: [DayLineDumb, MatButtonModule, MatIconModule, FormsModule]
+  imports: [MonthLineRecapDumb, MatButtonModule, MatIconModule, FormsModule]
 })
 export class AdminRecapPage {
   recapByContratDayAppList = this.adminServer.recapByContratDayAppList;

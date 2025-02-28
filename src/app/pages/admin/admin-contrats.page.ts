@@ -17,6 +17,7 @@ import { addDays, endOfWeek, isSameWeek, startOfWeek, subDays } from 'date-fns';
 import { CalendarNavDumb } from '../dumbs/calendar/calendar-nav.dumb';
 import { CalendarEvent } from 'angular-calendar';
 import { start } from 'repl';
+import { MonthLineRecapDumb } from '../dumbs/month-line-recap.dumb';
 
 @Component({
   template: `<dumb-contrat-list
@@ -28,24 +29,21 @@ import { start } from 'repl';
       [userApp]="currentUserApp()"
       (selectedContratOutput)="selectContrat($event)"></dumb-contrat-list>
     <hr />
-    @if (dayAppList().length > 0) {
-      <div class="container">
-        <dumb-day-line
-          [dayAppList]="dayAppList()"
-          [borderedDayAppList]="selectedDays()"></dumb-day-line>
-        <dumb-calendar-nav
-          [viewDate]="viewDate()"
-          [canCopyWeek]="true"
-          (viewDateOutput)="calendarViewDateChange($event)"
-          (copyWeekDateOutput)="copyPasteWeek($event)"></dumb-calendar-nav>
-        <app-calendar
-          [canCreate]="true"
-          [viewDate]="viewDate()"
-          [events]="eventList()"
-          (createEventOutput)="createEvent($event)"
-          (deleteEventOutput)="deleteEvent($event)"></app-calendar>
-      </div>
-    }
+    <div class="container">
+      <dumb-month-line-recap
+        [recapMonth]="recapCurrentContrat()"></dumb-month-line-recap>
+      <dumb-calendar-nav
+        [viewDate]="viewDate()"
+        [canCopyWeek]="true"
+        (viewDateOutput)="calendarViewDateChange($event)"
+        (copyWeekDateOutput)="copyPasteWeek($event)"></dumb-calendar-nav>
+      <app-calendar
+        [canCreate]="true"
+        [viewDate]="viewDate()"
+        [events]="eventList()"
+        (createEventOutput)="createEvent($event)"
+        (deleteEventOutput)="deleteEvent($event)"></app-calendar>
+    </div>
 
     <dumb-contrat-list
       [title]="'Contrat(s) archivé(s)'"
@@ -54,7 +52,7 @@ import { start } from 'repl';
       [userApp]="currentUserApp()"></dumb-contrat-list>`,
   animations: [],
   standalone: true,
-  imports: [ContratListDumb, CalendarDumb, DayLineDumb, CalendarNavDumb]
+  imports: [ContratListDumb, CalendarDumb, MonthLineRecapDumb, CalendarNavDumb]
 })
 export class AdminContratsPage {
   selectedContrat: WritableSignal<ContratUserApp | undefined> =
@@ -85,17 +83,9 @@ export class AdminContratsPage {
       this.adminServer.deleteEvent(event, selectedContrat.id + '');
     }
   }
-  dayAppList = computed(() =>
-    this.adminServer
-      .dayAppList()
-      .filter(
-        (d) =>
-          d.date.getTime() > subDays(this.viewDate(), 15).getTime() &&
-          d.date.getTime() < addDays(this.viewDate(), 15).getTime()
-      )
-  );
+  recapCurrentContrat = this.adminServer.recapCurrentContrat;
   selectedDays = computed(() =>
-    this.dayAppList().filter((d) =>
+    this.recapCurrentContrat()?.dayAppList.filter((d) =>
       isSameWeek(d.date, this.viewDate(), { locale: fr })
     )
   );
@@ -157,12 +147,17 @@ export class AdminContratsPage {
     effect(
       () => {
         const viewDate = this.viewDate();
-        const selectedContrat = this.selectedContrat();
-        if (selectedContrat && selectedContrat.id) {
+
+        const idContrat = this.selectedContrat()?.id;
+        if (idContrat) {
           this.adminServer.getAllEventByContratIdAndPeriod(
             startOfWeek(viewDate, { locale: fr }),
             endOfWeek(viewDate, { locale: fr }),
-            selectedContrat.id + ''
+            idContrat + ''
+          );
+          this.adminServer.getRecapContrat(
+            startOfWeek(viewDate, { locale: fr }),
+            idContrat
           );
         }
       },

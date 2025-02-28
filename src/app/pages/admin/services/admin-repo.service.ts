@@ -30,6 +30,25 @@ export class AdminRepoService {
     private http: HttpClient,
     private utils: UtilsService
   ) {}
+  getRecapContrat(
+    dateStr: string,
+    idContratUserApp: string
+  ): Observable<{
+    contrat: ContratUserApp;
+    dayAppList: DayApp[];
+    nbHours: number;
+  }> {
+    return this.http
+      .get<{
+        contrat: ContratUserApp;
+        dayAppList: DayApp[];
+        nbHours: number;
+      }>(
+        `${URL_BACKEND}/day-app/get-recap-contrat/${dateStr}/${idContratUserApp}`,
+        httpOptions
+      )
+      .pipe(catchError(this.handleError));
+  }
   sendEmailContact(contact: string): Observable<void> {
     return this.http
       .get<void>(
@@ -157,6 +176,11 @@ export class AdminRepoService {
       .pipe(catchError(this.handleError));
   }
   createContrat(contratEmploye: ContratUserApp): Observable<ContratUserApp[]> {
+    contratEmploye = {
+      ...contratEmploye,
+      dateBegin: this.utils.getDateUTC(contratEmploye.dateBegin),
+      dateEnd: this.utils.getDateUTC(contratEmploye.dateEnd)
+    };
     return this.http
       .post<
         ContratUserApp[]
@@ -165,6 +189,11 @@ export class AdminRepoService {
   }
 
   updateContrat(contratEmploye: ContratUserApp): Observable<ContratUserApp[]> {
+    contratEmploye = {
+      ...contratEmploye,
+      dateBegin: this.utils.getDateUTC(contratEmploye.dateBegin),
+      dateEnd: this.utils.getDateUTC(contratEmploye.dateEnd)
+    };
     return this.http
       .post<
         ContratUserApp[]

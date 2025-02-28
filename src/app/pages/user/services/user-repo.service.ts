@@ -73,14 +73,40 @@ export class UserRepoService {
       .pipe(catchError(this.handleError));
   }
 
-  getRecap(
+  getRecapEquipe(
     dateStr: string,
     idContratUserApp: string
   ): Observable<{ contrat: ContratUserApp; dayAppList: DayApp[] }[]> {
     return this.http
       .get<
-        { contrat: ContratUserApp; dayAppList: DayApp[] }[]
-      >(`${URL_BACKEND}/day-app/get-recap/${dateStr}/${idContratUserApp}`, httpOptions)
+        {
+          contrat: ContratUserApp;
+          dayAppList: DayApp[];
+        }[]
+      >(
+        `${URL_BACKEND}/day-app/get-recap-equipe/${dateStr}/${idContratUserApp}`,
+        httpOptions
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  getRecapContrat(
+    dateStr: string,
+    idContratUserApp: string
+  ): Observable<{
+    contrat: ContratUserApp;
+    dayAppList: DayApp[];
+    nbHours: number;
+  }> {
+    return this.http
+      .get<{
+        contrat: ContratUserApp;
+        dayAppList: DayApp[];
+        nbHours: number;
+      }>(
+        `${URL_BACKEND}/day-app/get-recap-contrat/${dateStr}/${idContratUserApp}`,
+        httpOptions
+      )
       .pipe(catchError(this.handleError));
   }
 

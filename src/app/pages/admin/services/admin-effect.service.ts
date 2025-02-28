@@ -25,7 +25,7 @@ import { CreateEventModal } from '../../modals/createEvent.modal';
 import { CalendarEvent } from 'angular-calendar';
 import { fr } from 'date-fns/locale';
 import { of } from 'rxjs';
-import { Abonnement } from 'src/app/models/user-connected.model';
+import { Abonnement, Role } from 'src/app/models/user-connected.model';
 import Swal from 'sweetalert2';
 
 @Injectable({
@@ -41,7 +41,15 @@ export class AdminEffectService {
   ) {
     effect(
       () => {
-        this.getRecap(this.adminStore.currentDateRecap());
+        const userConnected = this.utils.userConnected();
+        const currentDateRecap = this.adminStore.currentDateRecap();
+        console.log(userConnected);
+        if (
+          userConnected?.roleList.includes(Role.ROLE_ADMIN) &&
+          currentDateRecap
+        ) {
+          this.getRecap(currentDateRecap);
+        }
       },
       { allowSignalWrites: true }
     );
@@ -148,6 +156,34 @@ export class AdminEffectService {
             end: this.utils.getEnd(event.end)
           }))
         )
+      );
+  }
+
+  getRecapContrat(date: Date, idContrat: number): void {
+    this.utils.changeIsLoading(true);
+    this.adminRepo
+      .getRecapContrat(
+        (date.getMonth() < 9
+          ? '0' + (date.getMonth() + 1)
+          : date.getMonth() + 1) +
+          '-' +
+          date.getFullYear(),
+        idContrat + ''
+      )
+      .subscribe(
+        (recapCurrentContrat) => {
+          this.utils.changeIsLoading(false);
+          this.adminStore.recapCurrentContrat.set({
+            ...recapCurrentContrat,
+            dayAppList: recapCurrentContrat.dayAppList.map((d) => ({
+              ...d,
+              date: new Date(d.date)
+            }))
+          });
+        },
+        () => {
+          this.utils.changeIsLoading(false);
+        }
       );
   }
 
@@ -498,6 +534,7 @@ export class AdminEffectService {
       },
       (error) => {
         this.utils.changeIsLoading(false);
+        console.log(error);
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
@@ -624,7 +661,9 @@ export class AdminEffectService {
       })
       .afterClosed()
       .subscribe((updatedUserApp) => {
-        this.updateUserApp(updatedUserApp);
+        if (updatedUserApp) {
+          this.updateUserApp(updatedUserApp);
+        }
       });
   }
 
@@ -654,7 +693,9 @@ export class AdminEffectService {
       })
       .afterClosed()
       .subscribe((contrat: ContratUserApp) => {
-        this.updateContrat(contrat);
+        if (contrat) {
+          this.updateContrat(contrat);
+        }
       });
   }
 

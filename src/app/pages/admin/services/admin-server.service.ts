@@ -26,28 +26,34 @@ export class AdminServerService {
     private adminEffect: AdminEffectService,
     private utils: UtilsService
   ) {
-    this.getActionList();
-    this.getAllContrat();
+    effect(
+      () => {
+        const nbActionList = this.actionList().length;
+        const adminAllContratList = this.adminAllContratList();
+        const userAppList = this.userAppList().map((userApp) => ({
+          ...userApp,
+          nomPrenom: userApp.nom + ' ' + userApp.prenom,
+          nbAction: adminAllContratList
+            .filter((c) => c.userApp.id === userApp.id)
+            .map((c) => c.nbActions)
+            .reduce((acc, nb) => acc + nb, 0)
+        }));
+        this.utils.pushChildrenAdmin(userAppList, nbActionList);
+      },
+      { allowSignalWrites: true }
+    );
     effect(
       () => {
         const userConnected = this.utils.userConnected();
-        const nbActionList = this.actionList().length;
-        const adminAllContratList = this.adminAllContratList();
         if (userConnected?.roleList.includes(Role.ROLE_ADMIN)) {
-          const userAppList = this.userAppList().map((userApp) => ({
-            ...userApp,
-            nomPrenom: userApp.nom + ' ' + userApp.prenom,
-            nbAction: adminAllContratList
-              .filter((c) => c.userApp.id === userApp.id)
-              .map((c) => c.nbActions)
-              .reduce((acc, nb) => acc + nb, 0)
-          }));
-          this.utils.pushChildrenAdmin(userAppList, nbActionList);
+          this.getActionList();
+          this.getAllContrat();
         }
       },
       { allowSignalWrites: true }
     );
   }
+  recapCurrentContrat = this.adminStore.recapCurrentContrat;
   copyPasteWeek(dateToCopy: Date, dateToPaste: Date, idContrat: string): void {
     this.adminEffect.copyPasteWeek(dateToCopy, dateToPaste, idContrat);
   }
@@ -71,6 +77,9 @@ export class AdminServerService {
     contratId: string
   ): void {
     this.adminEffect.getAllEventByContratIdAndPeriod(start, end, contratId);
+  }
+  getRecapContrat(date: Date, idContrat: number): void {
+    this.adminEffect.getRecapContrat(date, idContrat);
   }
   openCreateEventModal(event: CalendarEvent, contratId: string) {
     this.adminEffect.openCreateEventModal(event, contratId);

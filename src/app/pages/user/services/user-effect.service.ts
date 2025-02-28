@@ -22,7 +22,7 @@ export class UserEffectService {
   ) {
     effect(
       () => {
-        this.getRecap(this.userStore.currentDateRecap());
+        this.getRecapEquipe(this.userStore.currentDateRecap());
       },
       { allowSignalWrites: true }
     );
@@ -44,10 +44,10 @@ export class UserEffectService {
         );
       });
   }
-  getRecap(date: Date): void {
+  getRecapEquipe(date: Date): void {
     this.utils.changeIsLoading(true);
     this.userRepo
-      .getRecap(
+      .getRecapEquipe(
         (date.getMonth() < 9
           ? '0' + (date.getMonth() + 1)
           : date.getMonth() + 1) +
@@ -57,6 +57,7 @@ export class UserEffectService {
       )
       .subscribe(
         (recapByContratDayAppList) => {
+          console.log('recapByContratDayAppList', recapByContratDayAppList);
           this.utils.changeIsLoading(false);
           this.userStore.recapByContratDayAppList.set(
             recapByContratDayAppList.map((recapByContratDayApp) => ({
@@ -67,6 +68,34 @@ export class UserEffectService {
               }))
             }))
           );
+        },
+        () => {
+          this.utils.changeIsLoading(false);
+        }
+      );
+  }
+
+  getRecapContrat(date: Date): void {
+    this.utils.changeIsLoading(true);
+    this.userRepo
+      .getRecapContrat(
+        (date.getMonth() < 9
+          ? '0' + (date.getMonth() + 1)
+          : date.getMonth() + 1) +
+          '-' +
+          date.getFullYear(),
+        this.userStore.idContratUserApp() ?? ''
+      )
+      .subscribe(
+        (recapCurrentContrat) => {
+          this.utils.changeIsLoading(false);
+          this.userStore.recapCurrentContrat.set({
+            ...recapCurrentContrat,
+            dayAppList: recapCurrentContrat.dayAppList.map((d) => ({
+              ...d,
+              date: new Date(d.date)
+            }))
+          });
         },
         () => {
           this.utils.changeIsLoading(false);

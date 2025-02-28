@@ -20,5 +20,9 @@ export class UserStoreService {
   recapByContratDayAppList: WritableSignal<
     { contrat: ContratUserApp; dayAppList: DayApp[] }[]
   > = signal([]);
+  recapCurrentContrat: WritableSignal<
+    | { contrat: ContratUserApp; dayAppList: DayApp[]; nbHours: number }
+    | undefined
+  > = signal(undefined);
   eventList: WritableSignal<CalendarEvent[]> = signal([]);
 }

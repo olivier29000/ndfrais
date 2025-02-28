@@ -69,7 +69,7 @@ export class UserEquipePage {
       const idContratUserApp = params.get('idContratUserApp');
       if (idContratUserApp) {
         this.userServer.idContratUserApp.set(idContratUserApp);
-        this.userServer.getRecap();
+        this.userServer.getRecapEquipe();
       }
     });
   }

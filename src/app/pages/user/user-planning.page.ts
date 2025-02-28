@@ -13,25 +13,23 @@ import { DayLineDumb } from '../dumbs/day-line.dumb';
 import { CalendarNavDumb } from '../dumbs/calendar/calendar-nav.dumb';
 import { ActivatedRoute } from '@angular/router';
 import { fr } from 'date-fns/locale';
+import { MonthLineRecapDumb } from '../dumbs/month-line-recap.dumb';
 @Component({
   template: `
-    @if (dayAppList().length > 0) {
-      <div class="container">
-        <dumb-day-line
-          [dayAppList]="dayAppList()"
-          [borderedDayAppList]="selectedDays()"></dumb-day-line>
-        <dumb-calendar-nav
-          [viewDate]="viewDate()"
-          (viewDateOutput)="calendarViewDateChange($event)"></dumb-calendar-nav>
-        <app-calendar
-          [viewDate]="viewDate()"
-          [events]="eventList()"></app-calendar>
-      </div>
-    }
+    <div class="container">
+      <dumb-month-line-recap
+        [recapMonth]="recapMonth()"></dumb-month-line-recap>
+      <dumb-calendar-nav
+        [viewDate]="viewDate()"
+        (viewDateOutput)="calendarViewDateChange($event)"></dumb-calendar-nav>
+      <app-calendar
+        [viewDate]="viewDate()"
+        [events]="eventList()"></app-calendar>
+    </div>
   `,
   styles: [``],
   standalone: true,
-  imports: [CommonModule, CalendarDumb, DayLineDumb, CalendarNavDumb]
+  imports: [CommonModule, CalendarDumb, MonthLineRecapDumb, CalendarNavDumb]
 })
 export class UserPlanningPage {
   constructor(
@@ -41,26 +39,26 @@ export class UserPlanningPage {
     effect(
       () => {
         const viewDate = this.viewDate();
-        const idContrat = this.idContrat();
+        this.userServer.getAllEventByContratIdAndPeriod(
+          startOfWeek(viewDate, { locale: fr }),
+          endOfWeek(viewDate, { locale: fr })
+        );
+        const idContrat = this.userServer.idContratUserApp();
         if (idContrat) {
-          this.userServer.getUserDayAppListByContratId(idContrat);
-          this.userServer.getAllEventByContratIdAndPeriod(
-            startOfWeek(viewDate, { locale: fr }),
-            endOfWeek(viewDate, { locale: fr }),
-            idContrat
+          this.userServer.getRecapContrat(
+            startOfWeek(viewDate, { locale: fr })
           );
         }
       },
       { allowSignalWrites: true }
     );
   }
-  idContrat: WritableSignal<string | undefined> = signal(undefined);
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       const idContrat = params.get('idContratUserApp');
       if (idContrat) {
-        this.idContrat.set(idContrat);
+        this.userServer.idContratUserApp.set(idContrat);
       }
     });
   }
@@ -71,17 +69,9 @@ export class UserPlanningPage {
   }
   eventList = this.userServer.eventList;
 
-  dayAppList = computed(() =>
-    this.userServer
-      .userDayAppList()
-      .filter(
-        (d) =>
-          d.date.getTime() > subDays(this.viewDate(), 15).getTime() &&
-          d.date.getTime() < addDays(this.viewDate(), 15).getTime()
-      )
-  );
+  recapMonth = this.userServer.recapMonth;
   selectedDays = computed(() =>
-    this.dayAppList().filter((d) =>
+    this.recapMonth()?.dayAppList.filter((d) =>
       isSameWeek(d.date, this.viewDate(), { locale: fr })
     )
   );

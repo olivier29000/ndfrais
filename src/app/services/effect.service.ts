@@ -31,7 +31,7 @@ export class EffectService {
       (userConnected) => {
         this.store.userConnected.set(userConnected);
         this.store.isLoading.set(false);
-        this.router.navigate(['']);
+        this.router.navigate(['organigramme']);
       },
       (error: string) => {
         this.store.isLoading.set(false);
