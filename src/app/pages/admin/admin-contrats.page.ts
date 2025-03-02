@@ -13,11 +13,22 @@ import { ContratUserApp } from '../../models/contrat-employe.model';
 import { AdminServerService } from './services/admin-server.service';
 import { CalendarDumb } from '../dumbs/calendar/calendar.dumb';
 import { DayLineDumb } from '../dumbs/day-line.dumb';
-import { addDays, endOfWeek, isSameWeek, startOfWeek, subDays } from 'date-fns';
+import {
+  addDays,
+  addMonths,
+  endOfWeek,
+  format,
+  isSameWeek,
+  startOfWeek,
+  subDays,
+  subMonths
+} from 'date-fns';
 import { CalendarNavDumb } from '../dumbs/calendar/calendar-nav.dumb';
 import { CalendarEvent } from 'angular-calendar';
 import { start } from 'repl';
 import { MonthLineRecapDumb } from '../dumbs/month-line-recap.dumb';
+import { MatIconModule } from '@angular/material/icon';
+import Swal from 'sweetalert2';
 
 @Component({
   template: `<dumb-contrat-list
@@ -29,21 +40,39 @@ import { MonthLineRecapDumb } from '../dumbs/month-line-recap.dumb';
       [userApp]="currentUserApp()"
       (selectedContratOutput)="selectContrat($event)"></dumb-contrat-list>
     <hr />
-    <div class="container">
-      <dumb-month-line-recap
-        [recapMonth]="recapCurrentContrat()"></dumb-month-line-recap>
-      <dumb-calendar-nav
-        [viewDate]="viewDate()"
-        [canCopyWeek]="true"
-        (viewDateOutput)="calendarViewDateChange($event)"
-        (copyWeekDateOutput)="copyPasteWeek($event)"></dumb-calendar-nav>
-      <app-calendar
-        [canCreate]="true"
-        [viewDate]="viewDate()"
-        [events]="eventList()"
-        (createEventOutput)="createEvent($event)"
-        (deleteEventOutput)="deleteEvent($event)"></app-calendar>
-    </div>
+    @if (selectedContrat()) {
+      <div class="container">
+        <div class="headline py-1 px-2 flex justify-center items-center">
+          <button
+            mat-icon-button
+            (click)="previousMonth()"
+            [disabled]="!canPreviousMonth()">
+            <mat-icon svgIcon="mat:arrow_back_ios"></mat-icon>
+          </button>
+          <h2>{{ currentMonthRecap() }}</h2>
+
+          <button
+            mat-icon-button
+            (click)="nextMonth()"
+            [disabled]="!canNextMonth()">
+            <mat-icon svgIcon="mat:arrow_forward_ios"></mat-icon>
+          </button>
+        </div>
+        <dumb-month-line-recap
+          [recapMonth]="recapCurrentContrat()"></dumb-month-line-recap>
+        <dumb-calendar-nav
+          [viewDate]="viewDate()"
+          [canCopyWeek]="true"
+          (viewDateOutput)="calendarViewDateChange($event)"
+          (copyWeekDateOutput)="copyPasteWeek($event)"></dumb-calendar-nav>
+        <app-calendar
+          [canCreate]="true"
+          [viewDate]="viewDate()"
+          [events]="eventList()"
+          (createEventOutput)="createEvent($event)"
+          (deleteEventOutput)="deleteEvent($event)"></app-calendar>
+      </div>
+    }
 
     <dumb-contrat-list
       [title]="'Contrat(s) archivé(s)'"
@@ -52,15 +81,41 @@ import { MonthLineRecapDumb } from '../dumbs/month-line-recap.dumb';
       [userApp]="currentUserApp()"></dumb-contrat-list>`,
   animations: [],
   standalone: true,
-  imports: [ContratListDumb, CalendarDumb, MonthLineRecapDumb, CalendarNavDumb]
+  imports: [
+    ContratListDumb,
+    MatIconModule,
+    CalendarDumb,
+    MonthLineRecapDumb,
+    CalendarNavDumb
+  ]
 })
 export class AdminContratsPage {
   selectedContrat: WritableSignal<ContratUserApp | undefined> =
     signal(undefined);
-  viewDate: WritableSignal<Date> = signal(new Date());
+  viewDate: WritableSignal<Date> = signal(
+    startOfWeek(new Date(), { locale: fr })
+  );
   calendarViewDateChange(date: Date) {
-    this.viewDate.set(date);
+    const selectedContrat = this.selectedContrat();
+    if (
+      selectedContrat &&
+      startOfWeek(date, { locale: fr }).getTime() <
+        selectedContrat.dateBegin.getTime() &&
+      endOfWeek(date, { locale: fr }).getTime() >
+        selectedContrat.dateEnd.getTime()
+    ) {
+      this.viewDate.set(date);
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Vous ne pouvez pas aller sur des dates hors contrat'
+      });
+    }
   }
+  currentMonthRecap = computed(() =>
+    format(this.viewDate(), 'MMMM yyyy', { locale: fr })
+  );
   copyPasteWeek(date: Date): void {
     const selectedContrat = this.selectedContrat();
     if (selectedContrat) {
@@ -71,6 +126,34 @@ export class AdminContratsPage {
       );
     }
   }
+  previousMonth(): void {
+    const viewDate = startOfWeek(this.viewDate(), { locale: fr });
+    this.viewDate.set(subMonths(viewDate, 1));
+  }
+  canPreviousMonth = computed(() => {
+    const selectedContrat = this.selectedContrat();
+    if (selectedContrat) {
+      return (
+        subMonths(this.viewDate(), 1).getTime() >
+        selectedContrat.dateBegin.getTime()
+      );
+    }
+    return false;
+  });
+  nextMonth(): void {
+    const viewDate = startOfWeek(this.viewDate(), { locale: fr });
+    this.viewDate.set(addMonths(viewDate, 1));
+  }
+  canNextMonth = computed(() => {
+    const selectedContrat = this.selectedContrat();
+    if (selectedContrat) {
+      return (
+        addMonths(this.viewDate(), 1).getTime() <
+        selectedContrat.dateEnd.getTime()
+      );
+    }
+    return false;
+  });
   createEvent(event: CalendarEvent) {
     const selectedContrat = this.selectedContrat();
     if (selectedContrat) {

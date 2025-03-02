@@ -4,6 +4,11 @@
 @import "./@vex/styles/core";
 @import "../node_modules/angular-calendar/css/angular-calendar.css";
 
+button[mat-icon-button]:disabled {
+  opacity: 0.5; /* Par exemple, réduire l'opacité */
+  cursor: not-allowed; /* Modifier le curseur */
+}
+
 .swal2-styled {
   background-color: #7066e0 !important;
 }
