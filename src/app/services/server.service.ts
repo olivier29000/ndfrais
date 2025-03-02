@@ -33,6 +33,7 @@ export class ServerService {
       { allowSignalWrites: true }
     );
   }
+  isLoading = this.store.isLoading;
   openSendEmailModal(mode: 'bug' | 'information' | 'fonctionnality') {
     this.effectService.openSendEmailModal(mode);
   }
