@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { CalendarModule, CalendarView } from 'angular-calendar';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,6 +8,8 @@ import {
   MatDatepickerModule
 } from '@angular/material/datepicker';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatInputModule } from '@angular/material/input';
+import { DatepickerDumb } from '../datepicker.dumb';
 @Component({
   standalone: true,
   selector: 'dumb-calendar-nav',
@@ -27,13 +30,14 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
         <!-- Bouton Aujourd'hui -->
         <button
-          class="btn border border-gray-300 text-gray-700 px-6 py-2 rounded-md"
+          class="flex btn border border-gray-300 text-gray-700 px-6 py-2 rounded-md"
           mwlCalendarToday
-          [viewDate]="viewDate"
-          (viewDateChange)="calendarViewDateChange($event)">
-          <h4 class="text-lg font-semibold">
+          [viewDate]="viewDate">
+          <h4 class="text-lg font-semibold flex items-center">
             {{ viewDate | calendarDate: 'weekViewTitle' : 'fr' : 1 }}
           </h4>
+          <dumb-datepicker
+            (dateOutput)="calendarViewDateChange($event)"></dumb-datepicker>
         </button>
 
         <!-- Bouton Suivant -->
@@ -48,18 +52,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
             svgIcon="mat:keyboard_arrow_right"></mat-icon>
         </button>
         @if (canCopyWeek) {
-          <mat-datepicker-toggle
-            [for]="datepickerRefdate"
-            class="block"
-            matIconPrefix
-            matTooltip="Copier une semaine"></mat-datepicker-toggle>
-          <input
-            [matDatepicker]="datepickerRefdate"
-            (dateChange)="copyWeek($event)"
-            matInput
-            style="visibility: hidden;"
-            name="dateBegin" />
-          <mat-datepicker #datepickerRefdate></mat-datepicker>
+          <dumb-datepicker (dateOutput)="copyWeek($event)"></dumb-datepicker>
         }
       </div>
     </div>
@@ -69,7 +62,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatTooltipModule,
     MatDatepickerModule,
     CalendarModule,
-    MatIconModule
+    MatIconModule,
+    MatInputModule,
+    MatNativeDateModule,
+    DatepickerDumb
+  ],
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' } // Définit lundi comme premier jour
   ]
 })
 export class CalendarNavDumb {
@@ -82,9 +81,8 @@ export class CalendarNavDumb {
 
   constructor() {}
 
-  copyWeek(event: MatDatepickerInputEvent<Date>) {
-    const selectedDate: Date | null = event.value;
-    if (selectedDate) this.copyWeekDateOutput.emit(selectedDate);
+  copyWeek(date: Date) {
+    this.copyWeekDateOutput.emit(date);
   }
 
   calendarViewDateChange(date: Date) {

@@ -99,18 +99,18 @@ export class AdminContratsPage {
     const selectedContrat = this.selectedContrat();
     if (
       selectedContrat &&
-      startOfWeek(date, { locale: fr }).getTime() <
-        selectedContrat.dateBegin.getTime() &&
-      endOfWeek(date, { locale: fr }).getTime() >
-        selectedContrat.dateEnd.getTime()
+      (endOfWeek(date, { locale: fr }).getTime() <
+        selectedContrat.dateBegin.getTime() ||
+        startOfWeek(date, { locale: fr }).getTime() >
+          selectedContrat.dateEnd.getTime())
     ) {
-      this.viewDate.set(date);
-    } else {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
         text: 'Vous ne pouvez pas aller sur des dates hors contrat'
       });
+    } else {
+      this.viewDate.set(date);
     }
   }
   currentMonthRecap = computed(() =>
