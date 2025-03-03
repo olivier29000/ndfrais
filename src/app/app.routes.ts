@@ -149,6 +149,13 @@ export const appRoutes: VexRoutes = [
               import('./pages/manager/manager-historique.page').then(
                 (m) => m.ManagerHistoriquePage
               )
+          },
+          {
+            path: 'plannings',
+            loadComponent: () =>
+              import('./pages/manager/manager-planning-list.page').then(
+                (m) => m.ManagerPlanningListPage
+              )
           }
         ]
       },

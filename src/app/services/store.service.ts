@@ -169,6 +169,13 @@ export const navigationItemManager: NavigationSubheading = {
       route: '/manager/historique',
       icon: 'mat:account_balance',
       routerLinkActiveOptions: { exact: true }
+    },
+    {
+      type: 'link',
+      label: 'Plannings',
+      route: '/manager/plannings',
+      icon: 'mat:assignment',
+      routerLinkActiveOptions: { exact: true }
     }
   ]
 };
