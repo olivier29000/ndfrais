@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild
+} from '@angular/core';
 import { CalendarModule, CalendarEvent } from 'angular-calendar';
 import { CommonModule } from '@angular/common';
 import { HourCalendarDumb } from './hour-calendar-dumb';
@@ -13,15 +20,17 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   standalone: true,
   selector: 'app-calendar',
   template: `
-    <div class="calendar-container">
-      <mwl-calendar-week-view
-        [weekStartsOn]="1"
-        [viewDate]="viewDate"
-        [events]="eventsWithNew"
-        [hourSegmentTemplate]="weekView"
-        [eventTemplate]="customEvent"
-        [headerTemplate]="dayHeaderTemplate">
-      </mwl-calendar-week-view>
+    <div class="horizontal-scroll calendar-container">
+      <div #calendarContainer class="calendar">
+        <mwl-calendar-week-view
+          [weekStartsOn]="1"
+          [viewDate]="viewDate"
+          [events]="eventsWithNew"
+          [hourSegmentTemplate]="weekView"
+          [eventTemplate]="customEvent"
+          [headerTemplate]="dayHeaderTemplate">
+        </mwl-calendar-week-view>
+      </div>
     </div>
     <ng-template
       #weekView
@@ -97,13 +106,48 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   ],
   styles: [
     `
-      .custom-event {
-        background-color: blue;
+      .horizontal-scroll {
+        width: 95%; /* largeur du conteneur visible */
+        white-space: nowrap; /* Empêche le contenu de passer à la ligne */
+        overflow-x: auto; /* Ajoute une barre de défilement horizontale si nécessaire */
+        border: 1px solid #ccc; /* Juste pour visualiser */
+      }
+      .cal-day-headers {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background-color: white;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      .calendar {
+        height: 70vh;
+        overflow: scroll;
+        min-width: 800px;
+      }
+      h3 {
+        margin: 0 0 10px;
+      }
+
+      pre {
+        background-color: #f5f5f5;
+        padding: 15px;
       }
     `
   ]
 })
 export class CalendarDumb {
+  @ViewChild('calendarContainer', { static: true })
+  calendarContainer!: ElementRef<HTMLDivElement>;
+  ngAfterViewInit(): void {
+    // Positionner le scroll au milieu
+    const calendarElement = this.calendarContainer.nativeElement;
+
+    if (calendarElement) {
+      // Calculer la moitié de la hauteur
+      const scrollMiddle = calendarElement.scrollHeight / 3;
+      calendarElement.scrollTop = scrollMiddle; // Positionner le scroll
+    }
+  }
   convertHexToRgba(colorHexa: string, opacity: number): string {
     const hex = colorHexa.replace('#', '');
     // Convertir en valeurs RGB
