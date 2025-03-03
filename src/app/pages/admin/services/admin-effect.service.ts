@@ -131,6 +131,7 @@ export class AdminEffectService {
         }, [] as number[])
       )
       .subscribe((eventList) => {
+        console.log(eventList);
         this.adminStore.eventList.set(
           eventList.map((event) => ({
             ...event,

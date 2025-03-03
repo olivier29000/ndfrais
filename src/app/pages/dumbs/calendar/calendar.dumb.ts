@@ -6,6 +6,8 @@ import { DayCalendarDumb } from './day-calendar.dumb';
 import { subMinutes } from 'date-fns';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { EventMeta } from '../../../models/meta-event.model';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   standalone: true,
@@ -44,6 +46,13 @@ import { MatButtonModule } from '@angular/material/button';
     </ng-template>
     <ng-template #customEvent let-weekEvent="weekEvent">
       <div
+        [matTooltip]="
+          weekEvent.event.meta && weekEvent.event.meta.contratUserApp
+            ? weekEvent.event.meta.contratUserApp.userApp.pseudo +
+              ' - ' +
+              weekEvent.event.meta.contratUserApp.poste
+            : ''
+        "
         class="custom-event overflow-auto  flex flex-column"
         [ngClass]="weekEvent.event.avaibility ? 'event-avaibility' : ''"
         [style.height]="weekEvent.height + 'px'"
@@ -57,8 +66,12 @@ import { MatButtonModule } from '@angular/material/button';
         "
         (mouseup)="eventMouseUp()"
         (mouseover)="eventOver()">
-        <div class="text-center mt-1">
-          <!-- <b>{{ weekEvent.event.title }}</b> -->
+        <div class="text-center mt-1 w-full">
+          @if (weekEvent.event.meta && weekEvent.event.meta.contratUserApp) {
+            <b>{{ weekEvent.event.meta.contratUserApp.userApp.pseudo }}</b>
+            <br />
+            <b>{{ weekEvent.event.meta.contratUserApp.poste }}</b>
+          }
         </div>
         @if (canCreate) {
           <div class="mt-auto flex content-center mb-1 w-full">
@@ -79,7 +92,8 @@ import { MatButtonModule } from '@angular/material/button';
     HourCalendarDumb,
     DayCalendarDumb,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    MatTooltipModule
   ],
   styles: [
     `
@@ -103,9 +117,9 @@ export class CalendarDumb {
 
   @Input() canCreate = false;
   @Input() viewDate: Date = new Date();
-  _events: CalendarEvent[] = [];
+  _events: CalendarEvent<EventMeta>[] = [];
   @Input()
-  set events(value: CalendarEvent[]) {
+  set events(value: CalendarEvent<EventMeta>[]) {
     this.eventsWithNew = value;
     this._events = value;
   }
