@@ -200,7 +200,7 @@ import { RouterLink } from '@angular/router';
                   *matCellDef="let row"
                   [ngClass]="column.cssClasses"
                   mat-cell>
-                  {{ row[column.property] | date: 'short' : '' : 'fr' }}
+                  {{ row[column.property] | date: 'dd/MM/yyyy' : '' : 'fr' }}
                 </td>
               </ng-container>
               <ng-container

@@ -33,7 +33,14 @@ export class StoreService {
                 children: [
                   {
                     type: 'link',
-                    label: 'Congés',
+                    label: 'Planning',
+                    route: '/user/planning/' + userAppContrat.id,
+                    icon: 'mat:calendar_today',
+                    routerLinkActiveOptions: { exact: true }
+                  },
+                  {
+                    type: 'link',
+                    label: 'Calendrier',
                     route: '/user/conges/' + userAppContrat.id,
                     icon: 'mat:card_travel',
                     routerLinkActiveOptions: { exact: true }
@@ -50,13 +57,6 @@ export class StoreService {
                     label: 'Equipe',
                     route: '/user/equipe/' + userAppContrat.id,
                     icon: 'mat:supervised_user_circle',
-                    routerLinkActiveOptions: { exact: true }
-                  },
-                  {
-                    type: 'link',
-                    label: 'Planning',
-                    route: '/user/planning/' + userAppContrat.id,
-                    icon: 'mat:calendar_today',
                     routerLinkActiveOptions: { exact: true }
                   }
                 ]

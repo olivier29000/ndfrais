@@ -25,7 +25,6 @@ import {
 } from 'date-fns';
 import { CalendarNavDumb } from '../dumbs/calendar/calendar-nav.dumb';
 import { CalendarEvent } from 'angular-calendar';
-import { start } from 'repl';
 import { MonthLineRecapDumb } from '../dumbs/month-line-recap.dumb';
 import { MatIconModule } from '@angular/material/icon';
 import Swal from 'sweetalert2';
