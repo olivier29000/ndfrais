@@ -110,7 +110,7 @@ import Swal from 'sweetalert2';
             <mat-icon
               class="icon-sm text-primary-500"
               style="overflow: visible;"
-              svgIcon="mat:check_box"></mat-icon>
+              svgIcon="mat:check_box_outline_blank"></mat-icon>
             <div>Compte des heures hebdomadaires et mensuelles</div>
           </div>
           <div class="flex items-center gap-3 text-sm ms-3">
@@ -154,7 +154,7 @@ import Swal from 'sweetalert2';
           </div>
           <div>
             <span class="text-xl font-semibold text-primary-500"
-              >Offert jusqu'au 1er juin</span
+              >Offert jusqu'au 1er mai</span
             >
           </div>
           <div class="text-gray-500 font-medium">
@@ -214,7 +214,7 @@ import Swal from 'sweetalert2';
               class="icon-sm text-primary-500"
               style="overflow: visible;"
               svgIcon="mat:check_box_outline_blank"></mat-icon>
-            <div>Téléchargements d'excel par mois</div>
+            <div>Téléchargements d'excels</div>
           </div>
           <div class="flex items-center font-semibold gap-3">
             <mat-icon
@@ -241,7 +241,7 @@ import Swal from 'sweetalert2';
             <mat-icon
               class="icon-sm text-primary-500"
               style="overflow: visible;"
-              svgIcon="mat:check_box"></mat-icon>
+              svgIcon="mat:check_box_outline_blank"></mat-icon>
             <div>Envoi hebdomadaire du planning par email</div>
           </div>
           <div class="flex items-center gap-3 text-sm ms-3">
@@ -260,7 +260,7 @@ import Swal from 'sweetalert2';
             ? 'ring-primary-500 relative ring-2'
             : ''
         "
-        (click)="selectAbonnement(Abonnement.PREMIUM)">
+        (click)="clickContact()">
         @if (currentAbonnement && currentAbonnement === Abonnement.PREMIUM) {
           <div class="text-center">
             <div
@@ -272,13 +272,8 @@ import Swal from 'sweetalert2';
         <div class="mx-8 py-8 space-y-4 border-b">
           <div class="text-2xl font-bold">Premium</div>
           <div>
-            <span class="text-5xl font-extrabold line-through">50€</span>
+            <span class="text-5xl font-extrabold">50€</span>
             <span class="text-xl font-semibold">/mois</span>
-          </div>
-          <div>
-            <span class="text-xl font-semibold text-primary-500"
-              >Offert jusqu'au 1er juin</span
-            >
           </div>
           <div class="text-gray-500 font-medium">
             Pour gérer jusqu'à 30 employés
@@ -338,7 +333,7 @@ import Swal from 'sweetalert2';
               class="icon-sm text-primary-500"
               style="overflow: visible;"
               svgIcon="mat:check_box"></mat-icon>
-            <div>Téléchargements d'excel illimité</div>
+            <div>Téléchargements d'excels</div>
           </div>
           <div class="flex items-center font-semibold gap-3">
             <mat-icon
