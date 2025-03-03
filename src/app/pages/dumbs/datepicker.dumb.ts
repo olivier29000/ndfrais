@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
+  Input,
   OnInit,
   Output,
   computed,
@@ -17,6 +18,7 @@ import {
   MatDatepickerModule
 } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Moment } from 'moment';
 import 'moment/locale/fr';
@@ -31,7 +33,11 @@ import 'moment/locale/fr';
       [matDatepicker]="dp"
       (dateChange)="emitDate($event)"
       style="width:0px" />
-    <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
+    <mat-datepicker-toggle matIconSuffix [for]="dp">
+      @if (icon) {
+        <mat-icon matDatepickerToggleIcon [svgIcon]="'mat:' + icon"></mat-icon>
+      }
+    </mat-datepicker-toggle>
     <mat-datepicker #dp></mat-datepicker>
   `,
   providers: [
@@ -48,11 +54,13 @@ import 'moment/locale/fr';
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
-    MatButtonModule
+    MatButtonModule,
+    MatIconModule
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DatepickerDumb {
+  @Input() icon!: string;
   @Output() dateOutput = new EventEmitter<Date>();
   private readonly _locale = signal(inject<unknown>(MAT_DATE_LOCALE));
 

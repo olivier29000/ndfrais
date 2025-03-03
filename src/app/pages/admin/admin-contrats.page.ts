@@ -183,6 +183,7 @@ export class AdminContratsPage {
       const idUserApp = params.get('idUserApp');
       if (idUserApp) {
         this.idUserApp.set(idUserApp);
+        this.selectedContrat.set(undefined);
       }
     });
   }

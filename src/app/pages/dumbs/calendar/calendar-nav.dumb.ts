@@ -14,7 +14,12 @@ import { DatepickerDumb } from '../datepicker.dumb';
   standalone: true,
   selector: 'dumb-calendar-nav',
   template: `
-    <div class="flex justify-center">
+    <div
+      class="flex "
+      [ngClass]="canCopyWeek ? 'justify-between' : 'justify-center'">
+      @if (canCopyWeek) {
+        <div></div>
+      }
       <div class="flex items-center space-x-2">
         <!-- Bouton Précédent -->
         <button
@@ -51,10 +56,16 @@ import { DatepickerDumb } from '../datepicker.dumb';
             class="w-6 h-6 text-primary-500"
             svgIcon="mat:keyboard_arrow_right"></mat-icon>
         </button>
-        @if (canCopyWeek) {
-          <dumb-datepicker (dateOutput)="copyWeek($event)"></dumb-datepicker>
-        }
       </div>
+      @if (canCopyWeek) {
+        <dumb-datepicker
+          class="mr-0"
+          icon="history"
+          (dateOutput)="copyWeek($event)"
+          matTooltip="
+          Copier/coller une semaine
+        "></dumb-datepicker>
+      }
     </div>
   `,
   imports: [
