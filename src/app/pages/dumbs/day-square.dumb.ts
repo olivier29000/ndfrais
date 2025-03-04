@@ -15,6 +15,7 @@ import { DayApp, WEEK_STATE, WORK_STATE } from 'src/app/models/day-app.model';
 import localeFr from '@angular/common/locales/fr';
 import { MatIconModule } from '@angular/material/icon';
 import { scaleInOutAnimation } from '@vex/animations/scale-in-out.animation';
+import { MatTooltipModule } from '@angular/material/tooltip';
 @Injectable()
 export class CustomDateFormats {
   static readonly MY_DATE_FORMATS: MatDateFormats = {
@@ -33,8 +34,14 @@ export class CustomDateFormats {
 @Component({
   selector: 'dumb-day-state',
   template: `
-    <div class="card day-square  mt-3" [ngClass]="isBordered ? 'scaled' : ''">
+    <div
+      class="card day-square mt-3 mx-auto"
+      [ngClass]="isBordered ? 'scaled' : ''"
+      [matTooltip]="day.workState">
       <div class="day-state" [ngClass]="day.weekState"></div>
+      @if (isUnderlined) {
+        <div class="isUnderlined"></div>
+      }
       <div
         class="work-state"
         [ngClass]="
@@ -136,6 +143,31 @@ export class CustomDateFormats {
         background-color: grey;
         border: thin solid;
       }
+
+      @keyframes clignotement {
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      .isUnderlined {
+        animation: clignotement 2s infinite;
+      }
+
+      .isUnderlined {
+        position: absolute;
+        top: -5px;
+        width: 40px;
+        height: 5px;
+        background-color: #111827;
+        border: thin solid;
+      }
       .NORMAL {
         background-color: white;
       }
@@ -176,7 +208,7 @@ export class CustomDateFormats {
     `
   ],
   standalone: true,
-  imports: [CommonModule, MatIconModule]
+  imports: [CommonModule, MatIconModule, MatTooltipModule]
 })
 export class DaySquareDumb {
   WEEK_STATE = WEEK_STATE;
@@ -186,6 +218,7 @@ export class DaySquareDumb {
   @Input() isSelected: boolean = false;
   @Input() isLastSelected: boolean = false;
   @Input() isBordered: boolean = false;
+  @Input() isUnderlined: boolean = false;
 
   @Output() clickLast = new EventEmitter<DayApp>();
   @Output() validPeriod = new EventEmitter<void>();

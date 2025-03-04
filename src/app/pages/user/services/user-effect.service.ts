@@ -7,7 +7,8 @@ import { ServerService } from 'src/app/services/server.service';
 import { PdfDisplayModal } from '../../modals/pdf-display.modal';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
-import { addMonths, subMonths } from 'date-fns';
+import { addMonths, endOfWeek, startOfWeek, subMonths } from 'date-fns';
+import { fr } from 'date-fns/locale';
 
 @Injectable({
   providedIn: 'root'
@@ -77,25 +78,30 @@ export class UserEffectService {
 
   getRecapContrat(date: Date): void {
     this.utils.changeIsLoading(true);
-    this.userRepo
-      .getRecapContrat(
-        (date.getMonth() < 9
-          ? '0' + (date.getMonth() + 1)
-          : date.getMonth() + 1) +
-          '-' +
-          date.getFullYear(),
-        this.userStore.idContratUserApp() ?? ''
+    const dateStrList: string[] = [
+      ...new Set(
+        [startOfWeek(date), endOfWeek(date)].map(
+          (d) =>
+            (d.getMonth() < 9 ? '0' + (d.getMonth() + 1) : d.getMonth() + 1) +
+            '-' +
+            d.getFullYear()
+        )
       )
+    ];
+    this.userRepo
+      .getRecapContrat(dateStrList, this.userStore.idContratUserApp() ?? '')
       .subscribe(
-        (recapCurrentContrat) => {
+        (recapCurrentContratList) => {
           this.utils.changeIsLoading(false);
-          this.userStore.recapCurrentContrat.set({
-            ...recapCurrentContrat,
-            dayAppList: recapCurrentContrat.dayAppList.map((d) => ({
-              ...d,
-              date: new Date(d.date)
+          this.userStore.recapListCurrentContrat.set(
+            recapCurrentContratList.map((recapCurrentContrat) => ({
+              ...recapCurrentContrat,
+              dayAppList: recapCurrentContrat.dayAppList.map((d) => ({
+                ...d,
+                date: new Date(d.date)
+              }))
             }))
-          });
+          );
         },
         () => {
           this.utils.changeIsLoading(false);

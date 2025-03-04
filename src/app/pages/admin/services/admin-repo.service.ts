@@ -31,20 +31,25 @@ export class AdminRepoService {
     private utils: UtilsService
   ) {}
   getRecapContrat(
-    dateStr: string,
+    dateStrList: string[],
     idContratUserApp: string
-  ): Observable<{
-    contrat: ContratUserApp;
-    dayAppList: DayApp[];
-    nbHours: number;
-  }> {
+  ): Observable<
+    {
+      contrat: ContratUserApp;
+      dayAppList: DayApp[];
+      nbHours: number;
+    }[]
+  > {
     return this.http
-      .get<{
-        contrat: ContratUserApp;
-        dayAppList: DayApp[];
-        nbHours: number;
-      }>(
-        `${URL_BACKEND}/day-app/get-recap-contrat/${dateStr}/${idContratUserApp}`,
+      .post<
+        {
+          contrat: ContratUserApp;
+          dayAppList: DayApp[];
+          nbHours: number;
+        }[]
+      >(
+        `${URL_BACKEND}/day-app/get-recap-contrat/${idContratUserApp}`,
+        dateStrList,
         httpOptions
       )
       .pipe(catchError(this.handleError));

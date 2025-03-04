@@ -15,6 +15,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { EventMeta } from '../../../models/meta-event.model';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { DayApp } from 'src/app/models/day-app.model';
 
 @Component({
   standalone: true,
@@ -51,7 +52,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
       let-locale="locale"
       let-dayClicked="dayClicked"
       let-eventDropped="eventDropped">
-      <dumb-days-calendar [days]="days" [locale]="'fr'"></dumb-days-calendar>
+      <dumb-days-calendar
+        [days]="days"
+        [locale]="'fr'"
+        [selectedDays]="selectedDays"></dumb-days-calendar>
     </ng-template>
     <ng-template #customEvent let-weekEvent="weekEvent">
       <div
@@ -158,7 +162,7 @@ export class CalendarDumb {
     // Retourner le format rgba
     return `rgba(${r}, ${g}, ${b}, ${opacity})`;
   }
-
+  @Input() selectedDays!: DayApp[];
   @Input() canCreate = false;
   @Input() viewDate: Date = new Date();
   _events: CalendarEvent<EventMeta>[] = [];

@@ -58,7 +58,8 @@ import Swal from 'sweetalert2';
           </button>
         </div>
         <dumb-month-line-recap
-          [recapMonth]="recapCurrentContrat()"></dumb-month-line-recap>
+          [recapMonthList]="recapListCurrentContrat()"
+          [selectedDays]="selectedDays() ?? []"></dumb-month-line-recap>
         <dumb-calendar-nav
           [viewDate]="viewDate()"
           [canCopyWeek]="true"
@@ -68,6 +69,7 @@ import Swal from 'sweetalert2';
           [canCreate]="true"
           [viewDate]="viewDate()"
           [events]="eventList()"
+          [selectedDays]="selectedDays() ?? []"
           (createEventOutput)="createEvent($event)"
           (deleteEventOutput)="deleteEvent($event)"></app-calendar>
       </div>
@@ -165,11 +167,11 @@ export class AdminContratsPage {
       this.adminServer.deleteEvent(event, selectedContrat.id + '');
     }
   }
-  recapCurrentContrat = this.adminServer.recapCurrentContrat;
+  recapListCurrentContrat = this.adminServer.recapListCurrentContrat;
   selectedDays = computed(() =>
-    this.recapCurrentContrat()?.dayAppList.filter((d) =>
-      isSameWeek(d.date, this.viewDate(), { locale: fr })
-    )
+    this.recapListCurrentContrat()
+      ?.flatMap((recap) => recap.dayAppList)
+      .filter((d) => isSameWeek(d.date, this.viewDate(), { locale: fr }))
   );
   eventList = this.adminServer.eventList;
 

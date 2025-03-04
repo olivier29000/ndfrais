@@ -13,6 +13,7 @@ import Swal from 'sweetalert2';
 import { catchError, map, Observable, of } from 'rxjs';
 import { Email } from '../models/email.model';
 import { EmailSupportModal } from './modals/email-support.modal';
+import { UtilsService } from './utils.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,7 @@ export class EffectService {
   constructor(
     private store: StoreService,
     private repo: RepoService,
+    private utils: UtilsService,
     private router: Router,
     private dialog: MatDialog
   ) {}
@@ -120,7 +122,13 @@ export class EffectService {
     this.repo.getUserContratList().subscribe(
       (userAllContratList) => {
         this.store.isLoading.set(false);
-        this.store.userAllContratList.set(userAllContratList);
+        this.store.userAllContratList.set(
+          userAllContratList.map((c) => ({
+            ...c,
+            dateBegin: this.utils.getStart(c.dateBegin),
+            dateEnd: this.utils.getStart(c.dateEnd)
+          }))
+        );
       },
       () => {
         this.store.isLoading.set(false);

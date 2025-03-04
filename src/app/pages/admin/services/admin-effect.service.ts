@@ -150,42 +150,45 @@ export class AdminEffectService {
     this.adminRepo
       .getAllEventByContratIdAndPeriod(start, end, contratId)
       .subscribe((eventList) =>
-        this.adminStore.eventList.set(
-          eventList.map((event) => ({
+        this.adminStore.eventList.set([
+          ...eventList.map((event) => ({
             ...event,
             start: this.utils.getStart(event.start),
             end: this.utils.getEnd(event.end)
           }))
-        )
+        ])
       );
   }
 
   getRecapContrat(date: Date, idContrat: number): void {
     this.utils.changeIsLoading(true);
-    this.adminRepo
-      .getRecapContrat(
-        (date.getMonth() < 9
-          ? '0' + (date.getMonth() + 1)
-          : date.getMonth() + 1) +
-          '-' +
-          date.getFullYear(),
-        idContrat + ''
+    const dateStrList: string[] = [
+      ...new Set(
+        [startOfWeek(date), endOfWeek(date)].map(
+          (d) =>
+            (d.getMonth() < 9 ? '0' + (d.getMonth() + 1) : d.getMonth() + 1) +
+            '-' +
+            d.getFullYear()
+        )
       )
-      .subscribe(
-        (recapCurrentContrat) => {
-          this.utils.changeIsLoading(false);
-          this.adminStore.recapCurrentContrat.set({
+    ];
+    this.adminRepo.getRecapContrat(dateStrList, idContrat + '').subscribe(
+      (recapListCurrentContrat) => {
+        this.utils.changeIsLoading(false);
+        this.adminStore.recapListCurrentContrat.set(
+          recapListCurrentContrat.map((recapCurrentContrat) => ({
             ...recapCurrentContrat,
             dayAppList: recapCurrentContrat.dayAppList.map((d) => ({
               ...d,
               date: new Date(d.date)
             }))
-          });
-        },
-        () => {
-          this.utils.changeIsLoading(false);
-        }
-      );
+          }))
+        );
+      },
+      () => {
+        this.utils.changeIsLoading(false);
+      }
+    );
   }
 
   openCreateEventModal(event: CalendarEvent, contratId: string): void {
@@ -218,26 +221,32 @@ export class AdminEffectService {
   }
 
   createNewEvent(event: CalendarEvent, contratId: string): void {
-    this.adminRepo
-      .createNewEvent(event, contratId)
-      .subscribe(() =>
-        this.getAllEventByContratIdAndPeriod(
-          startOfWeek(event.start, { locale: fr }),
-          endOfWeek(event.start, { locale: fr }),
-          contratId
-        )
+    this.adminRepo.createNewEvent(event, contratId).subscribe(() => {
+      this.getAllEventByContratIdAndPeriod(
+        startOfWeek(event.start, { locale: fr }),
+        endOfWeek(event.start, { locale: fr }),
+        contratId
       );
+      this.getRecapContrat(
+        startOfWeek(event.start, { locale: fr }),
+        Number(contratId)
+      );
+    });
   }
   copyPasteWeek(dateToCopy: Date, dateToPaste: Date, contratId: string): void {
     this.adminRepo
       .copyPasteWeek(dateToCopy, dateToPaste, contratId)
-      .subscribe(() =>
+      .subscribe(() => {
         this.getAllEventByContratIdAndPeriod(
           startOfWeek(dateToPaste, { locale: fr }),
           endOfWeek(dateToPaste, { locale: fr }),
           contratId
-        )
-      );
+        );
+        this.getRecapContrat(
+          startOfWeek(dateToPaste, { locale: fr }),
+          Number(contratId)
+        );
+      });
   }
   openPdfDisplayModal(idPdf: number): void {
     this.utils.changeIsLoading(true);

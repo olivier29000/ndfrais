@@ -30,7 +30,7 @@ import { MonthLineRecapDumb } from '../dumbs/month-line-recap.dumb';
             <dumb-month-line-recap
               (cancelLastOutput)="openActionDayListRefuseModal($event)"
               (validLastOutput)="openActionDayListValidModal($event)"
-              [recapMonth]="recap"></dumb-month-line-recap>
+              [recapMonthList]="[recap]"></dumb-month-line-recap>
           }
         </div>
       </div>

@@ -7,29 +7,51 @@ import {
   WritableSignal
 } from '@angular/core';
 import { UserServerService } from './services/user-server.service';
-import { addDays, endOfWeek, isSameWeek, startOfWeek, subDays } from 'date-fns';
+import {
+  addDays,
+  endOfWeek,
+  isSameWeek,
+  startOfWeek,
+  subDays,
+  subMonths
+} from 'date-fns';
 import { CalendarDumb } from '../dumbs/calendar/calendar.dumb';
 import { DayLineDumb } from '../dumbs/day-line.dumb';
 import { CalendarNavDumb } from '../dumbs/calendar/calendar-nav.dumb';
 import { ActivatedRoute } from '@angular/router';
 import { fr } from 'date-fns/locale';
 import { MonthLineRecapDumb } from '../dumbs/month-line-recap.dumb';
+import { MatIconModule } from '@angular/material/icon';
+import { NavMonthDumb } from '../dumbs/nav-month.dumb';
 @Component({
   template: `
     <div class="container">
+      <dumb-nav-month
+        [currentDate]="viewDate()"
+        [currentContrat]="currentContrat()"
+        (currentDateChange)="calendarViewDateChange($event)"></dumb-nav-month>
       <dumb-month-line-recap
-        [recapMonth]="recapMonth()"></dumb-month-line-recap>
+        [recapMonthList]="recapMonthList()"
+        [selectedDays]="selectedDays() ?? []"></dumb-month-line-recap>
       <dumb-calendar-nav
         [viewDate]="viewDate()"
         (viewDateOutput)="calendarViewDateChange($event)"></dumb-calendar-nav>
       <app-calendar
         [viewDate]="viewDate()"
+        [selectedDays]="selectedDays() ?? []"
         [events]="eventList()"></app-calendar>
     </div>
   `,
   styles: [``],
   standalone: true,
-  imports: [CommonModule, CalendarDumb, MonthLineRecapDumb, CalendarNavDumb]
+  imports: [
+    CommonModule,
+    CalendarDumb,
+    MonthLineRecapDumb,
+    CalendarNavDumb,
+    MatIconModule,
+    NavMonthDumb
+  ]
 })
 export class UserPlanningPage {
   constructor(
@@ -62,17 +84,17 @@ export class UserPlanningPage {
       }
     });
   }
-
+  currentContrat = this.userServer.currentContrat;
   viewDate: WritableSignal<Date> = signal(new Date());
   calendarViewDateChange(date: Date) {
     this.viewDate.set(date);
   }
   eventList = this.userServer.eventList;
 
-  recapMonth = this.userServer.recapMonth;
+  recapMonthList = this.userServer.recapMonthList;
   selectedDays = computed(() =>
-    this.recapMonth()?.dayAppList.filter((d) =>
-      isSameWeek(d.date, this.viewDate(), { locale: fr })
-    )
+    this.recapMonthList()
+      ?.flatMap((r) => r.dayAppList)
+      .filter((d) => isSameWeek(d.date, this.viewDate(), { locale: fr }))
   );
 }

@@ -53,7 +53,7 @@ export class AdminServerService {
       { allowSignalWrites: true }
     );
   }
-  recapCurrentContrat = this.adminStore.recapCurrentContrat;
+  recapListCurrentContrat = this.adminStore.recapListCurrentContrat;
   copyPasteWeek(dateToCopy: Date, dateToPaste: Date, idContrat: string): void {
     this.adminEffect.copyPasteWeek(dateToCopy, dateToPaste, idContrat);
   }

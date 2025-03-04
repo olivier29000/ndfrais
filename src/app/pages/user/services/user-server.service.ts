@@ -49,7 +49,15 @@ export class UserServerService {
       })
     }));
   });
-  recapMonth = this.userStore.recapCurrentContrat;
+  recapMonthList = this.userStore.recapListCurrentContrat;
+  currentContrat = computed(() => {
+    const userAllContratList = this.server.userAllContratList();
+    const idContratUserApp = this.idContratUserApp();
+    if (userAllContratList && idContratUserApp) {
+      return userAllContratList.find((c) => c.id === Number(idContratUserApp));
+    }
+    return undefined;
+  });
   getAllEventByContratIdAndPeriod(start: Date, end: Date): void {
     const contratId = this.idContratUserApp();
     if (contratId) {

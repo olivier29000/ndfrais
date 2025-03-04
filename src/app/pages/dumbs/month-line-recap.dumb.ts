@@ -5,7 +5,7 @@ import { DayApp } from 'src/app/models/day-app.model';
 import { DayLineDumb } from './day-line.dumb';
 @Component({
   selector: 'dumb-month-line-recap',
-  template: `@if (recapMonth) {
+  template: `@for (recapMonth of recapMonthList; track recapMonth) {
     <div class="flex">
       <div class="card flex items-center mt-3 px-2" style="width:130px">
         <div class="flex-auto">
@@ -25,7 +25,8 @@ import { DayLineDumb } from './day-line.dumb';
       <dumb-day-line
         (cancelLastOutput)="cancelLast($event)"
         (validLastOutput)="validLast($event)"
-        [dayAppList]="recapMonth.dayAppList"></dumb-day-line>
+        [dayAppList]="recapMonth.dayAppList"
+        [underlinedDayAppList]="selectedDays"></dumb-day-line>
     </div>
   } `,
   styles: [``],
@@ -33,13 +34,14 @@ import { DayLineDumb } from './day-line.dumb';
   imports: [CommonModule, DayLineDumb]
 })
 export class MonthLineRecapDumb {
-  @Input() recapMonth!:
+  @Input() recapMonthList!:
     | {
         dayAppList: DayApp[];
         contrat: ContratUserApp;
         nbHours: number;
-      }
+      }[]
     | undefined;
+  @Input() selectedDays: DayApp[] = [];
   @Output() cancelLastOutput = new EventEmitter<DayApp>();
   @Output() validLastOutput = new EventEmitter<DayApp>();
   cancelLast(day: DayApp): void {

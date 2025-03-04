@@ -34,6 +34,7 @@ import { Action, ActionDay } from 'src/app/models/action.model';
           "
           [isSelected]="day.isSelected ?? false"
           [isBordered]="day.isBordered ?? false"
+          [isUnderlined]="day.isUnderlined ?? false"
           [day]="day"
           (clickDay)="selectDayApp(day)"
           (clickLast)="cancelLast($event)"
@@ -51,10 +52,12 @@ export class DayLineDumb {
   constructor() {}
   _actionList: ActionDay[] = [];
   _borderedDayAppList: DayApp[] = [];
+  _underlinedDayAppList: DayApp[] = [];
   _dayAppList!: (DayApp & {
     isSelected?: boolean;
     isLastSelected?: boolean;
     isBordered?: boolean;
+    isUnderlined?: boolean;
   })[];
   @Input()
   set borderedDayAppList(value: DayApp[]) {
@@ -62,6 +65,14 @@ export class DayLineDumb {
     this._dayAppList = this._dayAppList.map((d) => ({
       ...d,
       isBordered: value.some((v) => v.id === d.id)
+    }));
+  }
+  @Input()
+  set underlinedDayAppList(value: DayApp[]) {
+    this._underlinedDayAppList = value;
+    this._dayAppList = this._dayAppList.map((d) => ({
+      ...d,
+      isUnderlined: value.some((v) => v.id === d.id)
     }));
   }
   @Input()
@@ -97,7 +108,10 @@ export class DayLineDumb {
           isSelected: true,
           isLastSelected:
             action.idDayAppList[action.idDayAppList.length - 1] === dayApp.id,
-          isBordered: this._borderedDayAppList.some((v) => v.id === dayApp.id)
+          isBordered: this._borderedDayAppList.some((v) => v.id === dayApp.id),
+          isUnderlined: this._underlinedDayAppList.some(
+            (v) => v.id === dayApp.id
+          )
         };
       } else {
         return dayApp;
@@ -109,6 +123,7 @@ export class DayLineDumb {
     isSelected?: boolean;
     isLastSelected?: boolean;
     isBordered?: boolean;
+    isUnderlined?: boolean;
   })[] {
     return this._dayAppList;
   }

@@ -18,8 +18,8 @@ export class AdminStoreService {
     { contrat: ContratUserApp; dayAppList: DayApp[]; nbHours: number }[]
   > = signal([]);
 
-  recapCurrentContrat: WritableSignal<
-    | { contrat: ContratUserApp; dayAppList: DayApp[]; nbHours: number }
+  recapListCurrentContrat: WritableSignal<
+    | { contrat: ContratUserApp; dayAppList: DayApp[]; nbHours: number }[]
     | undefined
   > = signal(undefined);
   actionList: WritableSignal<Action[]> = signal([]);
