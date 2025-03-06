@@ -104,11 +104,6 @@ import { debounceTime, distinctUntilChanged, tap } from 'rxjs';
             </mat-form-field>
           </div>
 
-          <div class="flex items-center justify-center">
-            <mat-checkbox class="caption"
-              >J'accepte les <a>CGV</a></mat-checkbox
-            >
-          </div>
           <button
             (click)="creationCompte()"
             [disabled]="

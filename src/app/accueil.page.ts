@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { AbonnementListDumb } from './dumbs/abonnements.dumb';
 import { environment } from 'src/environment/environment';
+import { RouterLink } from '@angular/router';
 
 @Component({
   template: `
@@ -28,7 +29,7 @@ import { environment } from 'src/environment/environment';
           <div class="video-container">
             <iframe
               class="ql-video ql-align-center mx-auto"
-              src="https://www.youtube.com/embed/vCFVyQ_HiWQ?autoplay=1&mute=1"
+              src="https://www.youtube.com/embed/nIa-T8fdrvc?autoplay=1&mute=1"
               title="YouTube video player"
               frameborder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -48,6 +49,10 @@ import { environment } from 'src/environment/environment';
             (click)="redirectToCreateAccount()">
             CREER UN COMPTE
           </button>
+          <p class="text-secondary text-center">
+            Vous êtes déjà inscrits ?<br />
+            <a [routerLink]="['/login']">Connectez vous ici</a>
+          </p>
         </div>
         <dumb-abonnement-list></dumb-abonnement-list>
         <div class="space-y-12">
@@ -77,6 +82,10 @@ import { environment } from 'src/environment/environment';
             (click)="redirectToCreateAccount()">
             CREER UN COMPTE
           </button>
+          <p class="text-secondary text-center">
+            Vous êtes déjà inscrits ?<br />
+            <a [routerLink]="['/login']">Connectez vous ici</a>
+          </p>
         </div>
         <div
           class="rounded-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
@@ -174,7 +183,8 @@ import { environment } from 'src/environment/environment';
     MatInputModule,
     MatSlideToggleModule,
     AbonnementListDumb,
-    MatButtonModule
+    MatButtonModule,
+    RouterLink
   ]
 })
 export class AccueilPage {
