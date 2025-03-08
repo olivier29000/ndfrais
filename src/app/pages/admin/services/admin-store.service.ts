@@ -11,6 +11,8 @@ export class AdminStoreService {
   constructor() {}
   adminAllContratList: WritableSignal<ContratUserApp[]> = signal([]);
   adminContratList: WritableSignal<ContratUserApp[]> = signal([]);
+  selectedContrat: WritableSignal<ContratUserApp | undefined> =
+    signal(undefined);
   userAppList: WritableSignal<UserApp[]> = signal([]);
   currentDateRecap: WritableSignal<Date> = signal(new Date());
   currentYearHistorique: WritableSignal<Date> = signal(new Date());

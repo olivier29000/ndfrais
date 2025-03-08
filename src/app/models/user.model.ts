@@ -10,6 +10,7 @@ export class UserApp {
   email: string;
   notes: string;
   enabled: boolean;
+  contratUserApp: ContratUserApp;
 
   constructor(userApp: any) {
     this.id = userApp.id;
@@ -21,6 +22,7 @@ export class UserApp {
     this.email = userApp.email;
     this.notes = userApp.notes;
     this.enabled = userApp.enabled;
+    this.contratUserApp = userApp.contratUserApp;
   }
 
   get nomPrenom() {

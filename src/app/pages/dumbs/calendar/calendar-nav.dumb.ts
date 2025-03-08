@@ -42,7 +42,7 @@ import { DatepickerDumb } from '../datepicker.dumb';
             {{ viewDate | calendarDate: 'weekViewTitle' : 'fr' : 1 }}
           </h4>
           <dumb-datepicker
-            (dateOutput)="calendarViewDateChange($event)"></dumb-datepicker>
+            (dateChange)="calendarViewDateChange($event)"></dumb-datepicker>
         </button>
 
         <!-- Bouton Suivant -->
@@ -61,7 +61,7 @@ import { DatepickerDumb } from '../datepicker.dumb';
         <dumb-datepicker
           class="mr-0"
           icon="history"
-          (dateOutput)="copyWeek($event)"
+          (dateChange)="copyWeek($event)"
           matTooltip="
           Copier/coller une semaine
         "></dumb-datepicker>

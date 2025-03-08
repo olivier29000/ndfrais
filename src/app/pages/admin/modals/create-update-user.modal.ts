@@ -1,4 +1,4 @@
-import { Component, effect, Inject, OnInit } from '@angular/core';
+import { Component, computed, effect, Inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -16,11 +16,17 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
-import { NgIf } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { UserApp } from 'src/app/models/user.model';
 import { MatSelectModule } from '@angular/material/select';
-import { debounceTime, distinctUntilChanged, tap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject, tap } from 'rxjs';
 import { AdminServerService } from '../services/admin-server.service';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { WorkStateDumb } from '../../dumbs/work-state.dumb';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { WORK_STATE } from 'src/app/models/day-app.model';
+import { ContratUserApp } from 'src/app/models/contrat-employe.model';
+import { DatepickerDumb } from '../../dumbs/datepicker.dumb';
 
 @Component({
   template: `<form>
@@ -125,6 +131,168 @@ import { AdminServerService } from '../services/admin-server.service';
             name="notes"
             matInput></textarea>
         </mat-form-field>
+        <div class="flex flex-col sm:flex-row">
+          <mat-form-field class="flex-auto">
+            <mat-label>Poste</mat-label>
+            <input
+              cdkFocusInitial
+              [(ngModel)]="currentUserApp.contratUserApp.poste"
+              name="poste"
+              matInput />
+
+            <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="flex flex-col sm:flex-row">
+          <mat-form-field class="flex-auto">
+            <mat-label>Date de début</mat-label>
+            <div class="flex">
+              <dumb-datepicker
+                #datepickerRefdateBegin
+                [(date)]="
+                  currentUserApp.contratUserApp.dateBegin
+                "></dumb-datepicker>
+              <input
+                [value]="
+                  currentUserApp.contratUserApp.dateBegin
+                    | date: 'dd MMM yyyy' : '' : 'fr'
+                "
+                disabled
+                matInput
+                name="dateBegin" />
+            </div>
+          </mat-form-field>
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Date de fin</mat-label>
+            <div class="flex">
+              <dumb-datepicker
+                #datepickerRefdateBegin
+                [(date)]="
+                  currentUserApp.contratUserApp.dateEnd
+                "></dumb-datepicker>
+              <input
+                [value]="
+                  currentUserApp.contratUserApp.dateEnd
+                    | date: 'dd MMM yyyy' : '' : 'fr'
+                "
+                disabled
+                matInput
+                name="dateEnd" />
+            </div>
+          </mat-form-field>
+        </div>
+        <mat-form-field class="flex-auto">
+          <mat-label>Manager</mat-label>
+          <mat-select
+            [(ngModel)]="currentUserApp.contratUserApp.contratManager"
+            name="contratManager">
+            @for (contrat of adminAllContratList(); track contrat) {
+              @if (currentUserApp.id !== contrat.userApp.id) {
+                <mat-option [value]="contrat">{{
+                  contrat.userApp.nom +
+                    ' ' +
+                    contrat.userApp.prenom +
+                    ' ' +
+                    contrat.poste
+                }}</mat-option>
+              }
+            }
+          </mat-select>
+
+          <mat-icon matIconPrefix svgIcon="mat:phone"></mat-icon>
+        </mat-form-field>
+
+        <div class="flex flex-col sm:flex-row">
+          <mat-form-field class="sm:ml-4 flex-auto">
+            <mat-label>Cumul de congés par mois</mat-label>
+            <input
+              cdkFocusInitial
+              [(ngModel)]="currentUserApp.contratUserApp.nbJourCongeMois"
+              name="nbJourCongeMois"
+              type="number"
+              matInput />
+
+            <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
+          </mat-form-field>
+
+          <mat-form-field class="sm:ml-4 flex-auto">
+            <mat-label>Cumul de RTT par mois</mat-label>
+            <input
+              cdkFocusInitial
+              [(ngModel)]="currentUserApp.contratUserApp.nbJourRttMois"
+              name="nbJourRttMois"
+              type="number"
+              matInput />
+
+            <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
+          </mat-form-field>
+          <mat-form-field class="sm:ml-4 flex-auto">
+            <mat-label>Nb heures par semaines</mat-label>
+            <input
+              cdkFocusInitial
+              [(ngModel)]="currentUserApp.contratUserApp.nbHeureSemaine"
+              name="nbHeureSemaine"
+              type="number"
+              matInput />
+
+            <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
+          </mat-form-field>
+          <mat-form-field class="sm:ml-4 flex-auto">
+            <mat-label>Couleur</mat-label>
+            <input
+              matInput
+              type="color"
+              name="color"
+              [(ngModel)]="currentUserApp.contratUserApp.color"
+              (change)="refresh.next()" />
+
+            <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div>
+          <label class="mb-2 block">Demandes disponibles</label>
+          <div class="flex flex-col sm:flex-row">
+            @for (workState of workStateList; track $index) {
+              <dumb-work-state
+                [ngStyle]="{
+                  border:
+                    currentUserApp.contratUserApp.workStateAvailableList.includes(
+                      workState
+                    )
+                      ? 'solid'
+                      : ''
+                }"
+                [iconClass]="workState"
+                [workState]="{
+                  label: workState,
+                  icon: '',
+                  nbDispo: '',
+                  nbPrevision: ''
+                }"
+                (click)="selectWorkState(workState)"></dumb-work-state>
+            }
+          </div>
+        </div>
+
+        <div>
+          <label class="mb-2 block">Jours de repos</label>
+          <mat-button-toggle-group
+            name="ingredients"
+            aria-label="Ingredients"
+            [(ngModel)]="currentUserApp.contratUserApp.dayOfWeekReposList"
+            multiple>
+            <mat-button-toggle value="MONDAY"> lundi </mat-button-toggle>
+            <mat-button-toggle value="TUESDAY"> mardi </mat-button-toggle>
+            <mat-button-toggle value="WEDNESDAY"> mercredi </mat-button-toggle>
+            <mat-button-toggle value="THURSDAY"> jeudi </mat-button-toggle>
+            <mat-button-toggle value="FRIDAY"> vendredi </mat-button-toggle>
+            <mat-button-toggle value="SATURDAY"> samedi </mat-button-toggle>
+            <mat-button-toggle value="SUNDAY"> dimanche </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
       </mat-dialog-content>
 
       <mat-dialog-actions align="end">
@@ -167,6 +335,7 @@ import { AdminServerService } from '../services/admin-server.service';
     </mat-menu> `,
   standalone: true,
   imports: [
+    CommonModule,
     FormsModule,
     MatDialogModule,
     NgIf,
@@ -177,7 +346,12 @@ import { AdminServerService } from '../services/admin-server.service';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    ReactiveFormsModule
+    MatButtonModule,
+    ReactiveFormsModule,
+    WorkStateDumb,
+    MatDatepickerModule,
+    MatButtonToggleModule,
+    DatepickerDumb
   ],
   styles: [
     `
@@ -192,6 +366,39 @@ import { AdminServerService } from '../services/admin-server.service';
   ]
 })
 export class CreateUpdateUserModal implements OnInit {
+  refresh = new Subject<void>();
+  workStateList = Object.values(WORK_STATE).filter(
+    (state) =>
+      ![WORK_STATE.REPOS, WORK_STATE.TRAVAIL, WORK_STATE.HORS_CONTRAT].includes(
+        state
+      )
+  );
+
+  currentContrat: ContratUserApp = {
+    id: this.data?.userApp?.contratUserApp?.id || undefined,
+    poste: this.data?.userApp?.contratUserApp?.poste || '',
+    color: this.data?.userApp?.contratUserApp?.color || '',
+    dateBegin:
+      new Date(this.data?.userApp?.contratUserApp?.dateBegin) || new Date(),
+    dateEnd:
+      new Date(this.data?.userApp?.contratUserApp?.dateEnd) || new Date(),
+    dayOfWeekReposList:
+      this.data?.userApp?.contratUserApp?.dayOfWeekReposList || [],
+    nbJourCongeMois: this.data?.userApp?.contratUserApp?.nbJourCongeMois || 0,
+    nbJourRttMois: this.data?.userApp?.contratUserApp?.nbJourRttMois || 0,
+    nbHeureSemaine: this.data?.userApp?.contratUserApp?.nbHeureSemaine || 0,
+    contratManager:
+      this.data?.userApp?.contratUserApp?.contratManager || undefined, // Temporairement null
+    userApp: this.data?.userApp || null,
+    archived: this.data?.userApp?.contratUserApp?.archived || false,
+    workStateAvailableList:
+      this.data?.userApp?.contratUserApp?.workStateAvailableList || [],
+    compteJourConge: this.data?.userApp?.contratUserApp?.compteJourConge || 0,
+    compteJourRtt: this.data?.userApp?.contratUserApp?.compteJourRtt || 0,
+    compteJourRecup: this.data?.userApp?.contratUserApp?.compteJourRecup || 0,
+    compteJourEnfantMalade:
+      this.data?.userApp?.contratUserApp?.compteJourEnfantMalade || 0
+  };
   currentUserApp: UserApp = new UserApp({
     id: this.data?.userApp?.id || null,
     nom: this.data?.userApp?.nom || '',
@@ -200,7 +407,18 @@ export class CreateUpdateUserModal implements OnInit {
     email: this.data?.userApp?.email || '',
     telephone: this.data?.userApp?.telephone || '',
     notes: this.data?.userApp?.notes || '',
-    imageBase64: this.data?.userApp?.imageBase64 || undefined
+    imageBase64: this.data?.userApp?.imageBase64 || undefined,
+    contratUserApp: this.currentContrat
+  });
+
+  adminAllContratList = computed(() => {
+    const adminAllContratList = this.adminServer.adminAllContratList();
+    this.currentUserApp.contratUserApp.contratManager =
+      adminAllContratList.find(
+        (contrat) =>
+          contrat.id === this.data?.userApp?.contratUserApp.contratManager?.id
+      ) || undefined;
+    return adminAllContratList;
   });
 
   mode: 'create' | 'update' = 'create';
@@ -242,10 +460,26 @@ export class CreateUpdateUserModal implements OnInit {
   }
 
   ngOnInit() {
+    this.adminServer.getAllContrat();
     if (this.data?.userApp) {
       this.mode = 'update';
     } else {
       this.mode = 'create';
+    }
+  }
+
+  selectWorkState(workState: WORK_STATE): void {
+    if (
+      this.currentUserApp.contratUserApp.workStateAvailableList.includes(
+        workState
+      )
+    ) {
+      this.currentUserApp.contratUserApp.workStateAvailableList =
+        this.currentUserApp.contratUserApp.workStateAvailableList.filter(
+          (w) => w !== workState
+        );
+    } else {
+      this.currentUserApp.contratUserApp.workStateAvailableList.push(workState);
     }
   }
 
@@ -258,6 +492,7 @@ export class CreateUpdateUserModal implements OnInit {
   }
 
   createUserApp() {
+    console.log(this.currentUserApp);
     this.dialogRef.close(this.currentUserApp);
   }
 

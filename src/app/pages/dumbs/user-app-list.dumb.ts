@@ -25,12 +25,15 @@ import {
   UntypedFormControl
 } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import {
+  MatCheckboxChange,
+  MatCheckboxModule
+} from '@angular/material/checkbox';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { CommonModule, NgClass, NgFor, NgIf } from '@angular/common';
 import { VexPageLayoutContentDirective } from '@vex/components/vex-page-layout/vex-page-layout-content.directive';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { VexPageLayoutComponent } from '@vex/components/vex-page-layout/vex-page-layout.component';
@@ -110,19 +113,11 @@ import { MatSelectModule } from '@angular/material/select';
 
             <!-- Checkbox Column -->
             <ng-container matColumnDef="checkbox">
-              <th *matHeaderCellDef mat-header-cell>
-                <mat-checkbox
-                  (change)="$event ? masterToggle() : null"
-                  [checked]="selection.hasValue() && isAllSelected()"
-                  [indeterminate]="selection.hasValue() && !isAllSelected()"
-                  color="primary">
-                </mat-checkbox>
-              </th>
+              <th *matHeaderCellDef mat-header-cell></th>
               <td *matCellDef="let row" class="w-4" mat-cell>
                 <mat-checkbox
-                  (change)="$event ? selection.toggle(row) : null"
-                  (click)="$event.stopPropagation()"
-                  [checked]="selection.isSelected(row)"
+                  (change)="selectRow($event, row)"
+                  [checked]="selectedUser?.id === row.id"
                   color="primary">
                 </mat-checkbox>
               </td>
@@ -156,6 +151,28 @@ import { MatSelectModule } from '@angular/material/select';
                   [ngClass]="column.cssClasses"
                   mat-cell>
                   {{ row[column.property] }}
+                </td>
+              </ng-container>
+              <ng-container
+                *ngIf="column.type === 'date'"
+                [matColumnDef]="column.property">
+                <th
+                  *matHeaderCellDef
+                  class="uppercase"
+                  mat-header-cell
+                  mat-sort-header>
+                  {{ column.label }}
+                </th>
+                <td
+                  *matCellDef="let row"
+                  [ngClass]="column.cssClasses"
+                  mat-cell>
+                  @if (row.contratUserApp) {
+                    {{
+                      row.contratUserApp[column.property]
+                        | date: 'dd/MM/yyyy' : '' : 'fr'
+                    }}
+                  }
                 </td>
               </ng-container>
             </ng-container>
@@ -251,11 +268,15 @@ import { MatSelectModule } from '@angular/material/select';
             </ng-container>
 
             <tr *matHeaderRowDef="visibleColumns" mat-header-row></tr>
+
+            <ng-content></ng-content>
             <tr
               *matRowDef="let row; columns: visibleColumns"
               @fadeInUp
               class="hover:bg-hover transition duration-400 ease-out-swift cursor-pointer"
               mat-row></tr>
+
+            <!-- Insère ici le contenu passé -->
           </table>
         </div>
       </vex-page-layout-content>
@@ -297,6 +318,7 @@ import { MatSelectModule } from '@angular/material/select';
   animations: [fadeInUp400ms, stagger40ms],
   standalone: true,
   imports: [
+    CommonModule,
     VexPageLayoutComponent,
     MatButtonToggleModule,
     ReactiveFormsModule,
@@ -321,9 +343,29 @@ import { MatSelectModule } from '@angular/material/select';
 export class UserListDumb implements AfterViewInit {
   columns: TableColumn<UserApp>[] = [
     {
+      label: 'Checkbox',
+      property: 'checkbox',
+      type: 'checkbox',
+      visible: true
+    },
+    {
       label: 'Nom Prénom',
       property: 'nomPrenom',
       type: 'text',
+      visible: true,
+      cssClasses: ['font-medium']
+    },
+    {
+      label: 'Date de début',
+      property: 'dateBegin',
+      type: 'date',
+      visible: true,
+      cssClasses: ['font-medium']
+    },
+    {
+      label: 'Date de fin',
+      property: 'dateEnd',
+      type: 'date',
       visible: true,
       cssClasses: ['font-medium']
     },
@@ -361,7 +403,17 @@ export class UserListDumb implements AfterViewInit {
   @Output() createUserModal = new EventEmitter<void>();
   @Output() updateUserModal = new EventEmitter<UserApp>();
   @Output() changeEnabled = new EventEmitter<UserApp>();
+  @Output() selectContrat = new EventEmitter<UserApp>();
 
+  selectedUser: UserApp | undefined = undefined;
+  selectRow(event: MatCheckboxChange, row: UserApp): void {
+    if (event.checked) {
+      this.selectedUser = row;
+    } else {
+      this.selectedUser = undefined;
+    }
+    this.selectContrat.emit(this.selectedUser);
+  }
   changeEnabledOutput(userApp: UserApp): void {
     this.changeEnabled.emit(userApp);
   }

@@ -172,8 +172,11 @@ export class AdminEffectService {
         )
       )
     ];
+    console.log('dateStrList', dateStrList);
+    console.log('idContrat', idContrat);
     this.adminRepo.getRecapContrat(dateStrList, idContrat + '').subscribe(
       (recapListCurrentContrat) => {
+        console.log('recapListCurrentContrat', recapListCurrentContrat);
         this.utils.changeIsLoading(false);
         this.adminStore.recapListCurrentContrat.set(
           recapListCurrentContrat.map((recapCurrentContrat) => ({
@@ -403,6 +406,7 @@ export class AdminEffectService {
     this.utils.changeIsLoading(true);
     this.adminRepo.getDayAppListByContratId(idContrat).subscribe(
       (dayAppList) => {
+        console.log('dayAppList', dayAppList);
         this.utils.changeIsLoading(false);
         if (dayAppList.length > 0) {
           this.adminStore.dayAppList.set(
@@ -455,6 +459,7 @@ export class AdminEffectService {
     );
   }
   getCalendarDayAppListByContrat(selectedContrat: ContratUserApp | undefined) {
+    console.log('selectedContrat', selectedContrat);
     if (selectedContrat) {
       this.adminStore.calendarViewDate.set(selectedContrat.dateBegin);
       this.getDayAppListByContratId(selectedContrat.id + '');
@@ -540,7 +545,18 @@ export class AdminEffectService {
     this.adminRepo.createUserApp(userApp).subscribe(
       (userAppList) => {
         this.utils.changeIsLoading(false);
-        this.adminStore.userAppList.set(userAppList.map((u) => new UserApp(u)));
+        this.adminStore.userAppList.set(
+          userAppList.map((u) => {
+            const userApp = new UserApp(u);
+            (userApp.contratUserApp.dateBegin = this.utils.getStart(
+              userApp.contratUserApp.dateBegin
+            )),
+              (userApp.contratUserApp.dateEnd = this.utils.getEnd(
+                userApp.contratUserApp.dateEnd
+              ));
+            return userApp;
+          })
+        );
       },
       (error) => {
         this.utils.changeIsLoading(false);
@@ -559,7 +575,18 @@ export class AdminEffectService {
     this.adminRepo.updateUserApp(userApp).subscribe(
       (userAppList) => {
         this.utils.changeIsLoading(false);
-        this.adminStore.userAppList.set(userAppList.map((u) => new UserApp(u)));
+        this.adminStore.userAppList.set(
+          userAppList.map((u) => {
+            const userApp = new UserApp(u);
+            (userApp.contratUserApp.dateBegin = this.utils.getStart(
+              userApp.contratUserApp.dateBegin
+            )),
+              (userApp.contratUserApp.dateEnd = this.utils.getEnd(
+                userApp.contratUserApp.dateEnd
+              ));
+            return userApp;
+          })
+        );
       },
       (error) => {
         this.utils.changeIsLoading(false);
@@ -582,7 +609,18 @@ export class AdminEffectService {
     this.adminRepo.getUserAppList().subscribe(
       (userAppList) => {
         this.utils.changeIsLoading(false);
-        this.adminStore.userAppList.set(userAppList.map((u) => new UserApp(u)));
+        this.adminStore.userAppList.set(
+          userAppList.map((u) => {
+            const userApp = new UserApp(u);
+            (userApp.contratUserApp.dateBegin = this.utils.getStart(
+              userApp.contratUserApp.dateBegin ?? new Date()
+            )),
+              (userApp.contratUserApp.dateEnd = this.utils.getEnd(
+                userApp.contratUserApp.dateEnd ?? new Date()
+              ));
+            return userApp;
+          })
+        );
       },
       (error) => {
         this.utils.changeIsLoading(false);

@@ -2,17 +2,18 @@ import {
   Component,
   computed,
   effect,
+  Input,
   signal,
   WritableSignal
 } from '@angular/core';
 import { fr } from 'date-fns/locale';
-import { UserApp } from '../../models/user.model';
+import { UserApp } from '../../../models/user.model';
 import { ActivatedRoute } from '@angular/router';
-import { ContratListDumb } from '../dumbs/contrat-list.dumb';
-import { ContratUserApp } from '../../models/contrat-employe.model';
-import { AdminServerService } from './services/admin-server.service';
-import { CalendarDumb } from '../dumbs/calendar/calendar.dumb';
-import { DayLineDumb } from '../dumbs/day-line.dumb';
+import { ContratListDumb } from '../../dumbs/contrat-list.dumb';
+import { ContratUserApp } from '../../../models/contrat-employe.model';
+import { AdminServerService } from '../services/admin-server.service';
+import { CalendarDumb } from '../../dumbs/calendar/calendar.dumb';
+import { DayLineDumb } from '../../dumbs/day-line.dumb';
 import {
   addDays,
   addMonths,
@@ -23,58 +24,43 @@ import {
   subDays,
   subMonths
 } from 'date-fns';
-import { CalendarNavDumb } from '../dumbs/calendar/calendar-nav.dumb';
+import { CalendarNavDumb } from '../../dumbs/calendar/calendar-nav.dumb';
 import { CalendarEvent } from 'angular-calendar';
-import { MonthLineRecapDumb } from '../dumbs/month-line-recap.dumb';
+import { MonthLineRecapDumb } from '../../dumbs/month-line-recap.dumb';
 import { MatIconModule } from '@angular/material/icon';
 import Swal from 'sweetalert2';
-import { NavMonthDumb } from '../dumbs/nav-month.dumb';
+import { NavMonthDumb } from '../../dumbs/nav-month.dumb';
 
 @Component({
-  template: `<dumb-contrat-list
-      [title]="'Contrat(s) actif(s)'"
-      (createContratModal)="createContratModal()"
-      (updateContratModal)="updateContratModal($event)"
-      (archiveUnarchive)="archiveUnarchiveContrat($event)"
-      [contratEmployeList]="adminContratList()"
-      [userApp]="currentUserApp()"
-      (selectedContratOutput)="selectContrat($event)"></dumb-contrat-list>
-    <hr />
-    @if (selectedContrat()) {
-      <div class="container">
-        <dumb-nav-month
-          [currentDate]="viewDate()"
-          [currentContrat]="selectedContrat()"
-          [nbHeures]="nbHeures() ?? []"
-          (currentDateChange)="calendarViewDateChange($event)"></dumb-nav-month>
+  selector: 'smart-admin-contrat',
+  template: `
+    <div class="container">
+      <dumb-nav-month
+        [currentDate]="viewDate()"
+        [currentContrat]="selectedContrat()"
+        [nbHeures]="nbHeures() ?? []"
+        (currentDateChange)="calendarViewDateChange($event)"></dumb-nav-month>
 
-        <dumb-month-line-recap
-          [recapMonthList]="recapListCurrentContrat()"
-          [selectedDays]="selectedDays() ?? []"></dumb-month-line-recap>
-        <dumb-calendar-nav
-          [viewDate]="viewDate()"
-          [canCopyWeek]="true"
-          (viewDateOutput)="calendarViewDateChange($event)"
-          (copyWeekDateOutput)="copyPasteWeek($event)"></dumb-calendar-nav>
-        <app-calendar
-          [canCreate]="true"
-          [viewDate]="viewDate()"
-          [events]="eventList()"
-          [selectedDays]="selectedDays() ?? []"
-          (createEventOutput)="createEvent($event)"
-          (deleteEventOutput)="deleteEvent($event)"></app-calendar>
-      </div>
-    }
-
-    <dumb-contrat-list
-      [title]="'Contrat(s) archivé(s)'"
-      [contratEmployeList]="adminContratListArchived()"
-      (archiveUnarchive)="archiveUnarchiveContrat($event)"
-      [userApp]="currentUserApp()"></dumb-contrat-list>`,
+      <dumb-month-line-recap
+        [recapMonthList]="recapListCurrentContrat()"
+        [selectedDays]="selectedDays() ?? []"></dumb-month-line-recap>
+      <dumb-calendar-nav
+        [viewDate]="viewDate()"
+        [canCopyWeek]="true"
+        (viewDateOutput)="calendarViewDateChange($event)"
+        (copyWeekDateOutput)="copyPasteWeek($event)"></dumb-calendar-nav>
+      <app-calendar
+        [canCreate]="true"
+        [viewDate]="viewDate()"
+        [events]="eventList()"
+        [selectedDays]="selectedDays() ?? []"
+        (createEventOutput)="createEvent($event)"
+        (deleteEventOutput)="deleteEvent($event)"></app-calendar>
+    </div>
+  `,
   animations: [],
   standalone: true,
   imports: [
-    ContratListDumb,
     MatIconModule,
     CalendarDumb,
     MonthLineRecapDumb,
@@ -82,7 +68,11 @@ import { NavMonthDumb } from '../dumbs/nav-month.dumb';
     NavMonthDumb
   ]
 })
-export class AdminContratsPage {
+export class AdminContratSmart {
+  @Input() set currentContrat(value: ContratUserApp | undefined) {
+    console.log(value);
+    this.selectedContrat.set(value);
+  }
   selectedContrat: WritableSignal<ContratUserApp | undefined> =
     signal(undefined);
   viewDate: WritableSignal<Date> = signal(
@@ -174,30 +164,12 @@ export class AdminContratsPage {
   idUserApp: WritableSignal<string | undefined> = signal(undefined);
   adminContratList = this.adminServer.adminContratList;
   adminContratListArchived = this.adminServer.adminContratListArchived;
-  ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
-      const idUserApp = params.get('idUserApp');
-      if (idUserApp) {
-        this.idUserApp.set(idUserApp);
-        this.selectedContrat.set(undefined);
-      }
-    });
-  }
+
   selectContrat(contrat: ContratUserApp | undefined) {
     this.selectedContrat.set(contrat);
   }
   archiveUnarchiveContrat(contrat: ContratUserApp) {
     this.adminServer.archiveUnarchiveContrat(contrat);
-  }
-  createContratModal(): void {
-    const currentUserApp = this.currentUserApp();
-    if (currentUserApp) {
-      this.adminServer.createContratModal(currentUserApp);
-    }
-  }
-
-  updateContratModal(contrat: ContratUserApp) {
-    this.adminServer.updateContratModal(contrat);
   }
 
   constructor(
@@ -206,26 +178,14 @@ export class AdminContratsPage {
   ) {
     effect(
       () => {
-        const idUserApp = this.idUserApp();
-        const userAppList = this.adminServer.userAppList();
-        if (idUserApp && userAppList.length > 0) {
-          this.currentUserApp.set(
-            userAppList.find((u) => u.id === Number(idUserApp))
-          );
-          this.adminServer.getContratListByUserId(idUserApp);
-        }
-      },
-      { allowSignalWrites: true }
-    );
-
-    effect(
-      () => {
+        console.log('1');
         this.adminServer.getCalendarDayAppListByContrat(this.selectedContrat());
       },
       { allowSignalWrites: true }
     );
     effect(
       () => {
+        console.log('2');
         const viewDate = this.viewDate();
 
         const idContrat = this.selectedContrat()?.id;

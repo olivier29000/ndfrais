@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ContratUserApp } from 'src/app/models/contrat-employe.model';
 import { DayApp } from 'src/app/models/day-app.model';
 import { DayLineDumb } from './day-line.dumb';
-import { addMonths, startOfWeek, subMonths } from 'date-fns';
+import { addMonths, endOfWeek, format, startOfWeek, subMonths } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { MatIconModule } from '@angular/material/icon';
 @Component({
@@ -16,7 +16,18 @@ import { MatIconModule } from '@angular/material/icon';
         [disabled]="!canPreviousMonth">
         <mat-icon svgIcon="mat:arrow_back_ios"></mat-icon>
       </button>
-      <h2>{{ currentDate | date: 'MMM yyyy' : '' : 'fr' }}</h2>
+      @for (month of currentMonthList; track $index) {
+        <div class="card flex items-center mt-3 px-2 mx-2">
+          <div class="flex-auto  items-center justify-center">
+            <h2>{{ month }}</h2>
+            @if (nbHeures && nbHeures.length > $index) {
+              <h4 class="body-2 m-0 leading-snug items-center justify-center">
+                Mois : {{ nbHeures[$index] }}h
+              </h4>
+            }
+          </div>
+        </div>
+      }
 
       <button mat-icon-button (click)="nextMonth()" [disabled]="!canNextMonth">
         <mat-icon svgIcon="mat:arrow_forward_ios"></mat-icon>
@@ -31,8 +42,18 @@ export class NavMonthDumb {
   canPreviousMonth!: boolean;
   canNextMonth!: boolean;
   _currentDate!: Date;
+  currentMonthList!: string[];
+  @Input() nbHeures!: number[];
   @Input() set currentDate(value: Date) {
     this._currentDate = value;
+    this.currentMonthList = [
+      ...new Set(
+        [
+          startOfWeek(value, { locale: fr }),
+          endOfWeek(value, { locale: fr })
+        ].map((d) => format(d, 'MMM yyyy', { locale: fr }))
+      )
+    ];
     this.getCanPreviousAndNextMonth();
   }
   get currentDate(): Date {

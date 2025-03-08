@@ -215,6 +215,11 @@ export class AdminRepoService {
   }
 
   createUserApp(userApp: UserApp): Observable<UserApp[]> {
+    userApp.contratUserApp = {
+      ...userApp.contratUserApp,
+      dateBegin: this.utils.getDateUTC(userApp.contratUserApp.dateBegin),
+      dateEnd: this.utils.getDateUTC(userApp.contratUserApp.dateEnd)
+    };
     return this.http
       .post<
         UserApp[]
@@ -223,6 +228,11 @@ export class AdminRepoService {
   }
 
   updateUserApp(userApp: UserApp): Observable<UserApp[]> {
+    userApp.contratUserApp = {
+      ...userApp.contratUserApp,
+      dateBegin: this.utils.getDateUTC(userApp.contratUserApp.dateBegin),
+      dateEnd: this.utils.getDateUTC(userApp.contratUserApp.dateEnd)
+    };
     return this.http
       .post<
         UserApp[]

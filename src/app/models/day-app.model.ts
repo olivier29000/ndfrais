@@ -20,7 +20,6 @@ export interface WorkStateAction {
 export enum WORK_STATE {
   HORS_CONTRAT = 'HORS_CONTRAT',
   TRAVAIL = 'TRAVAIL',
-  TELETRAVAIL = 'TELETRAVAIL',
   CONGE = 'CONGE',
   RTT = 'RTT',
   RECUP = 'RECUP',

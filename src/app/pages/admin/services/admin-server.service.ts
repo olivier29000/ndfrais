@@ -79,6 +79,7 @@ export class AdminServerService {
     this.adminEffect.getAllEventByContratIdAndPeriod(start, end, contratId);
   }
   getRecapContrat(date: Date, idContrat: number): void {
+    console.log('idContrat', idContrat);
     this.adminEffect.getRecapContrat(date, idContrat);
   }
   openCreateEventModal(event: CalendarEvent, contratId: string) {
@@ -201,7 +202,7 @@ export class AdminServerService {
   getCalendarDayAppListByContrat(selectedContrat: ContratUserApp | undefined) {
     this.adminEffect.getCalendarDayAppListByContrat(selectedContrat);
   }
-
+  selectedContrat = this.adminStore.selectedContrat;
   getAllContrat(): void {
     this.adminEffect.getAllContrat();
   }
