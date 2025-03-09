@@ -15,16 +15,8 @@ import { ContratUserApp } from 'src/app/models/contrat-employe.model';
       (selectContrat)="selectContrat($event)"
       [title]="'Utilisateurs actifs'"
       [userAppList]="userAppList()">
-      <tr>
-        <td colspan="5" class="text-center text-gray-500">
-          Ceci est un contenu personnalisé entre l'en-tête et les lignes
-        </td>
-      </tr>
     </dumb-user-app-list>
-    @if (selectedContrat()) {
-      <smart-admin-contrat
-        [currentContrat]="selectedContrat()"></smart-admin-contrat>
-    }
+
     <hr />
 
     <dumb-user-app-list
@@ -35,12 +27,11 @@ import { ContratUserApp } from 'src/app/models/contrat-employe.model';
   `,
   animations: [],
   standalone: true,
-  imports: [UserListDumb, AdminContratSmart]
+  imports: [UserListDumb]
 })
 export class AdminUsersPage implements OnInit {
   userAppList = this.adminServer.userAppList;
   userAppListArchived = this.adminServer.userAppListArchived;
-  selectedContrat = this.adminServer.selectedContrat;
   createUserModal(): void {
     this.adminServer.createUser();
   }
@@ -53,9 +44,13 @@ export class AdminUsersPage implements OnInit {
     this.adminServer.changeEnabled(userApp);
   }
 
-  selectContrat(userApp: UserApp) {
-    console.log(userApp);
-    this.adminServer.selectedContrat.set(userApp.contratUserApp);
+  selectContrat(userApp: UserApp | undefined) {
+    if (userApp) {
+      this.adminServer.selectedContrat.set(userApp.contratUserApp);
+      this.adminServer.openPlanningUserModal();
+    } else {
+      this.adminServer.selectedContrat.set(undefined);
+    }
   }
 
   constructor(private adminServer: AdminServerService) {}

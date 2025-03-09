@@ -27,6 +27,7 @@ import { fr } from 'date-fns/locale';
 import { of } from 'rxjs';
 import { Abonnement, Role } from 'src/app/models/user-connected.model';
 import Swal from 'sweetalert2';
+import { PlanningUserModal } from '../modals/planning-user.modal';
 
 @Injectable({
   providedIn: 'root'
@@ -82,6 +83,12 @@ export class AdminEffectService {
         });
       }
     );
+  }
+  openPlanningUserModal(): void {
+    this.dialog.open(PlanningUserModal, {
+      width: '90%',
+      maxWidth: '1200px'
+    });
   }
   sendEmailContact(contact: string): void {
     this.adminRepo.sendEmailContact(contact).subscribe(

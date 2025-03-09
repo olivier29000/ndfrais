@@ -101,7 +101,7 @@ import { MatSelectModule } from '@angular/material/select';
               <mat-icon svgIcon="mat:add"></mat-icon>
             </button>
           </div>
-
+          <ng-content></ng-content>
           <table
             @stagger
             [dataSource]="dataSource"
@@ -110,18 +110,6 @@ import { MatSelectModule } from '@angular/material/select';
             matSort>
             <!--- Note that these columns can be defined in any order.
                 The actual rendered columns are set as a property on the row definition" -->
-
-            <!-- Checkbox Column -->
-            <ng-container matColumnDef="checkbox">
-              <th *matHeaderCellDef mat-header-cell></th>
-              <td *matCellDef="let row" class="w-4" mat-cell>
-                <mat-checkbox
-                  (change)="selectRow($event, row)"
-                  [checked]="selectedUser?.id === row.id"
-                  color="primary">
-                </mat-checkbox>
-              </td>
-            </ng-container>
 
             <!-- Image Column -->
             <ng-container matColumnDef="image">
@@ -269,7 +257,6 @@ import { MatSelectModule } from '@angular/material/select';
 
             <tr *matHeaderRowDef="visibleColumns" mat-header-row></tr>
 
-            <ng-content></ng-content>
             <tr
               *matRowDef="let row; columns: visibleColumns"
               @fadeInUp
@@ -299,6 +286,10 @@ import { MatSelectModule } from '@angular/material/select';
     <mat-menu #actionsMenu="matMenu" xPosition="before" yPosition="below">
       <ng-template let-UserApp="UserApp" matMenuContent>
         @if (UserApp.enabled) {
+          <button mat-menu-item (click)="selectRow(UserApp)">
+            <mat-icon svgIcon="mat:remove_red_eye"></mat-icon>
+            <span>Voir</span>
+          </button>
           <button mat-menu-item (click)="updateUserModalOutput(UserApp)">
             <mat-icon svgIcon="mat:edit"></mat-icon>
             <span>Modifier</span>
@@ -342,12 +333,6 @@ import { MatSelectModule } from '@angular/material/select';
 })
 export class UserListDumb implements AfterViewInit {
   columns: TableColumn<UserApp>[] = [
-    {
-      label: 'Checkbox',
-      property: 'checkbox',
-      type: 'checkbox',
-      visible: true
-    },
     {
       label: 'Nom Prénom',
       property: 'nomPrenom',
@@ -406,12 +391,8 @@ export class UserListDumb implements AfterViewInit {
   @Output() selectContrat = new EventEmitter<UserApp>();
 
   selectedUser: UserApp | undefined = undefined;
-  selectRow(event: MatCheckboxChange, row: UserApp): void {
-    if (event.checked) {
-      this.selectedUser = row;
-    } else {
-      this.selectedUser = undefined;
-    }
+  selectRow(row: UserApp): void {
+    this.selectedUser = row;
     this.selectContrat.emit(this.selectedUser);
   }
   changeEnabledOutput(userApp: UserApp): void {

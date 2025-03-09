@@ -53,6 +53,9 @@ export class AdminServerService {
       { allowSignalWrites: true }
     );
   }
+  openPlanningUserModal(): void {
+    this.adminEffect.openPlanningUserModal();
+  }
   recapListCurrentContrat = this.adminStore.recapListCurrentContrat;
   copyPasteWeek(dateToCopy: Date, dateToPaste: Date, idContrat: string): void {
     this.adminEffect.copyPasteWeek(dateToCopy, dateToPaste, idContrat);
