@@ -50,9 +50,10 @@ export class CustomDateFormats {
             : day.workState
         "
         (click)="clickDayOutput(day)"></div>
-      <div class="day-text text-center" (click)="clickDayOutput(day)">
+      <div class="day-text text-center " (click)="clickDayOutput(day)">
         <h2 class="">{{ day.date.getDate() }}</h2>
         <p>{{ day.date | date: 'EEE' : '' : 'fr' | slice: 0 : 2 }}</p>
+        <h3>{{ day.nbHours }}h</h3>
       </div>
       @if (isLastSelected) {
         <button
@@ -130,7 +131,7 @@ export class CustomDateFormats {
       .day-square {
         position: relative; /* Nécessaire pour que les enfants en absolute soient positionnés par rapport à ce div */
         width: 40px;
-        height: 40px;
+        height: 50px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -181,7 +182,7 @@ export class CustomDateFormats {
         position: absolute;
         top: 10px;
         width: 40px;
-        height: 40px;
+        height: 50px;
         border: thin solid;
       }
 
@@ -199,9 +200,16 @@ export class CustomDateFormats {
       }
       p {
         font-size: 0.7rem;
-        line-height: 5px;
+        line-height: 10px;
+      }
+      h3 {
+        margin-top: 5px;
+        font-size: 0.9rem;
+        line-height: 10px;
       }
       h2 {
+        margin-top: 10px;
+        line-height: 20px;
         font-size: 1.1rem; /* Ajuste la taille du texte */
         font-weight: bold;
       }
@@ -235,8 +243,6 @@ export class DaySquareDumb {
     this.validPeriod.emit();
   }
   clickDayOutput(day: DayApp): void {
-    if (!day.actionDay && day.workState === WORK_STATE.TRAVAIL) {
-      this.clickDay.emit();
-    }
+    this.clickDay.emit();
   }
 }

@@ -58,7 +58,6 @@ export class UserEffectService {
       )
       .subscribe(
         (recapByContratDayAppList) => {
-          console.log('recapByContratDayAppList', recapByContratDayAppList);
           this.utils.changeIsLoading(false);
           this.userStore.recapByContratDayAppList.set(
             recapByContratDayAppList.map((recapByContratDayApp) => ({

@@ -17,6 +17,7 @@ import { DayLineDumb } from '../../dumbs/day-line.dumb';
 import {
   addDays,
   addMonths,
+  eachDayOfInterval,
   endOfWeek,
   format,
   isSameWeek,
@@ -30,6 +31,7 @@ import { MonthLineRecapDumb } from '../../dumbs/month-line-recap.dumb';
 import { MatIconModule } from '@angular/material/icon';
 import Swal from 'sweetalert2';
 import { NavMonthDumb } from '../../dumbs/nav-month.dumb';
+import { DayApp, WEEK_STATE, WORK_STATE } from 'src/app/models/day-app.model';
 
 @Component({
   selector: 'smart-admin-contrat',
@@ -43,7 +45,8 @@ import { NavMonthDumb } from '../../dumbs/nav-month.dumb';
 
       <dumb-month-line-recap
         [recapMonthList]="recapListCurrentContrat()"
-        [selectedDays]="selectedDays() ?? []"></dumb-month-line-recap>
+        [selectedDays]="selectedDays() ?? []"
+        (selectDayAppOutput)="selectDayApp($event)"></dumb-month-line-recap>
       <dumb-calendar-nav
         [viewDate]="viewDate()"
         [canCopyWeek]="true"
@@ -70,7 +73,6 @@ import { NavMonthDumb } from '../../dumbs/nav-month.dumb';
 })
 export class AdminContratSmart {
   @Input() set currentContrat(value: ContratUserApp | undefined) {
-    console.log(value);
     this.selectedContrat.set(value);
   }
   selectedContrat: WritableSignal<ContratUserApp | undefined> =
@@ -78,6 +80,9 @@ export class AdminContratSmart {
   viewDate: WritableSignal<Date> = signal(
     startOfWeek(new Date(), { locale: fr })
   );
+  selectDayApp(dayApp: DayApp): void {
+    this.calendarViewDateChange(dayApp.date);
+  }
   calendarViewDateChange(date: Date) {
     const selectedContrat = this.selectedContrat();
     if (
@@ -153,11 +158,35 @@ export class AdminContratSmart {
   nbHeures = computed(() =>
     this.adminServer.recapListCurrentContrat()?.map((r) => r.nbHours)
   );
-  selectedDays = computed(() =>
-    this.recapListCurrentContrat()
+  selectedDays = computed(() => {
+    const selectedDays = this.recapListCurrentContrat()
       ?.flatMap((recap) => recap.dayAppList)
-      .filter((d) => isSameWeek(d.date, this.viewDate(), { locale: fr }))
-  );
+      .filter((d) => isSameWeek(d.date, this.viewDate(), { locale: fr }));
+    if (selectedDays?.length === 7) {
+      return selectedDays;
+    } else {
+      const dayListWeek: DayApp[] = eachDayOfInterval({
+        start: startOfWeek(this.viewDate(), { locale: fr }),
+        end: endOfWeek(this.viewDate(), { locale: fr })
+      }).map((day) => ({
+        id: -1,
+        date: day,
+        weekState: WEEK_STATE.NORMAL,
+        workState: WORK_STATE.HORS_CONTRAT
+      }));
+      return dayListWeek.reduce((acc, day) => {
+        const d = (selectedDays ?? []).find(
+          (sd) => sd.date.getDate() === day.date.getDate()
+        );
+        if (d) {
+          acc.push(d);
+        } else {
+          acc.push(day);
+        }
+        return acc;
+      }, [] as DayApp[]);
+    }
+  });
   eventList = this.adminServer.eventList;
 
   currentUserApp: WritableSignal<UserApp | undefined> = signal(undefined);
@@ -178,14 +207,12 @@ export class AdminContratSmart {
   ) {
     effect(
       () => {
-        console.log('1');
         this.adminServer.getCalendarDayAppListByContrat(this.selectedContrat());
       },
       { allowSignalWrites: true }
     );
     effect(
       () => {
-        console.log('2');
         const viewDate = this.viewDate();
 
         const idContrat = this.selectedContrat()?.id;

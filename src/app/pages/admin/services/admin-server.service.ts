@@ -82,7 +82,6 @@ export class AdminServerService {
     this.adminEffect.getAllEventByContratIdAndPeriod(start, end, contratId);
   }
   getRecapContrat(date: Date, idContrat: number): void {
-    console.log('idContrat', idContrat);
     this.adminEffect.getRecapContrat(date, idContrat);
   }
   openCreateEventModal(event: CalendarEvent, contratId: string) {

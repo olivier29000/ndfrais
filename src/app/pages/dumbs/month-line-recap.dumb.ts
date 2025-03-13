@@ -6,28 +6,31 @@ import { DayLineDumb } from './day-line.dumb';
 @Component({
   selector: 'dumb-month-line-recap',
   template: `@for (recapMonth of recapMonthList; track recapMonth) {
-    <div class="flex">
-      <div class="card flex items-center mt-3 px-2" style="width:130px">
-        <div class="flex-auto">
-          <h4 class="body-2 m-0 leading-snug">
-            {{ recapMonth.contrat.poste }}
-          </h4>
-          <h5 class="text-secondary m-0 caption leading-none">
-            {{ recapMonth.contrat.userApp.nom }}
-            {{ recapMonth.contrat.userApp.prenom }}
-          </h5>
+    @if (recapMonth.dayAppList.length > 0) {
+      <div class="flex">
+        <div class="card flex items-center mt-3 px-2" style="width:130px">
+          <div class="flex-auto">
+            <h4 class="body-2 m-0 leading-snug">
+              {{ recapMonth.contrat.poste }}
+            </h4>
+            <h5 class="text-secondary m-0 caption leading-none">
+              {{ recapMonth.contrat.userApp.nom }}
+              {{ recapMonth.contrat.userApp.prenom }}
+            </h5>
 
-          <h4 class="body-2 m-0 leading-snug">
-            Mois : {{ recapMonth.nbHours }}h
-          </h4>
+            <h4 class="body-2 m-0 leading-snug">
+              Mois : {{ recapMonth.nbHours }}h
+            </h4>
+          </div>
         </div>
+        <dumb-day-line
+          (cancelLastOutput)="cancelLast($event)"
+          (selectDayAppOutput)="selectDayApp($event)"
+          (validLastOutput)="validLast($event)"
+          [dayAppList]="recapMonth.dayAppList"
+          [underlinedDayAppList]="selectedDays"></dumb-day-line>
       </div>
-      <dumb-day-line
-        (cancelLastOutput)="cancelLast($event)"
-        (validLastOutput)="validLast($event)"
-        [dayAppList]="recapMonth.dayAppList"
-        [underlinedDayAppList]="selectedDays"></dumb-day-line>
-    </div>
+    }
   } `,
   styles: [``],
   standalone: true,
@@ -44,10 +47,15 @@ export class MonthLineRecapDumb {
   @Input() selectedDays: DayApp[] = [];
   @Output() cancelLastOutput = new EventEmitter<DayApp>();
   @Output() validLastOutput = new EventEmitter<DayApp>();
+  @Output() selectDayAppOutput = new EventEmitter<DayApp>();
+
   cancelLast(day: DayApp): void {
     this.cancelLastOutput.emit(day);
   }
   validLast(day: DayApp): void {
     this.validLastOutput.emit(day);
+  }
+  selectDayApp(day: DayApp): void {
+    this.selectDayAppOutput.emit(day);
   }
 }

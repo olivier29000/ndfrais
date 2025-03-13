@@ -492,7 +492,6 @@ export class CreateUpdateUserModal implements OnInit {
   }
 
   createUserApp() {
-    console.log(this.currentUserApp);
     this.dialogRef.close(this.currentUserApp);
   }
 

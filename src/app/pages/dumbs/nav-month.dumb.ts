@@ -76,7 +76,6 @@ export class NavMonthDumb {
   }
   getCanPreviousAndNextMonth(): void {
     if (this.currentContrat && this.currentDate) {
-      console.log('1');
       this.canPreviousMonth =
         subMonths(this.currentDate, 1).getTime() >
         this.currentContrat.dateBegin.getTime();
@@ -84,12 +83,9 @@ export class NavMonthDumb {
         addMonths(this.currentDate, 1).getTime() <
         this.currentContrat.dateEnd.getTime();
     } else {
-      console.log('2');
       this.canNextMonth = false;
       this.canPreviousMonth = false;
     }
-    console.log('this.canPreviousMonth', this.canPreviousMonth);
-    console.log('this.canNextMonth', this.canNextMonth);
   }
   nextMonth(): void {
     this.currentDateChange.emit(

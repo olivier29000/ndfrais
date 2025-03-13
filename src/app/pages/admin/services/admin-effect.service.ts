@@ -44,7 +44,6 @@ export class AdminEffectService {
       () => {
         const userConnected = this.utils.userConnected();
         const currentDateRecap = this.adminStore.currentDateRecap();
-        console.log(userConnected);
         if (
           userConnected?.roleList.includes(Role.ROLE_ADMIN) &&
           currentDateRecap
@@ -138,7 +137,6 @@ export class AdminEffectService {
         }, [] as number[])
       )
       .subscribe((eventList) => {
-        console.log(eventList);
         this.adminStore.eventList.set(
           eventList.map((event) => ({
             ...event,
@@ -179,11 +177,8 @@ export class AdminEffectService {
         )
       )
     ];
-    console.log('dateStrList', dateStrList);
-    console.log('idContrat', idContrat);
     this.adminRepo.getRecapContrat(dateStrList, idContrat + '').subscribe(
       (recapListCurrentContrat) => {
-        console.log('recapListCurrentContrat', recapListCurrentContrat);
         this.utils.changeIsLoading(false);
         this.adminStore.recapListCurrentContrat.set(
           recapListCurrentContrat.map((recapCurrentContrat) => ({
@@ -219,15 +214,17 @@ export class AdminEffectService {
   }
 
   deleteEvent(event: CalendarEvent, contratId: string) {
-    this.adminRepo
-      .deleteEvent(event)
-      .subscribe(() =>
-        this.getAllEventByContratIdAndPeriod(
-          startOfWeek(event.start, { locale: fr }),
-          endOfWeek(event.start, { locale: fr }),
-          contratId
-        )
+    this.adminRepo.deleteEvent(event).subscribe(() => {
+      this.getAllEventByContratIdAndPeriod(
+        startOfWeek(event.start, { locale: fr }),
+        endOfWeek(event.start, { locale: fr }),
+        contratId
       );
+      this.getRecapContrat(
+        startOfWeek(event.start, { locale: fr }),
+        Number(contratId)
+      );
+    });
   }
 
   createNewEvent(event: CalendarEvent, contratId: string): void {
@@ -413,7 +410,6 @@ export class AdminEffectService {
     this.utils.changeIsLoading(true);
     this.adminRepo.getDayAppListByContratId(idContrat).subscribe(
       (dayAppList) => {
-        console.log('dayAppList', dayAppList);
         this.utils.changeIsLoading(false);
         if (dayAppList.length > 0) {
           this.adminStore.dayAppList.set(
@@ -466,7 +462,6 @@ export class AdminEffectService {
     );
   }
   getCalendarDayAppListByContrat(selectedContrat: ContratUserApp | undefined) {
-    console.log('selectedContrat', selectedContrat);
     if (selectedContrat) {
       this.adminStore.calendarViewDate.set(selectedContrat.dateBegin);
       this.getDayAppListByContratId(selectedContrat.id + '');
@@ -567,7 +562,6 @@ export class AdminEffectService {
       },
       (error) => {
         this.utils.changeIsLoading(false);
-        console.log(error);
         Swal.fire({
           icon: 'error',
           title: 'Oops...',

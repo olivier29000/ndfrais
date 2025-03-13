@@ -8,6 +8,7 @@ export interface DayApp {
   workState: WORK_STATE;
   idContrat?: number;
   actionDay?: ActionDay;
+  nbHours?: number;
 }
 
 export interface WorkStateAction {

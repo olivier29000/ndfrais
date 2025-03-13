@@ -220,49 +220,17 @@ export const navigationItemAdmin: NavigationSubheading = {
   children: [
     {
       type: 'link',
-      label: 'Users',
+      label: 'Employés',
       route: '/admin/users',
       icon: 'mat:person_pin',
       routerLinkActiveOptions: { exact: true }
     },
     {
-      type: 'dropdown',
-      label: 'Contrats',
-      icon: 'mat:people',
-      children: []
-    },
-    {
-      type: 'dropdown',
-      label: 'Congés',
-      icon: 'mat:people',
-      children: [
-        {
-          type: 'link',
-          label: 'Recap',
-          route: '/admin/recap',
-          icon: 'mat:assignment',
-          routerLinkActiveOptions: { exact: true }
-        },
-        {
-          type: 'link',
-          label: 'Validations',
-          route: '/admin/validations',
-          icon: 'mat:thumbs_up_down',
-          badge: {
-            value: '',
-            bgClass: 'bg-green-600',
-            textClass: 'text-white'
-          },
-          routerLinkActiveOptions: { exact: true }
-        },
-        {
-          type: 'link',
-          label: 'Historique',
-          route: '/admin/historique',
-          icon: 'mat:account_balance',
-          routerLinkActiveOptions: { exact: true }
-        }
-      ]
+      type: 'link',
+      label: 'Recap',
+      route: '/admin/recap',
+      icon: 'mat:assignment',
+      routerLinkActiveOptions: { exact: true }
     },
     {
       type: 'link',
