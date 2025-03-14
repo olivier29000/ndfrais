@@ -158,13 +158,6 @@ export const navigationItemManager: NavigationSubheading = {
     },
     {
       type: 'link',
-      label: 'Recap',
-      route: '/manager/recap',
-      icon: 'mat:assignment',
-      routerLinkActiveOptions: { exact: true }
-    },
-    {
-      type: 'link',
       label: 'Historique',
       route: '/manager/historique',
       icon: 'mat:account_balance',

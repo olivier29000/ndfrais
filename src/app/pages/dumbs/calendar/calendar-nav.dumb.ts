@@ -20,6 +20,7 @@ import { DatepickerDumb } from '../datepicker.dumb';
       @if (canCopyWeek) {
         <div></div>
       }
+
       <div class="flex items-center space-x-2">
         <!-- Bouton Précédent -->
         <button
@@ -43,6 +44,11 @@ import { DatepickerDumb } from '../datepicker.dumb';
           </h4>
           <dumb-datepicker
             (dateChange)="calendarViewDateChange($event)"></dumb-datepicker>
+          @if (nbHours > 0) {
+            <h4 class="text-lg font-semibold flex items-center">
+              - {{ nbHours }}h
+            </h4>
+          }
         </button>
 
         <!-- Bouton Suivant -->
@@ -65,6 +71,8 @@ import { DatepickerDumb } from '../datepicker.dumb';
           matTooltip="
           Copier/coller une semaine
         "></dumb-datepicker>
+      } @else {
+        <div></div>
       }
     </div>
   `,
@@ -86,6 +94,7 @@ export class CalendarNavDumb {
   CalendarView = CalendarView;
   view = CalendarView.Week;
   @Input() canCopyWeek = false;
+  @Input() nbHours!: number;
   @Input() viewDate: Date = new Date();
   @Output() viewDateOutput = new EventEmitter<Date>();
   @Output() copyWeekDateOutput = new EventEmitter<Date>();

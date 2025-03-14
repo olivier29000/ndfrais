@@ -47,7 +47,7 @@ export class AdminUsersPage implements OnInit {
   selectContrat(userApp: UserApp | undefined) {
     if (userApp) {
       this.adminServer.selectedContrat.set(userApp.contratUserApp);
-      this.adminServer.openPlanningUserModal();
+      this.adminServer.openPlanningUserModal(new Date());
     } else {
       this.adminServer.selectedContrat.set(undefined);
     }

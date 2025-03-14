@@ -50,6 +50,7 @@ import { DayApp, WEEK_STATE, WORK_STATE } from 'src/app/models/day-app.model';
       <dumb-calendar-nav
         [viewDate]="viewDate()"
         [canCopyWeek]="true"
+        [nbHours]="nbHoursWeek()"
         (viewDateOutput)="calendarViewDateChange($event)"
         (copyWeekDateOutput)="copyPasteWeek($event)"></dumb-calendar-nav>
       <app-calendar
@@ -75,11 +76,13 @@ export class AdminContratSmart {
   @Input() set currentContrat(value: ContratUserApp | undefined) {
     this.selectedContrat.set(value);
   }
+
   selectedContrat: WritableSignal<ContratUserApp | undefined> =
     signal(undefined);
-  viewDate: WritableSignal<Date> = signal(
-    startOfWeek(new Date(), { locale: fr })
-  );
+  viewDate = computed(() => {
+    return this.adminServer.calendarViewDate();
+  });
+
   selectDayApp(dayApp: DayApp): void {
     this.calendarViewDateChange(dayApp.date);
   }
@@ -98,7 +101,7 @@ export class AdminContratSmart {
         text: 'Vous ne pouvez pas aller sur des dates hors contrat'
       });
     } else {
-      this.viewDate.set(date);
+      this.adminServer.calendarViewDateChange(date);
     }
   }
   currentMonthRecap = computed(() =>
@@ -116,7 +119,7 @@ export class AdminContratSmart {
   }
   previousMonth(): void {
     const viewDate = startOfWeek(this.viewDate(), { locale: fr });
-    this.viewDate.set(subMonths(viewDate, 1));
+    this.calendarViewDateChange(subMonths(viewDate, 1));
   }
   canPreviousMonth = computed(() => {
     const selectedContrat = this.selectedContrat();
@@ -130,7 +133,7 @@ export class AdminContratSmart {
   });
   nextMonth(): void {
     const viewDate = startOfWeek(this.viewDate(), { locale: fr });
-    this.viewDate.set(addMonths(viewDate, 1));
+    this.calendarViewDateChange(addMonths(viewDate, 1));
   }
   canNextMonth = computed(() => {
     const selectedContrat = this.selectedContrat();
@@ -187,6 +190,9 @@ export class AdminContratSmart {
       }, [] as DayApp[]);
     }
   });
+  nbHoursWeek = computed(() =>
+    this.selectedDays().reduce((acc, day) => acc + (day.nbHours ?? 0), 0)
+  );
   eventList = this.adminServer.eventList;
 
   currentUserApp: WritableSignal<UserApp | undefined> = signal(undefined);

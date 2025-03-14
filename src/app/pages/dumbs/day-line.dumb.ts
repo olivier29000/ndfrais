@@ -37,6 +37,7 @@ import { Action, ActionDay } from 'src/app/models/action.model';
           [isUnderlined]="day.isUnderlined ?? false"
           [day]="day"
           (clickDay)="selectDayApp(day)"
+          (dbClickDay)="dbClickSelectDayApp(day)"
           (clickLast)="cancelLast($event)"
           (validPeriod)="validLast(day)"
           (mouseenter)="mouseenterDayApp(day)"
@@ -131,6 +132,7 @@ export class DayLineDumb {
   @Input() selectedWorkstate!: string;
 
   @Output() selectDayAppOutput = new EventEmitter<DayApp>();
+  @Output() dbClickSelectDayAppOutput = new EventEmitter<DayApp>();
   @Output() cancelLastOutput = new EventEmitter<DayApp>();
   @Output() validLastOutput = new EventEmitter<DayApp>();
   @Output() mouseenterDayAppOutput = new EventEmitter<DayApp>();
@@ -138,6 +140,9 @@ export class DayLineDumb {
 
   selectDayApp(day: DayApp): void {
     this.selectDayAppOutput.emit(day);
+  }
+  dbClickSelectDayApp(day: DayApp): void {
+    this.dbClickSelectDayAppOutput.emit(day);
   }
   cancelLast(day: DayApp): void {
     this.cancelLastOutput.emit(day);

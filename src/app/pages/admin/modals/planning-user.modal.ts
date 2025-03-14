@@ -122,10 +122,6 @@ export class PlanningUserModal {
   selectedContrat = this.adminServer.selectedContrat;
   constructor(
     @Inject(MAT_DIALOG_DATA)
-    public data: {
-      userApp: UserApp;
-      contrat: ContratUserApp;
-    },
     private dialogRef: MatDialogRef<PlanningUserModal>,
     private adminServer: AdminServerService
   ) {}

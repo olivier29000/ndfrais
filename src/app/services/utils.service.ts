@@ -227,23 +227,9 @@ export const navigationItemAdmin: NavigationSubheading = {
     },
     {
       type: 'link',
-      label: 'Recap',
-      route: '/admin/recap',
-      icon: 'mat:assignment',
-      routerLinkActiveOptions: { exact: true }
-    },
-    {
-      type: 'link',
       label: 'Plannings',
       route: '/admin/plannings',
       icon: 'mat:assignment',
-      routerLinkActiveOptions: { exact: true }
-    },
-    {
-      type: 'link',
-      label: 'Abonnement',
-      route: '/admin/abonnement',
-      icon: 'mat:add_shopping_cart',
       routerLinkActiveOptions: { exact: true }
     }
   ]

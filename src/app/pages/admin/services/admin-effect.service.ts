@@ -83,7 +83,8 @@ export class AdminEffectService {
       }
     );
   }
-  openPlanningUserModal(): void {
+  openPlanningUserModal(date: Date): void {
+    this.calendarViewDateChange(date);
     this.dialog.open(PlanningUserModal, {
       width: '90%',
       maxWidth: '1200px'
@@ -136,9 +137,9 @@ export class AdminEffectService {
           return acc;
         }, [] as number[])
       )
-      .subscribe((eventList) => {
-        this.adminStore.eventList.set(
-          eventList.map((event) => ({
+      .subscribe((allEventList) => {
+        this.adminStore.allEventList.set(
+          allEventList.map((event) => ({
             ...event,
             start: this.utils.getStart(event.start),
             end: this.utils.getEnd(event.end)
@@ -186,7 +187,12 @@ export class AdminEffectService {
             dayAppList: recapCurrentContrat.dayAppList.map((d) => ({
               ...d,
               date: new Date(d.date)
-            }))
+            })),
+            contrat: {
+              ...recapCurrentContrat.contrat,
+              dateBegin: new Date(recapCurrentContrat.contrat.dateBegin),
+              dateEnd: new Date(recapCurrentContrat.contrat.dateEnd)
+            }
           }))
         );
       },
@@ -215,29 +221,37 @@ export class AdminEffectService {
 
   deleteEvent(event: CalendarEvent, contratId: string) {
     this.adminRepo.deleteEvent(event).subscribe(() => {
+      const currentDateRecap = new Date(this.adminStore.currentDateRecap());
+      const calendarViewDate = new Date(this.adminStore.calendarViewDate());
       this.getAllEventByContratIdAndPeriod(
-        startOfWeek(event.start, { locale: fr }),
-        endOfWeek(event.start, { locale: fr }),
+        startOfWeek(calendarViewDate, { locale: fr }),
+        endOfWeek(calendarViewDate, { locale: fr }),
         contratId
       );
-      this.getRecapContrat(
-        startOfWeek(event.start, { locale: fr }),
-        Number(contratId)
+      this.getAllEventByContratListAndPeriod(
+        startOfWeek(currentDateRecap, { locale: fr }),
+        endOfWeek(currentDateRecap, { locale: fr })
       );
+      this.getRecap(currentDateRecap);
+      this.getRecapContrat(calendarViewDate, Number(contratId));
     });
   }
 
   createNewEvent(event: CalendarEvent, contratId: string): void {
     this.adminRepo.createNewEvent(event, contratId).subscribe(() => {
+      const currentDateRecap = new Date(this.adminStore.currentDateRecap());
+      const calendarViewDate = new Date(this.adminStore.calendarViewDate());
       this.getAllEventByContratIdAndPeriod(
-        startOfWeek(event.start, { locale: fr }),
-        endOfWeek(event.start, { locale: fr }),
+        startOfWeek(calendarViewDate, { locale: fr }),
+        endOfWeek(calendarViewDate, { locale: fr }),
         contratId
       );
-      this.getRecapContrat(
-        startOfWeek(event.start, { locale: fr }),
-        Number(contratId)
+      this.getAllEventByContratListAndPeriod(
+        startOfWeek(currentDateRecap, { locale: fr }),
+        endOfWeek(currentDateRecap, { locale: fr })
       );
+      this.getRecap(currentDateRecap);
+      this.getRecapContrat(calendarViewDate, Number(contratId));
     });
   }
   copyPasteWeek(dateToCopy: Date, dateToPaste: Date, contratId: string): void {
@@ -327,7 +341,12 @@ export class AdminEffectService {
               dayAppList: recapByContratDayApp.dayAppList.map((d) => ({
                 ...d,
                 date: new Date(d.date)
-              }))
+              })),
+              contrat: {
+                ...recapByContratDayApp.contrat,
+                dateBegin: new Date(recapByContratDayApp.contrat.dateBegin),
+                dateEnd: new Date(recapByContratDayApp.contrat.dateEnd)
+              }
             }))
           );
         },
@@ -463,7 +482,6 @@ export class AdminEffectService {
   }
   getCalendarDayAppListByContrat(selectedContrat: ContratUserApp | undefined) {
     if (selectedContrat) {
-      this.adminStore.calendarViewDate.set(selectedContrat.dateBegin);
       this.getDayAppListByContratId(selectedContrat.id + '');
     } else {
       this.adminStore.dayAppList.set([]);

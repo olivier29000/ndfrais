@@ -49,11 +49,17 @@ export class CustomDateFormats {
             ? 'half-bg-' + selectedWorkstate + ' ' + day.workState
             : day.workState
         "
-        (click)="clickDayOutput(day)"></div>
-      <div class="day-text text-center " (click)="clickDayOutput(day)">
+        (click)="clickDayOutput()"
+        (dblclick)="dbClickDayOutput()"></div>
+      <div
+        class="day-text text-center "
+        (click)="clickDayOutput()"
+        (dblclick)="dbClickDayOutput()">
         <h2 class="">{{ day.date.getDate() }}</h2>
         <p>{{ day.date | date: 'EEE' : '' : 'fr' | slice: 0 : 2 }}</p>
-        <h3>{{ day.nbHours }}h</h3>
+        @if (day.nbHours && day.nbHours > 0) {
+          <h3>{{ day.nbHours }}h</h3>
+        }
       </div>
       @if (isLastSelected) {
         <button
@@ -231,7 +237,9 @@ export class DaySquareDumb {
   @Output() clickLast = new EventEmitter<DayApp>();
   @Output() validPeriod = new EventEmitter<void>();
   @Output() clickDay = new EventEmitter<void>();
-
+  @Output() dbClickDay = new EventEmitter<void>();
+  singleClickTimeout: any;
+  delay = 300;
   constructor() {
     registerLocaleData(localeFr);
   }
@@ -242,7 +250,14 @@ export class DaySquareDumb {
   validPeriodOutput(): void {
     this.validPeriod.emit();
   }
-  clickDayOutput(day: DayApp): void {
-    this.clickDay.emit();
+  clickDayOutput(): void {
+    clearTimeout(this.singleClickTimeout);
+    this.singleClickTimeout = setTimeout(() => {
+      this.clickDay.emit();
+    }, this.delay);
+  }
+  dbClickDayOutput(): void {
+    clearTimeout(this.singleClickTimeout); // Annuler l'action du simple clic
+    this.dbClickDay.emit();
   }
 }

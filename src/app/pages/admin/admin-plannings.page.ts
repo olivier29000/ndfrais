@@ -20,42 +20,14 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { endOfWeek, startOfWeek } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { CalendarNavDumb } from '../dumbs/calendar/calendar-nav.dumb';
+import { AdminRecapSmart } from './smarts/admin-recap-smart';
 interface Display {
   label: string;
   visible: boolean;
 }
 @Component({
   template: ` <vex-page-layout>
-      <vex-page-layout-content class="-mt-6 container">
-        <div
-          class="my-1 px-6 flex flex-col sm:flex-row items-stretch sm:items-start gap-6">
-          <div class="me-3 flex flex-wrap m-3 ">
-            @for (contrat of displayedContratList(); track contrat) {
-              <div class="flex mx-3">
-                <div
-                  class="card flex items-center mt-3 px-2"
-                  style="width:130px"
-                  [style.border]="
-                    '3px solid ' +
-                    convertHexToRgba(contrat.color || '#000000', 1)
-                  ">
-                  <div class="flex-auto">
-                    <h4 class="body-2 m-0 leading-snug">
-                      {{ contrat.poste }}
-                    </h4>
-                    <h5 class="text-secondary m-0 caption leading-none">
-                      {{ contrat.userApp.nom }}
-                      {{ contrat.userApp.prenom }}
-                    </h5>
-                    <h4 class="body-2 m-0 leading-snug">
-                      Semaine : {{ hourSemaineMap()[contrat.id ?? ''] }}h
-                    </h4>
-                  </div>
-                </div>
-              </div>
-            }
-          </div>
-        </div>
+      <vex-page-layout-content class="-mt-6">
         <div class="card overflow-auto -mt-16" style="margin-top : 50px">
           <div
             class="bg-app-bar px-6 h-16 border-b sticky left-0 flex items-center">
@@ -69,17 +41,36 @@ interface Display {
               type="button">
               <mat-icon svgIcon="mat:filter_list"></mat-icon>
             </button>
-
-            <button
-              class="ml-4 flex-none"
-              color="primary"
-              mat-mini-fab
-              matTooltip="Add UserApp"
-              type="button">
-              <mat-icon svgIcon="mat:add"></mat-icon>
-            </button>
           </div>
           <div class="px-6">
+            <smart-admin-recap
+              [contratList]="displayedContratList()"></smart-admin-recap>
+            <div
+              class="my-1 px-6 flex flex-col sm:flex-row items-stretch sm:items-start gap-6">
+              <div class="me-3 flex flex-wrap m-3 ">
+                @for (contrat of displayedContratList(); track contrat) {
+                  <div class="flex mx-3">
+                    <div
+                      class="card flex items-center mt-3 px-2 py-3"
+                      style="width:130px"
+                      [style.border]="
+                        '3px solid ' +
+                        convertHexToRgba(contrat.color || '#000000', 1)
+                      ">
+                      <div class="flex-auto">
+                        <h4 class="body-2 m-0 leading-snug">
+                          {{ contrat.poste }}
+                        </h4>
+                        <h5 class="text-secondary m-0 caption leading-none">
+                          {{ contrat.userApp.nom }}
+                          {{ contrat.userApp.prenom }}
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
             <dumb-calendar-nav
               [viewDate]="viewDate()"
               (viewDateOutput)="
@@ -88,7 +79,7 @@ interface Display {
 
             <app-calendar
               [viewDate]="viewDate()"
-              [events]="eventList()"></app-calendar>
+              [events]="allEventList()"></app-calendar>
           </div></div></vex-page-layout-content
     ></vex-page-layout>
     <mat-menu #columnFilterMenu="matMenu" xPosition="before" yPosition="below">
@@ -107,6 +98,7 @@ interface Display {
   animations: [],
   standalone: true,
   imports: [
+    AdminRecapSmart,
     VexPageLayoutComponent,
     VexPageLayoutContentDirective,
     CalendarDumb,
@@ -121,29 +113,12 @@ interface Display {
   ]
 })
 export class AdminPlanningsPage {
+  //currentDateRecap
   stateEvents: 'prevu' | 'declare' = 'prevu';
-  viewDate: WritableSignal<Date> = signal(new Date());
+  viewDate = this.adminServer.currentDateRecap;
   calendarViewDateChange(date: Date) {
     this.viewDate.set(date);
   }
-  hourSemaineMap = computed(() => {
-    const displayedContratList = this.displayedContratList();
-    const hourSemaineMap: { [coontratId: string]: number } = {};
-    for (let displayedContrat of displayedContratList) {
-      if (displayedContrat.id) {
-        hourSemaineMap[displayedContrat.id] = 0;
-      }
-    }
-    const eventList = this.eventList();
-    return eventList.reduce((acc, e) => {
-      if (e.end) {
-        acc[e.title] =
-          acc[e.title] + (e.end.getTime() - e.start.getTime()) / 3600000;
-      }
-
-      return acc;
-    }, hourSemaineMap);
-  });
   ngOnInit(): void {}
   availableContratList: WritableSignal<
     (ContratUserApp & { visible: boolean })[]
@@ -151,9 +126,9 @@ export class AdminPlanningsPage {
   displayedContratList = computed(() => {
     return this.availableContratList().filter((c) => c.visible);
   });
-  eventList = computed(() => {
+  allEventList = computed(() => {
     return this.adminServer
-      .eventList()
+      .allEventList()
       .filter((e) =>
         this.displayedContratList().some((c) => c.id && c.id + '' === e.title)
       );

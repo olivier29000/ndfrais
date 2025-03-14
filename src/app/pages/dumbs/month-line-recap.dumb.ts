@@ -26,6 +26,7 @@ import { DayLineDumb } from './day-line.dumb';
         <dumb-day-line
           (cancelLastOutput)="cancelLast($event)"
           (selectDayAppOutput)="selectDayApp($event)"
+          (dbClickSelectDayAppOutput)="dbClickDelectDayApp($event)"
           (validLastOutput)="validLast($event)"
           [dayAppList]="recapMonth.dayAppList"
           [underlinedDayAppList]="selectedDays"></dumb-day-line>
@@ -48,6 +49,7 @@ export class MonthLineRecapDumb {
   @Output() cancelLastOutput = new EventEmitter<DayApp>();
   @Output() validLastOutput = new EventEmitter<DayApp>();
   @Output() selectDayAppOutput = new EventEmitter<DayApp>();
+  @Output() dbClickDelectDayAppOutput = new EventEmitter<DayApp>();
 
   cancelLast(day: DayApp): void {
     this.cancelLastOutput.emit(day);
@@ -57,5 +59,8 @@ export class MonthLineRecapDumb {
   }
   selectDayApp(day: DayApp): void {
     this.selectDayAppOutput.emit(day);
+  }
+  dbClickDelectDayApp(day: DayApp): void {
+    this.dbClickDelectDayAppOutput.emit(day);
   }
 }

@@ -53,8 +53,8 @@ export class AdminServerService {
       { allowSignalWrites: true }
     );
   }
-  openPlanningUserModal(): void {
-    this.adminEffect.openPlanningUserModal();
+  openPlanningUserModal(date: Date): void {
+    this.adminEffect.openPlanningUserModal(date);
   }
   recapListCurrentContrat = this.adminStore.recapListCurrentContrat;
   copyPasteWeek(dateToCopy: Date, dateToPaste: Date, idContrat: string): void {
@@ -95,6 +95,7 @@ export class AdminServerService {
   }
   dayAppList = this.adminStore.dayAppList;
   eventList = this.adminStore.eventList;
+  allEventList = this.adminStore.allEventList;
   calendarViewDate = this.adminStore.calendarViewDate;
   calendarViewDateChange(viewDate: Date): void {
     this.adminEffect.calendarViewDateChange(viewDate);

@@ -4,6 +4,8 @@ import { ContratUserApp } from 'src/app/models/contrat-employe.model';
 import { DayApp } from 'src/app/models/day-app.model';
 import { UserApp } from 'src/app/models/user.model';
 import { CalendarEvent } from 'calendar-utils';
+import { startOfWeek } from 'date-fns';
+import { fr } from 'date-fns/locale';
 @Injectable({
   providedIn: 'root'
 })
@@ -14,7 +16,9 @@ export class AdminStoreService {
   selectedContrat: WritableSignal<ContratUserApp | undefined> =
     signal(undefined);
   userAppList: WritableSignal<UserApp[]> = signal([]);
-  currentDateRecap: WritableSignal<Date> = signal(new Date());
+  currentDateRecap: WritableSignal<Date> = signal(
+    startOfWeek(new Date(), { locale: fr })
+  );
   currentYearHistorique: WritableSignal<Date> = signal(new Date());
   recapByContratDayAppList: WritableSignal<
     { contrat: ContratUserApp; dayAppList: DayApp[]; nbHours: number }[]
@@ -26,8 +30,11 @@ export class AdminStoreService {
   > = signal(undefined);
   actionList: WritableSignal<Action[]> = signal([]);
   historiqueActionList: WritableSignal<Action[]> = signal([]);
-  calendarViewDate: WritableSignal<Date> = signal(new Date());
+  calendarViewDate: WritableSignal<Date> = signal(
+    startOfWeek(new Date(), { locale: fr })
+  );
   dayAppList: WritableSignal<DayApp[]> = signal([]);
   eventList: WritableSignal<CalendarEvent[]> = signal([]);
+  allEventList: WritableSignal<CalendarEvent[]> = signal([]);
   canChoosePseudo: WritableSignal<boolean | undefined> = signal(undefined);
 }
