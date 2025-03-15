@@ -16,6 +16,7 @@ import { Tag } from 'src/app/models/tag.model';
           <input
             cdkFocusInitial
             [(ngModel)]="oldTag.colorName"
+            disabled
             name="poste"
             matInput />
         } @else {
@@ -53,6 +54,7 @@ import { Tag } from 'src/app/models/tag.model';
           <input
             cdkFocusInitial
             type="color"
+            disabled
             [(ngModel)]="oldTag.color"
             name="poste"
             matInput />
@@ -112,8 +114,15 @@ export class NewTagDumb {
 
   valid(): void {
     console.log(this.newTag);
+    console.log(this.oldTag);
     if (this.newTag.title && this.newTag.colorName && this.newTag.color) {
       this.validTagOutput.emit(this.newTag);
+    } else if (
+      this.oldTag.title &&
+      this.oldTag.colorName &&
+      this.oldTag.color
+    ) {
+      this.validTagOutput.emit(this.oldTag);
     }
   }
 

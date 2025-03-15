@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Tag } from 'src/app/models/tag.model';
 import { NewTagDumb } from './new-tag-dumb';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'dumb-select-tag',
@@ -25,17 +26,16 @@ import { MatButtonModule } from '@angular/material/button';
               <td>
                 <div class="flex">
                   <span>{{ availableTagMap.key }}</span>
-                  <a
-                    (click)="addTag(availableTagMap.value[0])"
-                    (keydown.enter)="addTag(availableTagMap.value[0])"
-                    tabindex="0"
-                    class="label label-light m-1"
-                    [ngStyle]="{
-                      color: availableTagMap.value[0].color,
-                      border: 'thin solid'
-                    }">
-                    <i class=" fas fa-solid fa-plus"></i
-                  ></a>
+
+                  <button
+                    class="flex-none"
+                    mat-flat-button
+                    type="button"
+                    (click)="addTag(availableTagMap.value[0])">
+                    <mat-icon
+                      class="icon-xs"
+                      svgIcon="mat:control_point"></mat-icon>
+                  </button>
                 </div>
               </td>
               <td>
@@ -112,7 +112,7 @@ import { MatButtonModule } from '@angular/material/button';
     </div>
   `,
   standalone: true,
-  imports: [CommonModule, NewTagDumb, MatButtonModule]
+  imports: [CommonModule, NewTagDumb, MatButtonModule, MatIconModule]
 })
 export class SelectTagDumb {
   newTagAction: Tag | undefined = undefined;
