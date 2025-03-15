@@ -13,6 +13,7 @@ import { DayApp } from 'src/app/models/day-app.model';
 import { CalendarEvent } from 'angular-calendar';
 import { UtilsService } from 'src/app/services/utils.service';
 import { Abonnement, UserConnected } from 'src/app/models/user-connected.model';
+import { Tag } from 'src/app/models/tag.model';
 
 const URL_BACKEND = environment.urlBackEnd + '/admin';
 const httpOptions = {
@@ -30,6 +31,21 @@ export class AdminRepoService {
     private http: HttpClient,
     private utils: UtilsService
   ) {}
+
+  addTag(tag: Tag): Observable<Record<string, Tag[]>> {
+    return this.http
+      .post<
+        Record<string, Tag[]>
+      >(`${URL_BACKEND}/event/post-tag`, tag, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+  getTagMap(): Observable<Record<string, Tag[]>> {
+    return this.http
+      .get<
+        Record<string, Tag[]>
+      >(`${URL_BACKEND}/event/get-tag-list-map`, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
   getRecapContrat(
     dateStrList: string[],
     idContratUserApp: string

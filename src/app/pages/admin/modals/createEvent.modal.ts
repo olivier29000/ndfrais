@@ -1,29 +1,21 @@
-import { Component, computed, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterLink } from '@angular/router';
-import { MatListModule } from '@angular/material/list';
-import { ManagerServerService } from '../manager/services/manager-server.service';
-import { ActionListDumb } from '../dumbs/action-list.dumb';
-import { TableColumn } from '@vex/interfaces/table-column.interface';
 import {
   MAT_DIALOG_DATA,
   MatDialogModule,
   MatDialogRef
 } from '@angular/material/dialog';
-import { Action } from 'src/app/models/action.model';
+import { EventMeta } from '../../../models/meta-event.model';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
-import { NgIf } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { SafeResourceUrl } from '@angular/platform-browser';
-import { PdfDisplayDumb } from '../dumbs/pdf-display.dumb';
 import { CalendarEvent } from 'angular-calendar';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { InputDateHourMinuteDumb } from '../dumbs/input-date-hour-minute.dumb';
+import { InputDateHourMinuteDumb } from '../../dumbs/input-date-hour-minute.dumb';
+import { SelectTagDumb } from '../../dumbs/select-tag-list.dumb';
+import { Tag } from 'src/app/models/tag.model';
+import { AdminServerService } from '../../admin/services/admin-server.service';
 
 @Component({
   template: `<form>
@@ -67,6 +59,13 @@ import { InputDateHourMinuteDumb } from '../dumbs/input-date-hour-minute.dumb';
         [(date)]="calendarEvent.start"></dumb-input-date-hour-minute>
       <dumb-input-date-hour-minute
         [(date)]="calendarEvent.end"></dumb-input-date-hour-minute>
+
+      <dumb-select-tag
+        [availableTagList]="tagMap()"
+        [selectedTagList]="calendarEvent.meta?.tagList ?? []"
+        (selectTagOutput)="selectTag($event)"
+        (unSelectTagOutput)="unSelectTag($event)"
+        (createTagOutput)="createTag($event)"></dumb-select-tag>
     </mat-dialog-content>
 
     <mat-dialog-actions align="end">
@@ -91,25 +90,55 @@ import { InputDateHourMinuteDumb } from '../dumbs/input-date-hour-minute.dumb';
     MatDividerModule,
     MatInputModule,
     MatButtonModule,
-    InputDateHourMinuteDumb
+    InputDateHourMinuteDumb,
+    SelectTagDumb
   ]
 })
-export class CreateEventModal {
-  calendarEvent: CalendarEvent = {
+export class CreateEventModal implements OnInit {
+  calendarEvent: CalendarEvent<EventMeta> = {
     id: this.data?.event?.id || undefined,
     title: this.data?.event?.title || '',
     start: this.data?.event?.start || new Date(),
-    end: this.data?.event?.end || new Date()
+    end: this.data?.event?.end || new Date(),
+    meta: this.data?.event?.meta || { tagList: [] }
   };
+  tagMap = this.adminServer.tagMap;
   constructor(
     @Inject(MAT_DIALOG_DATA)
-    public data: { event: CalendarEvent },
-    private dialogRef: MatDialogRef<CreateEventModal>
+    public data: { event: CalendarEvent<EventMeta> },
+    private dialogRef: MatDialogRef<CreateEventModal>,
+    private adminServer: AdminServerService
   ) {}
+  ngOnInit(): void {
+    this.adminServer.getEventTagMap();
+  }
   createEvent() {
     this.dialogRef.close(this.calendarEvent);
   }
   close() {
     this.dialogRef.close();
+  }
+
+  createTag(tag: Tag): void {
+    this.adminServer.addEventTag(tag);
+  }
+
+  selectTag(tag: Tag): void {
+    if (
+      this.calendarEvent.meta &&
+      !(this.calendarEvent.meta.tagList ?? []).some((t) => t.id === tag.id)
+    ) {
+      this.calendarEvent.meta.tagList = (
+        this.calendarEvent.meta?.tagList ?? []
+      ).concat(tag);
+    }
+  }
+
+  unSelectTag(tag: Tag): void {
+    if (this.calendarEvent.meta) {
+      this.calendarEvent.meta.tagList = (
+        this.calendarEvent.meta.tagList ?? []
+      ).filter((t) => t.id !== tag.id);
+    }
   }
 }

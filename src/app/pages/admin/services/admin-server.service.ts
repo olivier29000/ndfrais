@@ -16,6 +16,7 @@ import {
 import { fr } from 'date-fns/locale';
 import { WEEK_STATE, WORK_STATE } from 'src/app/models/day-app.model';
 import { CalendarEvent } from 'angular-calendar';
+import { Tag } from 'src/app/models/tag.model';
 
 @Injectable({
   providedIn: 'root'
@@ -52,6 +53,13 @@ export class AdminServerService {
       },
       { allowSignalWrites: true }
     );
+  }
+  tagMap = this.adminStore.tagMap;
+  addEventTag(tag: Tag): void {
+    this.adminEffect.addEventTag(tag);
+  }
+  getEventTagMap(): void {
+    this.adminEffect.getEventTagMap();
   }
   openPlanningUserModal(date: Date): void {
     this.adminEffect.openPlanningUserModal(date);
