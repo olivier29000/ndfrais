@@ -40,21 +40,7 @@ export class AdminEffectService {
     private adminStore: AdminStoreService,
     private utils: UtilsService,
     private sanitizer: DomSanitizer
-  ) {
-    effect(
-      () => {
-        const userConnected = this.utils.userConnected();
-        const currentDateRecap = this.adminStore.currentDateRecap();
-        if (
-          userConnected?.roleList.includes(Role.ROLE_ADMIN) &&
-          currentDateRecap
-        ) {
-          this.getRecap(currentDateRecap);
-        }
-      },
-      { allowSignalWrites: true }
-    );
-  }
+  ) {}
 
   verifDispoPseudo(pseudo: string): void {
     this.adminRepo.verifDispoPseudo(pseudo).subscribe(

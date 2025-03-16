@@ -173,8 +173,8 @@ export class AdminServerService {
   nextMonth(): void {
     this.adminEffect.nextMonth();
   }
-  getRecap(): void {
-    this.adminEffect.getRecap(this.currentDateRecap());
+  getRecap(currentDateRecap: Date): void {
+    this.adminEffect.getRecap(currentDateRecap);
   }
 
   validAction(action: Action): void {

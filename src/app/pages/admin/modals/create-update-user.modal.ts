@@ -183,62 +183,8 @@ import { DatepickerDumb } from '../../dumbs/datepicker.dumb';
             </div>
           </mat-form-field>
         </div>
-        <mat-form-field class="flex-auto">
-          <mat-label>Manager</mat-label>
-          <mat-select
-            [(ngModel)]="currentUserApp.contratUserApp.contratManager"
-            name="contratManager">
-            @for (contrat of adminAllContratList(); track contrat) {
-              @if (currentUserApp.id !== contrat.userApp.id) {
-                <mat-option [value]="contrat">{{
-                  contrat.userApp.nom +
-                    ' ' +
-                    contrat.userApp.prenom +
-                    ' ' +
-                    contrat.poste
-                }}</mat-option>
-              }
-            }
-          </mat-select>
-
-          <mat-icon matIconPrefix svgIcon="mat:phone"></mat-icon>
-        </mat-form-field>
 
         <div class="flex flex-col sm:flex-row">
-          <mat-form-field class="sm:ml-4 flex-auto">
-            <mat-label>Cumul de congés par mois</mat-label>
-            <input
-              cdkFocusInitial
-              [(ngModel)]="currentUserApp.contratUserApp.nbJourCongeMois"
-              name="nbJourCongeMois"
-              type="number"
-              matInput />
-
-            <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
-          </mat-form-field>
-
-          <mat-form-field class="sm:ml-4 flex-auto">
-            <mat-label>Cumul de RTT par mois</mat-label>
-            <input
-              cdkFocusInitial
-              [(ngModel)]="currentUserApp.contratUserApp.nbJourRttMois"
-              name="nbJourRttMois"
-              type="number"
-              matInput />
-
-            <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
-          </mat-form-field>
-          <mat-form-field class="sm:ml-4 flex-auto">
-            <mat-label>Nb heures par semaines</mat-label>
-            <input
-              cdkFocusInitial
-              [(ngModel)]="currentUserApp.contratUserApp.nbHeureSemaine"
-              name="nbHeureSemaine"
-              type="number"
-              matInput />
-
-            <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
-          </mat-form-field>
           <mat-form-field class="sm:ml-4 flex-auto">
             <mat-label>Couleur</mat-label>
             <input
@@ -250,48 +196,6 @@ import { DatepickerDumb } from '../../dumbs/datepicker.dumb';
 
             <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
           </mat-form-field>
-        </div>
-
-        <div>
-          <label class="mb-2 block">Demandes disponibles</label>
-          <div class="flex flex-col sm:flex-row">
-            @for (workState of workStateList; track $index) {
-              <dumb-work-state
-                [ngStyle]="{
-                  border:
-                    currentUserApp.contratUserApp.workStateAvailableList.includes(
-                      workState
-                    )
-                      ? 'solid'
-                      : ''
-                }"
-                [iconClass]="workState"
-                [workState]="{
-                  label: workState,
-                  icon: '',
-                  nbDispo: '',
-                  nbPrevision: ''
-                }"
-                (click)="selectWorkState(workState)"></dumb-work-state>
-            }
-          </div>
-        </div>
-
-        <div>
-          <label class="mb-2 block">Jours de repos</label>
-          <mat-button-toggle-group
-            name="ingredients"
-            aria-label="Ingredients"
-            [(ngModel)]="currentUserApp.contratUserApp.dayOfWeekReposList"
-            multiple>
-            <mat-button-toggle value="MONDAY"> lundi </mat-button-toggle>
-            <mat-button-toggle value="TUESDAY"> mardi </mat-button-toggle>
-            <mat-button-toggle value="WEDNESDAY"> mercredi </mat-button-toggle>
-            <mat-button-toggle value="THURSDAY"> jeudi </mat-button-toggle>
-            <mat-button-toggle value="FRIDAY"> vendredi </mat-button-toggle>
-            <mat-button-toggle value="SATURDAY"> samedi </mat-button-toggle>
-            <mat-button-toggle value="SUNDAY"> dimanche </mat-button-toggle>
-          </mat-button-toggle-group>
         </div>
       </mat-dialog-content>
 
@@ -378,10 +282,12 @@ export class CreateUpdateUserModal implements OnInit {
     id: this.data?.userApp?.contratUserApp?.id || undefined,
     poste: this.data?.userApp?.contratUserApp?.poste || '',
     color: this.data?.userApp?.contratUserApp?.color || '',
-    dateBegin:
-      new Date(this.data?.userApp?.contratUserApp?.dateBegin) || new Date(),
-    dateEnd:
-      new Date(this.data?.userApp?.contratUserApp?.dateEnd) || new Date(),
+    dateBegin: this.data?.userApp?.contratUserApp?.dateBegin
+      ? new Date(this.data?.userApp?.contratUserApp?.dateBegin)
+      : new Date(),
+    dateEnd: this.data?.userApp?.contratUserApp?.dateEnd
+      ? new Date(this.data?.userApp?.contratUserApp?.dateEnd)
+      : new Date(),
     dayOfWeekReposList:
       this.data?.userApp?.contratUserApp?.dayOfWeekReposList || [],
     nbJourCongeMois: this.data?.userApp?.contratUserApp?.nbJourCongeMois || 0,

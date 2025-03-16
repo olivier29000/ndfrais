@@ -48,7 +48,7 @@ export class AdminRecapPage {
     format(this.adminServer.currentDateRecap(), 'MMMM yyyy', { locale: fr })
   );
   ngOnInit(): void {
-    this.adminServer.getRecap();
+    // this.adminServer.getRecap();
   }
   previousMonth(): void {
     this.adminServer.previousMonth();

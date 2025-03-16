@@ -69,9 +69,7 @@ export class AdminRecapSmart {
   currentMonthRecap = computed(() =>
     format(this.adminServer.currentDateRecap(), 'MMMM yyyy', { locale: fr })
   );
-  ngOnInit(): void {
-    this.adminServer.getRecap();
-  }
+
   selectDay(day: DayApp): void {
     this.adminServer.currentDateRecap.set(day.date);
   }

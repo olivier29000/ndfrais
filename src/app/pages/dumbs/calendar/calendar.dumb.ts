@@ -116,6 +116,7 @@ import { DayApp } from 'src/app/models/day-app.model';
         overflow-x: auto; /* Ajoute une barre de défilement horizontale si nécessaire */
         border: 1px solid #ccc; /* Juste pour visualiser */
       }
+
       .cal-day-headers {
         position: sticky;
         top: 0;
@@ -128,6 +129,7 @@ import { DayApp } from 'src/app/models/day-app.model';
         overflow: scroll;
         min-width: 800px;
       }
+
       h3 {
         margin: 0 0 10px;
       }

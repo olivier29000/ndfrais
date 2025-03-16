@@ -26,16 +26,17 @@ import { MatIconModule } from '@angular/material/icon';
               <td>
                 <div class="flex">
                   <span>{{ availableTagMap.key }}</span>
-
-                  <button
-                    class="flex-none"
-                    mat-flat-button
-                    type="button"
-                    (click)="addTag(availableTagMap.value[0])">
-                    <mat-icon
-                      class="icon-xs"
-                      svgIcon="mat:control_point"></mat-icon>
-                  </button>
+                  @if (canCreateAdd) {
+                    <button
+                      class="flex-none"
+                      mat-flat-button
+                      type="button"
+                      (click)="addTag(availableTagMap.value[0])">
+                      <mat-icon
+                        class="icon-xs"
+                        svgIcon="mat:control_point"></mat-icon>
+                    </button>
+                  }
                 </div>
               </td>
               <td>
@@ -94,7 +95,7 @@ import { MatIconModule } from '@angular/material/icon';
                   (validTagOutput)="createTag($event)"
                   (cancelOutput)="cancelTag()"></dumb-edit-create-tag>
               </td>
-            } @else {
+            } @else if (canCreateAdd) {
               <td colspan="1" class="text-center">
                 <button
                   color="primary"
@@ -115,6 +116,7 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [CommonModule, NewTagDumb, MatButtonModule, MatIconModule]
 })
 export class SelectTagDumb {
+  @Input() canCreateAdd = true;
   newTagAction: Tag | undefined = undefined;
 
   _availableTagList: Record<string, Tag[]> = {};

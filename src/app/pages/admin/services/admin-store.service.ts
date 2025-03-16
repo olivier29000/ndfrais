@@ -7,6 +7,7 @@ import { CalendarEvent } from 'calendar-utils';
 import { startOfWeek } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { Tag } from 'src/app/models/tag.model';
+import { EventMeta } from 'src/app/models/meta-event.model';
 @Injectable({
   providedIn: 'root'
 })
@@ -36,7 +37,7 @@ export class AdminStoreService {
   );
   dayAppList: WritableSignal<DayApp[]> = signal([]);
   eventList: WritableSignal<CalendarEvent[]> = signal([]);
-  allEventList: WritableSignal<CalendarEvent[]> = signal([]);
+  allEventList: WritableSignal<CalendarEvent<EventMeta>[]> = signal([]);
   canChoosePseudo: WritableSignal<boolean | undefined> = signal(undefined);
   tagMap: WritableSignal<Record<string, Tag[]>> = signal({});
 }

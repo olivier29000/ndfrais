@@ -5,6 +5,7 @@ import { CreateAccountPage } from './unlogged-pages/create-account.page';
 import { EffectService } from './services/effect.service';
 import { inject } from '@angular/core';
 import { AccueilPage } from './accueil.page';
+import { PLanningEmployePage } from './unlogged-pages/planning-employe.page';
 
 export const appRoutes: VexRoutes = [
   {
@@ -13,6 +14,7 @@ export const appRoutes: VexRoutes = [
   },
   { path: 'login', component: LoginPage },
   { path: 'create-account', component: CreateAccountPage },
+  { path: 'employe/:tokenContrat', component: PLanningEmployePage },
   {
     path: '',
     canActivate: [() => inject(EffectService).canActivate()],

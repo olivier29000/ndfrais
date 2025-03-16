@@ -2,6 +2,7 @@ import {
   Component,
   computed,
   effect,
+  OnInit,
   signal,
   WritableSignal
 } from '@angular/core';
@@ -21,18 +22,21 @@ import { endOfWeek, startOfWeek } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { CalendarNavDumb } from '../dumbs/calendar/calendar-nav.dumb';
 import { AdminRecapSmart } from './smarts/admin-recap-smart';
+import { SelectTagDumb } from '../dumbs/select-tag-list.dumb';
+import { Tag } from 'src/app/models/tag.model';
 interface Display {
   label: string;
   visible: boolean;
 }
 @Component({
-  template: ` <vex-page-layout>
+  template: `
+    <vex-page-layout>
       <vex-page-layout-content class="-mt-6">
-        <div class="card overflow-auto -mt-16" style="margin-top : 50px">
+        <div class="card -mt-16" style="margin-top : 50px">
           <div
             class="bg-app-bar px-6 h-16 border-b sticky left-0 flex items-center">
             <span class="flex-1"></span>
-
+            <button onclick="window.print()">Imprimer la page</button>
             <button
               [matMenuTriggerFor]="columnFilterMenu"
               class="ml-4 flex-none"
@@ -71,6 +75,12 @@ interface Display {
                 }
               </div>
             </div>
+            <dumb-select-tag
+              [availableTagList]="tagMap()"
+              [selectedTagList]="selectedTagList()"
+              (selectTagOutput)="selectTag($event)"
+              [canCreateAdd]="false"
+              (unSelectTagOutput)="unSelectTag($event)"></dumb-select-tag>
             <dumb-calendar-nav
               [viewDate]="viewDate()"
               (viewDateOutput)="
@@ -94,10 +104,13 @@ interface Display {
           </mat-checkbox>
         </button>
       }
-    </mat-menu>`,
+    </mat-menu>
+  `,
   animations: [],
+  styles: [``],
   standalone: true,
   imports: [
+    SelectTagDumb,
     AdminRecapSmart,
     VexPageLayoutComponent,
     VexPageLayoutContentDirective,
@@ -112,14 +125,32 @@ interface Display {
     MatTabsModule
   ]
 })
-export class AdminPlanningsPage {
+export class AdminPlanningsPage implements OnInit {
   //currentDateRecap
   stateEvents: 'prevu' | 'declare' = 'prevu';
   viewDate = this.adminServer.currentDateRecap;
   calendarViewDateChange(date: Date) {
     this.viewDate.set(date);
   }
-  ngOnInit(): void {}
+  tagMap = this.adminServer.tagMap;
+  selectedTagList: WritableSignal<Tag[]> = signal([]);
+  ngOnInit(): void {
+    this.adminServer.getEventTagMap();
+  }
+
+  selectTag(tag: Tag): void {
+    const selectedTagList = this.selectedTagList();
+    if (!selectedTagList.some((t) => t.id === tag.id)) {
+      this.selectedTagList.set(selectedTagList.concat(tag));
+    }
+  }
+
+  unSelectTag(tag: Tag): void {
+    this.selectedTagList.set(
+      this.selectedTagList().filter((t) => t.id !== tag.id)
+    );
+  }
+
   availableContratList: WritableSignal<
     (ContratUserApp & { visible: boolean })[]
   > = signal([]);
@@ -127,11 +158,20 @@ export class AdminPlanningsPage {
     return this.availableContratList().filter((c) => c.visible);
   });
   allEventList = computed(() => {
-    return this.adminServer
-      .allEventList()
-      .filter((e) =>
-        this.displayedContratList().some((c) => c.id && c.id + '' === e.title)
+    let allEventList = this.adminServer.allEventList();
+    const selectedTagList = this.selectedTagList();
+    if (selectedTagList.length > 0) {
+      allEventList = allEventList.filter((event) =>
+        selectedTagList.some(
+          (tag) =>
+            event.meta?.tagList &&
+            event.meta.tagList.some((t) => t.id === tag.id)
+        )
       );
+    }
+    return allEventList.filter((e) =>
+      this.displayedContratList().some((c) => c.id && c.id + '' === e.title)
+    );
   });
   constructor(private adminServer: AdminServerService) {
     effect(
@@ -150,6 +190,15 @@ export class AdminPlanningsPage {
           startOfWeek(viewDate, { locale: fr }),
           endOfWeek(viewDate, { locale: fr })
         );
+      },
+      { allowSignalWrites: true }
+    );
+    effect(
+      () => {
+        const currentDateRecap = this.adminServer.currentDateRecap();
+        if (currentDateRecap) {
+          this.adminServer.getRecap(currentDateRecap);
+        }
       },
       { allowSignalWrites: true }
     );
