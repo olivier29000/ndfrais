@@ -48,14 +48,25 @@ interface Display {
           </div>
           <div class="px-6">
             <div id="recap" class="relative">
-              <button
-                class="absolute right-0 top-0 ml-4 flex-none"
-                mat-icon-button
-                matTooltip="Filter Columns"
-                type="button"
-                (click)="printSection('recap')">
-                <mat-icon svgIcon="mat:print"></mat-icon>
-              </button>
+              <div class="absolute right-0 top-0 ml-4 flex">
+                <button
+                  class="mx-4"
+                  mat-icon-button
+                  matTooltip="Filter Columns"
+                  type="button"
+                  (click)="getExcelRecap()">
+                  <mat-icon svgIcon="mat:receipt"></mat-icon>
+                </button>
+                <button
+                  class="mx-4"
+                  mat-icon-button
+                  matTooltip="Filter Columns"
+                  type="button"
+                  (click)="printSection('recap')">
+                  <mat-icon svgIcon="mat:print"></mat-icon>
+                </button>
+              </div>
+
               <smart-admin-recap
                 [contratList]="displayedContratList()"></smart-admin-recap>
             </div>
@@ -267,6 +278,10 @@ export class AdminPlanningsPage implements OnInit {
 
     // Restaurer le contenu initial après l'impression
     document.body.innerHTML = originalContent;
+  }
+
+  getExcelRecap(): void {
+    this.adminServer.getExcelRecap();
   }
 
   stateEvents: 'prevu' | 'declare' = 'prevu';

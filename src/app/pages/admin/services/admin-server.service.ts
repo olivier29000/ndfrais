@@ -185,6 +185,9 @@ export class AdminServerService {
   getRecap(currentDateRecap: Date): void {
     this.adminEffect.getRecap(currentDateRecap);
   }
+  getExcelRecap(): void {
+    this.adminEffect.getExcelRecap(this.currentDateRecap());
+  }
 
   validAction(action: Action): void {
     this.adminEffect.validAction(action);

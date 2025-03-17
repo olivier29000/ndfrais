@@ -174,6 +174,14 @@ export class AdminRepoService {
       >(`${URL_BACKEND}/day-app/get-recap/${dateStr}`, httpOptions)
       .pipe(catchError(this.handleError));
   }
+  getExcelRecap(dateStr: string): Observable<Blob> {
+    return this.http
+      .get(`${URL_BACKEND}/day-app/get-excel-recap/${dateStr}`, {
+        ...httpOptions,
+        responseType: 'blob'
+      })
+      .pipe(catchError(this.handleError));
+  }
   adminGetHistoriqueActionList(dateStr: number): Observable<Action[]> {
     return this.http
       .get<

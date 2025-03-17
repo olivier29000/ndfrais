@@ -13,6 +13,7 @@ import {
   addMonths,
   eachDayOfInterval,
   endOfWeek,
+  format,
   startOfWeek,
   subDays,
   subMonths
@@ -362,6 +363,37 @@ export class AdminEffectService {
               }
             }))
           );
+        },
+        (error) => {
+          this.utils.changeIsLoading(false);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: error
+          });
+        }
+      );
+  }
+  getExcelRecap(date: Date) {
+    this.utils.changeIsLoading(true);
+    this.adminRepo
+      .getExcelRecap(
+        (date.getMonth() < 9
+          ? '0' + (date.getMonth() + 1)
+          : date.getMonth() + 1) +
+          '-' +
+          date.getFullYear()
+      )
+      .subscribe(
+        (blob: Blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download =
+            format(Date.now(), 'yyyyMMddHHmmss') + '_planifique.pro' + '.csv';
+          a.click();
+          window.URL.revokeObjectURL(url);
+          this.utils.changeIsLoading(false);
         },
         (error) => {
           this.utils.changeIsLoading(false);
