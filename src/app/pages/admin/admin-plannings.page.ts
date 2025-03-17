@@ -24,6 +24,7 @@ import { CalendarNavDumb } from '../dumbs/calendar/calendar-nav.dumb';
 import { AdminRecapSmart } from './smarts/admin-recap-smart';
 import { SelectTagDumb } from '../dumbs/select-tag-list.dumb';
 import { Tag } from 'src/app/models/tag.model';
+import { CommonModule } from '@angular/common';
 interface Display {
   label: string;
   visible: boolean;
@@ -58,39 +59,137 @@ interface Display {
               <smart-admin-recap
                 [contratList]="displayedContratList()"></smart-admin-recap>
             </div>
-
-            <div
-              class="my-1 px-6 flex flex-col sm:flex-row items-stretch sm:items-start gap-6">
-              <div class="me-3 flex flex-wrap m-3 ">
-                @for (contrat of displayedContratList(); track contrat) {
-                  <div class="flex mx-3">
+            @if (withFilter) {
+              <div
+                class="my-1 px-6 flex flex-col sm:flex-row items-stretch sm:items-start gap-6">
+                <div class="me-3 flex flex-wrap m-3 ">
+                  @for (contrat of displayedContratList(); track contrat) {
                     <div
-                      class="card flex items-center mt-3 px-2 py-3"
-                      style="width:130px"
-                      [style.border]="
-                        '3px solid ' +
-                        convertHexToRgba(contrat.color || '#000000', 1)
-                      ">
-                      <div class="flex-auto">
-                        <h4 class="body-2 m-0 leading-snug">
-                          {{ contrat.poste }}
-                        </h4>
-                        <h5 class="text-secondary m-0 caption leading-none">
-                          {{ contrat.userApp.nom }}
-                          {{ contrat.userApp.prenom }}
-                        </h5>
+                      class="flex mx-3"
+                      (click)="toggleContratVisibility(contrat, $event)">
+                      <div
+                        class="card flex items-center mt-3 px-2 py-3"
+                        style="width:130px"
+                        [style.border]="
+                          '3px solid ' +
+                          convertHexToRgba(contrat.color || '#000000', 1)
+                        ">
+                        <button class="mat-menu-item block">
+                          <mat-checkbox
+                            [ngModel]="contrat.visible"
+                            color="primary">
+                          </mat-checkbox>
+                        </button>
+                        <div class="flex-auto">
+                          <h4 class="body-2 m-0 leading-snug">
+                            {{ contrat.poste }}
+                          </h4>
+                          <h5 class="text-secondary m-0 caption leading-none">
+                            {{ contrat.userApp.nom }}
+                            {{ contrat.userApp.prenom }}
+                          </h5>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                }
+                  }
+                </div>
               </div>
-            </div>
-            <dumb-select-tag
-              [availableTagList]="tagMap()"
-              [selectedTagList]="selectedTagList()"
-              (selectTagOutput)="selectTag($event)"
-              [canCreateAdd]="false"
-              (unSelectTagOutput)="unSelectTag($event)"></dumb-select-tag>
+              <div
+                class="my-1 px-6 flex flex-col sm:flex-row items-stretch sm:items-start gap-6">
+                <div class="me-3 flex flex-wrap m-3 ">
+                  @for (contrat of undisplayedContratList(); track contrat) {
+                    <div
+                      class="flex mx-3"
+                      (click)="toggleContratVisibility(contrat, $event)">
+                      <div
+                        class="card flex items-center mt-3 px-2 py-3"
+                        style="width:130px"
+                        [style.border]="
+                          '3px solid ' +
+                          convertHexToRgba(contrat.color || '#000000', 1)
+                        ">
+                        <button class="mat-menu-item block">
+                          <mat-checkbox
+                            [ngModel]="contrat.visible"
+                            color="primary">
+                          </mat-checkbox>
+                        </button>
+                        <div class="flex-auto">
+                          <h4 class="body-2 m-0 leading-snug">
+                            {{ contrat.poste }}
+                          </h4>
+                          <h5 class="text-secondary m-0 caption leading-none">
+                            {{ contrat.userApp.nom }}
+                            {{ contrat.userApp.prenom }}
+                          </h5>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+              <div
+                class="my-1 px-6 flex flex-col sm:flex-row items-stretch sm:items-start gap-6">
+                <div class="me-3 flex flex-wrap m-3 ">
+                  @for (tag of selectedTagList(); track tag) {
+                    <a
+                      (click)="unSelectTag(tag)"
+                      tabindex="0"
+                      class="label label-light m-1 p-2 items-center"
+                      [ngStyle]="{ color: tag.color, border: '1px solid' }">
+                      <button class="mat-menu-item block">
+                        <mat-checkbox [checked]="true" color="primary">
+                        </mat-checkbox>
+                      </button>
+                      {{ tag.title }}
+                    </a>
+                  }
+                </div>
+              </div>
+              <div
+                class="my-1 px-6 flex flex-col sm:flex-row items-stretch sm:items-start gap-6">
+                <div class="me-3 flex flex-wrap m-3 ">
+                  @for (tag of unselectedTagList(); track tag) {
+                    <a
+                      (click)="selectTag(tag)"
+                      tabindex="0"
+                      class="flex label label-light m-1 p-2 items-center"
+                      [ngStyle]="{ color: tag.color, border: '1px solid' }">
+                      <button class="mat-menu-item block">
+                        <mat-checkbox [checked]="false" color="primary">
+                        </mat-checkbox>
+                      </button>
+                      <span>
+                        {{ tag.title }}
+                      </span>
+                    </a>
+                  }
+                </div>
+              </div>
+              <!-- <dumb-select-tag
+                [availableTagList]="tagMap()"
+                [selectedTagList]="selectedTagList()"
+                (selectTagOutput)="selectTag($event)"
+                [canCreateAdd]="false"
+                (unSelectTagOutput)="unSelectTag($event)"></dumb-select-tag> -->
+
+              <div class="flex justify-center my-5">
+                <div class="text-center">
+                  <small (click)="clickFilter()" tabindex="0"
+                    >Masquer les filtres</small
+                  >
+                </div>
+              </div>
+            } @else {
+              <div class="flex justify-center my-5">
+                <div class="text-center">
+                  <small (click)="clickFilter()" tabindex="0"
+                    >Afficher les filtres</small
+                  >
+                </div>
+              </div>
+            }
+
             <div id="calendar" class="relative">
               <button
                 class="absolute right-0 top-0 ml-4 flex-none"
@@ -131,6 +230,7 @@ interface Display {
   standalone: true,
   imports: [
     SelectTagDumb,
+    CommonModule,
     AdminRecapSmart,
     VexPageLayoutComponent,
     VexPageLayoutContentDirective,
@@ -147,7 +247,10 @@ interface Display {
 })
 export class AdminPlanningsPage implements OnInit {
   //currentDateRecap
-
+  withFilter = false;
+  clickFilter(): void {
+    this.withFilter = !this.withFilter;
+  }
   printSection(sectionId: string) {
     const printContent = document.getElementById(sectionId);
     if (!printContent) {
@@ -173,6 +276,13 @@ export class AdminPlanningsPage implements OnInit {
   }
   tagMap = this.adminServer.tagMap;
   selectedTagList: WritableSignal<Tag[]> = signal([]);
+  unselectedTagList = computed(() =>
+    Object.values(this.tagMap())
+      .flat()
+      .filter((tag) => {
+        return !this.selectedTagList().some((t) => t.id === tag.id);
+      })
+  );
   ngOnInit(): void {
     this.adminServer.getEventTagMap();
   }
@@ -195,6 +305,9 @@ export class AdminPlanningsPage implements OnInit {
   > = signal([]);
   displayedContratList = computed(() => {
     return this.availableContratList().filter((c) => c.visible);
+  });
+  undisplayedContratList = computed(() => {
+    return this.availableContratList().filter((c) => !c.visible);
   });
   allEventList = computed(() => {
     let allEventList = this.adminServer.allEventList();
