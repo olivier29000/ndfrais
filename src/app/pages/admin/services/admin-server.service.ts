@@ -102,7 +102,16 @@ export class AdminServerService {
     this.adminEffect.getDayAppListByContratId(idContrat);
   }
   dayAppList = this.adminStore.dayAppList;
-  eventList = this.adminStore.eventList;
+  eventList = computed(() =>
+    this.adminStore.eventList().map((event) => ({
+      ...event,
+      resizable: {
+        beforeStart: true,
+        afterEnd: true
+      },
+      draggable: true
+    }))
+  );
   allEventList = this.adminStore.allEventList;
   calendarViewDate = this.adminStore.calendarViewDate;
   calendarViewDateChange(viewDate: Date): void {

@@ -77,7 +77,7 @@ import { AdminServerService } from '../../admin/services/admin-server.service';
         mat-flat-button
         type="submit"
         (click)="createEvent()">
-        Créer
+        Valider
       </button>
     </mat-dialog-actions>
   </form>`,

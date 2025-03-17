@@ -59,6 +59,7 @@ import { DayApp, WEEK_STATE, WORK_STATE } from 'src/app/models/day-app.model';
         [events]="eventList()"
         [selectedDays]="selectedDays() ?? []"
         (createEventOutput)="createEvent($event)"
+        (updateEventOutput)="updateEvent($event)"
         (deleteEventOutput)="deleteEvent($event)"></app-calendar>
     </div>
   `,
@@ -83,6 +84,12 @@ export class AdminContratSmart {
     return this.adminServer.calendarViewDate();
   });
 
+  updateEvent(event: CalendarEvent) {
+    const selectedContrat = this.selectedContrat();
+    if (selectedContrat) {
+      this.adminServer.openCreateEventModal(event, selectedContrat.id + '');
+    }
+  }
   selectDayApp(dayApp: DayApp): void {
     this.calendarViewDateChange(dayApp.date);
   }
@@ -193,7 +200,10 @@ export class AdminContratSmart {
   nbHoursWeek = computed(() =>
     this.selectedDays().reduce((acc, day) => acc + (day.nbHours ?? 0), 0)
   );
-  eventList = this.adminServer.eventList;
+  eventList = computed(() => {
+    console.log(this.adminServer.eventList());
+    return this.adminServer.eventList();
+  });
 
   currentUserApp: WritableSignal<UserApp | undefined> = signal(undefined);
   idUserApp: WritableSignal<string | undefined> = signal(undefined);

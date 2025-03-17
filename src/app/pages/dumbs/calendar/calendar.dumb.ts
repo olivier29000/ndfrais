@@ -2,11 +2,16 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  HostListener,
   Input,
   Output,
   ViewChild
 } from '@angular/core';
-import { CalendarModule, CalendarEvent } from 'angular-calendar';
+import {
+  CalendarModule,
+  CalendarEvent,
+  CalendarEventTimesChangedEvent
+} from 'angular-calendar';
 import { CommonModule } from '@angular/common';
 import { HourCalendarDumb } from './hour-calendar-dumb';
 import { DayCalendarDumb } from './day-calendar.dumb';
@@ -29,6 +34,7 @@ import { DayApp } from 'src/app/models/day-app.model';
           [events]="eventsWithNew"
           [hourSegmentTemplate]="weekView"
           [eventTemplate]="customEvent"
+          (eventTimesChanged)="eventTimesChanged($event)"
           [headerTemplate]="dayHeaderTemplate">
         </mwl-calendar-week-view>
       </div>
@@ -66,7 +72,7 @@ import { DayApp } from 'src/app/models/day-app.model';
               weekEvent.event.meta.contratUserApp.poste
             : ''
         "
-        class="custom-event overflow-auto  flex flex-column"
+        class="relative custom-event overflow-auto "
         [ngClass]="weekEvent.event.avaibility ? 'event-avaibility' : ''"
         [style.height]="weekEvent.height + 'px'"
         [style.cursor]="weekEvent.event.id ? 'grab' : 'default'"
@@ -99,7 +105,13 @@ import { DayApp } from 'src/app/models/day-app.model';
           }
         </div>
         @if (canCreate) {
-          <div class="mt-auto flex content-center mb-1 w-full">
+          <div class="absolute bottom-0 mb-1 flex justify-between">
+            <button
+              mat-icon-button
+              (click)="this.updateEventOutput.emit(weekEvent.event)"
+              class="mx-auto">
+              <mat-icon svgIcon="mat:edit"></mat-icon>
+            </button>
             <button
               mat-icon-button
               (click)="deleteEvent(weekEvent.event)"
@@ -154,6 +166,20 @@ import { DayApp } from 'src/app/models/day-app.model';
   ]
 })
 export class CalendarDumb {
+  isCtrlPressed = false;
+  @HostListener('window:keydown', ['$event'])
+  handleKeyDown(event: KeyboardEvent) {
+    if (event.ctrlKey) {
+      this.isCtrlPressed = true;
+    }
+  }
+
+  @HostListener('window:keyup', ['$event'])
+  handleKeyUp(event: KeyboardEvent) {
+    if (!event.ctrlKey) {
+      this.isCtrlPressed = false;
+    }
+  }
   @ViewChild('calendarContainer', { static: true })
   calendarContainer!: ElementRef<HTMLDivElement>;
   ngAfterViewInit(): void {
@@ -186,10 +212,11 @@ export class CalendarDumb {
     this._events = value;
   }
 
-  get events(): CalendarEvent[] {
+  get events(): CalendarEvent<EventMeta>[] {
     return this._events;
   }
   @Output() createEventOutput = new EventEmitter<CalendarEvent>();
+  @Output() updateEventOutput = new EventEmitter<CalendarEvent>();
   @Output() deleteEventOutput = new EventEmitter<CalendarEvent>();
 
   deleteEvent(event: CalendarEvent) {
@@ -250,6 +277,23 @@ export class CalendarDumb {
       }
       this.newEvent = undefined;
       this.eventsWithNew = this.events;
+    }
+  }
+
+  eventTimesChanged({
+    event,
+    newStart,
+    newEnd
+  }: CalendarEventTimesChangedEvent): void {
+    if (this.isCtrlPressed) {
+      this.createEventOutput.emit({
+        ...event,
+        start: newStart,
+        end: newEnd,
+        id: undefined
+      });
+    } else {
+      this.updateEventOutput.emit({ ...event, start: newStart, end: newEnd });
     }
   }
 }

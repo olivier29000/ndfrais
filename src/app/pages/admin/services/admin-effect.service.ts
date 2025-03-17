@@ -142,15 +142,16 @@ export class AdminEffectService {
   ): void {
     this.adminRepo
       .getAllEventByContratIdAndPeriod(start, end, contratId)
-      .subscribe((eventList) =>
-        this.adminStore.eventList.set([
+      .subscribe((eventList) => {
+        console.log(eventList);
+        return this.adminStore.eventList.set([
           ...eventList.map((event) => ({
             ...event,
             start: this.utils.getStart(event.start),
             end: this.utils.getEnd(event.end)
           }))
-        ])
-      );
+        ]);
+      });
   }
 
   getRecapContrat(date: Date, idContrat: number): void {
@@ -240,21 +241,31 @@ export class AdminEffectService {
   }
 
   createNewEvent(event: CalendarEvent, contratId: string): void {
-    this.adminRepo.createNewEvent(event, contratId).subscribe(() => {
-      const currentDateRecap = new Date(this.adminStore.currentDateRecap());
-      const calendarViewDate = new Date(this.adminStore.calendarViewDate());
-      this.getAllEventByContratIdAndPeriod(
-        startOfWeek(calendarViewDate, { locale: fr }),
-        endOfWeek(calendarViewDate, { locale: fr }),
-        contratId
-      );
-      this.getAllEventByContratListAndPeriod(
-        startOfWeek(currentDateRecap, { locale: fr }),
-        endOfWeek(currentDateRecap, { locale: fr })
-      );
-      this.getRecap(currentDateRecap);
-      this.getRecapContrat(calendarViewDate, Number(contratId));
-    });
+    this.adminRepo.createNewEvent(event, contratId).subscribe(
+      () => {
+        const currentDateRecap = new Date(this.adminStore.currentDateRecap());
+        const calendarViewDate = new Date(this.adminStore.calendarViewDate());
+        this.getAllEventByContratIdAndPeriod(
+          startOfWeek(calendarViewDate, { locale: fr }),
+          endOfWeek(calendarViewDate, { locale: fr }),
+          contratId
+        );
+        this.getAllEventByContratListAndPeriod(
+          startOfWeek(currentDateRecap, { locale: fr }),
+          endOfWeek(currentDateRecap, { locale: fr })
+        );
+        this.getRecap(currentDateRecap);
+        this.getRecapContrat(calendarViewDate, Number(contratId));
+      },
+      (error) => {
+        this.utils.changeIsLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error
+        });
+      }
+    );
   }
   copyPasteWeek(dateToCopy: Date, dateToPaste: Date, contratId: string): void {
     this.adminRepo
