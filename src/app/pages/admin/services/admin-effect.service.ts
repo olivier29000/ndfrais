@@ -283,8 +283,10 @@ export class AdminEffectService {
         );
         const currentDateRecap = new Date(this.adminStore.currentDateRecap());
         this.getRecap(currentDateRecap);
-        const calendarViewDate = new Date(this.adminStore.calendarViewDate());
-        this.getRecapContrat(calendarViewDate, Number(contratId));
+        this.getAllEventByContratListAndPeriod(
+          startOfWeek(currentDateRecap, { locale: fr }),
+          endOfWeek(currentDateRecap, { locale: fr })
+        );
       });
   }
   openPdfDisplayModal(idPdf: number): void {
