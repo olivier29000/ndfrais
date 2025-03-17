@@ -24,7 +24,7 @@ import { RouterLink } from '@angular/router';
           <div class="text-2xl font-medium  mb-5">
             Plutôt qu'un long discours, je vous propose de regarder la première
             minute ou toute la vidéo ci-dessous pour découvrir le logiciel
-            alaisedeiz
+            planifique
           </div>
           <div class="video-container">
             <iframe
@@ -114,7 +114,7 @@ import { RouterLink } from '@angular/router';
                 un manager, en plus de créer des tensions du coté des employés.
               </div>
               <div class="text-gray-300 mt-3 leading-relaxed">
-                Je souhaite, via alaisedeiz.bzh, répondre à cette problématique
+                Je souhaite, via planifique.pro, répondre à cette problématique
                 au meilleur rapport qualité/prix. Vous pouvez me retrouver tous
                 les jours à la cantine numérique de Quimper à travailler dessus.
               </div>
@@ -201,7 +201,7 @@ export class AccueilPage {
   }[] = [
     {
       icon: 'mat:check',
-      label: 'A quoi sert le logiciel web alaisedeiz ?',
+      label: 'A quoi sert le logiciel web planifique ?',
       description:
         "C'est un outil disponible sur le web qui permet de gérer facilement le planning des absences de vos employés. Concrétement, vos employés disposent d'un espace en ligne pour visualiser leur planning et faire leur demandes d'absences (congés, arrêts maladies...). Vos manager et vous disposez d'un espace pour organiser les horaires de travail et gérer les demandes d'abcences"
     },
@@ -262,9 +262,9 @@ export class AccueilPage {
     // },
     {
       icon: 'mat:check',
-      label: 'Pourquoi le nom alaisedeiz ?',
+      label: 'Pourquoi le nom planifique ?',
       description:
-        'C\'est un clin d\'oeil à ma région la Bretagne, "deiz" signifie "jour" en breton et je fais référence à l\'expréssion "à l\'aise breizh" qu\'on m\'a souvent rappelée avec mon nom de famille "lasbleis". alaisedeiz, pour moi signifie que vous organiserez vos jours plus facilement.'
+        'C\'est un clin d\'oeil à ma région la Bretagne, "deiz" signifie "jour" en breton et je fais référence à l\'expréssion "à l\'aise breizh" qu\'on m\'a souvent rappelée avec mon nom de famille "lasbleis". planifique, pour moi signifie que vous organiserez vos jours plus facilement.'
     }
   ];
 }

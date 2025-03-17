@@ -16,7 +16,7 @@ import Swal from 'sweetalert2';
         <!-- HEADER -->
         <div class="space-y-12">
           <div class="text-center">
-            <div class="text-2xl font-medium">alaisedeiz</div>
+            <div class="text-2xl font-medium">planifique</div>
             <div class="text-5xl font-extrabold">
               Jusqu'au 1er juin, tout est gratuit ! Profitez en !
             </div>

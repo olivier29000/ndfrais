@@ -24,7 +24,7 @@ import { debounceTime, distinctUntilChanged, tap } from 'rxjs';
         </div>
 
         <div class="text-center mt-4">
-          <h2 class="title m-0">Créer un compte alaisedeiz</h2>
+          <h2 class="title m-0">Créer un compte planifique</h2>
           <h4 class="body-2 text-secondary m-0">C'est gratuit</h4>
         </div>
 

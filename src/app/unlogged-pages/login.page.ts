@@ -29,7 +29,7 @@ import { FormsModule } from '@angular/forms';
         </div>
 
         <div class="text-center mt-4">
-          <h2 class="title m-0">Connexion alaisedeiz</h2>
+          <h2 class="title m-0">Connexion planifique</h2>
         </div>
 
         <div class="p-6 flex flex-col gap-4">

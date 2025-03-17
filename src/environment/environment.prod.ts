@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
   urlBackEnd: '@BACKEND_URL@', //
-  urlFrontEnd: 'https://alaisedeiz.bzh',
+  urlFrontEnd: 'https://planifique.pro',
   trackAnalyticID: '@TODO'
 };

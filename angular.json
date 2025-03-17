@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "alaisedeiz": {
+    "planifique": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -12,12 +12,12 @@
       },
       "root": "",
       "sourceRoot": "src",
-      "prefix": "alaisedeiz",
+      "prefix": "planifique",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/alaisedeiz",
+            "outputPath": "dist/planifique",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -98,18 +98,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "buildTarget": "alaisedeiz:build"
+            "buildTarget": "planifique:build"
           },
           "configurations": {
             "production": {
-              "buildTarget": "alaisedeiz:build:production"
+              "buildTarget": "planifique:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "alaisedeiz:build"
+            "buildTarget": "planifique:build"
           }
         },
         "test": {
