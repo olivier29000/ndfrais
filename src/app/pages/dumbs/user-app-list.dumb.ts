@@ -139,7 +139,10 @@ import { environment } from 'src/environment/environment';
                   *matCellDef="let row"
                   [ngClass]="column.cssClasses"
                   mat-cell>
-                  @if (row.contratUserApp[column.property]) {
+                  @if (
+                    row.contratUserApp[column.property] &&
+                    column.property === 'token'
+                  ) {
                     <button
                       class="ml-4 flex-none"
                       mat-icon-button
@@ -150,6 +153,8 @@ import { environment } from 'src/environment/environment';
                       ">
                       <mat-icon svgIcon="mat:phonelink"></mat-icon>
                     </button>
+                  } @else if (row.contratUserApp[column.property]) {
+                    {{ row.contratUserApp[column.property] }}
                   } @else {
                     {{ row[column.property] }}
                   }
@@ -379,32 +384,18 @@ export class UserListDumb implements AfterViewInit {
       cssClasses: ['font-medium']
     },
     {
-      label: 'Lien',
-      property: 'token',
+      label: 'Poste',
+      property: 'poste',
       type: 'text',
       visible: true,
       cssClasses: ['font-medium']
     },
     {
-      label: 'Email',
-      property: 'email',
+      label: 'Lien',
+      property: 'token',
       type: 'text',
       visible: true,
-      cssClasses: ['text-secondary', 'font-medium']
-    },
-    {
-      label: 'Telephone',
-      property: 'telephone',
-      type: 'text',
-      visible: false,
-      cssClasses: ['text-secondary', 'font-medium']
-    },
-    {
-      label: 'Notes',
-      property: 'notes',
-      type: 'text',
-      visible: true,
-      cssClasses: ['text-secondary', 'font-medium']
+      cssClasses: ['font-medium']
     },
     { label: 'Actions', property: 'actions', type: 'button', visible: true }
   ];

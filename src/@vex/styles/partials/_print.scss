@@ -5,6 +5,11 @@
     overflow: initial !important;
   }
 
+  * {
+    -webkit-print-color-adjust: exact !important; /* Safari & Chrome */
+    print-color-adjust: exact !important; /* Standard */
+  }
+
   .vex-toolbar,
   .vex-sidenav {
     display: none !important;
