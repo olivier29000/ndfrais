@@ -36,7 +36,6 @@ interface Display {
           <div
             class="bg-app-bar px-6 h-16 border-b sticky left-0 flex items-center">
             <span class="flex-1"></span>
-            <button onclick="window.print()">Imprimer la page</button>
             <button
               [matMenuTriggerFor]="columnFilterMenu"
               class="ml-4 flex-none"
@@ -47,8 +46,19 @@ interface Display {
             </button>
           </div>
           <div class="px-6">
-            <smart-admin-recap
-              [contratList]="displayedContratList()"></smart-admin-recap>
+            <div id="recap" class="relative">
+              <button
+                class="absolute right-0 top-0 ml-4 flex-none"
+                mat-icon-button
+                matTooltip="Filter Columns"
+                type="button"
+                (click)="printSection('recap')">
+                <mat-icon svgIcon="mat:print"></mat-icon>
+              </button>
+              <smart-admin-recap
+                [contratList]="displayedContratList()"></smart-admin-recap>
+            </div>
+
             <div
               class="my-1 px-6 flex flex-col sm:flex-row items-stretch sm:items-start gap-6">
               <div class="me-3 flex flex-wrap m-3 ">
@@ -81,15 +91,25 @@ interface Display {
               (selectTagOutput)="selectTag($event)"
               [canCreateAdd]="false"
               (unSelectTagOutput)="unSelectTag($event)"></dumb-select-tag>
-            <dumb-calendar-nav
-              [viewDate]="viewDate()"
-              (viewDateOutput)="
-                calendarViewDateChange($event)
-              "></dumb-calendar-nav>
+            <div id="calendar" class="relative">
+              <button
+                class="absolute right-0 top-0 ml-4 flex-none"
+                mat-icon-button
+                matTooltip="Filter Columns"
+                type="button"
+                (click)="printSection('calendar')">
+                <mat-icon svgIcon="mat:print"></mat-icon>
+              </button>
+              <dumb-calendar-nav
+                [viewDate]="viewDate()"
+                (viewDateOutput)="
+                  calendarViewDateChange($event)
+                "></dumb-calendar-nav>
 
-            <app-calendar
-              [viewDate]="viewDate()"
-              [events]="allEventList()"></app-calendar>
+              <app-calendar
+                [viewDate]="viewDate()"
+                [events]="allEventList()"></app-calendar>
+            </div>
           </div></div></vex-page-layout-content
     ></vex-page-layout>
     <mat-menu #columnFilterMenu="matMenu" xPosition="before" yPosition="below">
@@ -127,6 +147,25 @@ interface Display {
 })
 export class AdminPlanningsPage implements OnInit {
   //currentDateRecap
+
+  printSection(sectionId: string) {
+    const printContent = document.getElementById(sectionId);
+    if (!printContent) {
+      console.error('Élément introuvable !');
+      return;
+    }
+
+    const originalContent = document.body.innerHTML;
+
+    // Remplace le contenu du `body` par uniquement la section à imprimer
+    document.body.innerHTML = printContent.innerHTML;
+
+    window.print();
+
+    // Restaurer le contenu initial après l'impression
+    document.body.innerHTML = originalContent;
+  }
+
   stateEvents: 'prevu' | 'declare' = 'prevu';
   viewDate = this.adminServer.currentDateRecap;
   calendarViewDateChange(date: Date) {

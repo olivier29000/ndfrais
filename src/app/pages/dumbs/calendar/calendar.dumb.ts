@@ -65,13 +65,7 @@ import { DayApp } from 'src/app/models/day-app.model';
     </ng-template>
     <ng-template #customEvent let-weekEvent="weekEvent">
       <div
-        [matTooltip]="
-          weekEvent.event.meta && weekEvent.event.meta.contratUserApp
-            ? weekEvent.event.meta.contratUserApp.userApp.pseudo +
-              ' - ' +
-              weekEvent.event.meta.contratUserApp.poste
-            : ''
-        "
+        [matTooltip]="getToolTipEvent(weekEvent.event)"
         class="relative custom-event overflow-auto "
         [ngClass]="weekEvent.event.avaibility ? 'event-avaibility' : ''"
         [style.height]="weekEvent.height + 'px'"
@@ -218,7 +212,23 @@ export class CalendarDumb {
   @Output() createEventOutput = new EventEmitter<CalendarEvent>();
   @Output() updateEventOutput = new EventEmitter<CalendarEvent>();
   @Output() deleteEventOutput = new EventEmitter<CalendarEvent>();
-
+  getToolTipEvent(event: CalendarEvent): string {
+    return (
+      event.start.getHours() +
+      'h' +
+      event.start?.getMinutes() +
+      ' - ' +
+      event.end?.getHours() +
+      'h' +
+      (event.end && event.end.getMinutes() < 10
+        ? '0' + event.end?.getMinutes()
+        : event.end?.getMinutes()) +
+      ' ' +
+      event.meta.title +
+      ' ' +
+      event.meta.contratUserApp.poste
+    );
+  }
   deleteEvent(event: CalendarEvent) {
     this.deleteEventOutput.emit(event);
   }
