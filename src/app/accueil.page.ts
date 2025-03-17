@@ -19,7 +19,7 @@ import { RouterLink } from '@angular/router';
 
         <div class=" px-8 text-center rounded-2xl">
           <div class="text-5xl font-extrabold mb-5">
-            Besoin de simplifier le planning et les absences de vos employés ?
+            Besoin de simplifier le planning de vos employés ?
           </div>
           <div class="text-2xl font-medium  mb-5">
             Plutôt qu'un long discours, je vous propose de regarder la première
@@ -54,7 +54,7 @@ import { RouterLink } from '@angular/router';
             <a [routerLink]="['/login']">Connectez vous ici</a>
           </p>
         </div>
-        <dumb-abonnement-list></dumb-abonnement-list>
+        <!-- <dumb-abonnement-list></dumb-abonnement-list> -->
         <div class="space-y-12">
           <div class="text-center">
             <div class="text-4xl font-extrabold">Questions / Réponses</div>
@@ -109,9 +109,9 @@ import { RouterLink } from '@angular/router';
                 des autres.
               </div>
               <div class="text-gray-300 mt-3 leading-relaxed">
-                J'ai créé alaisedev.bzh après avoir remarqué que la gestion des
-                absences et du planning des employés peut être chronophage pour
-                un manager, en plus de créer des tensions du coté des employés.
+                J'ai créé planifique.pro après avoir remarqué que la gestion du
+                planning des employés peut être chronophage pour un manager, en
+                plus de créer des tensions du coté des employés.
               </div>
               <div class="text-gray-300 mt-3 leading-relaxed">
                 Je souhaite, via planifique.pro, répondre à cette problématique
@@ -203,13 +203,13 @@ export class AccueilPage {
       icon: 'mat:check',
       label: 'A quoi sert le logiciel web planifique ?',
       description:
-        "C'est un outil disponible sur le web qui permet de gérer facilement le planning des absences de vos employés. Concrétement, vos employés disposent d'un espace en ligne pour visualiser leur planning et faire leur demandes d'absences (congés, arrêts maladies...). Vos manager et vous disposez d'un espace pour organiser les horaires de travail et gérer les demandes d'abcences"
+        "C'est un outil disponible sur le web qui permet de gérer facilement le planning de vos employés. Concrétement, C'est très simple pour vous de le faire et vos employés peuvent retrouver leur planning personnel via une simple url"
     },
     {
       icon: 'mat:check',
       label: 'Quel intêret y a t-il pour moi et mes équipes ?',
       description:
-        "Vous gagnez du temps, simplifiez votre organisation et la collecte des données pour votre comptabilité. Il est conçu pour que la saisie soit intuitive et permet de centraliser les données et de visualiser facilement les informations. Il est accessible de manière sécurisée de n'importe où"
+        "Vous gagnez du temps, simplifiez votre organisation et la collecte des données pour votre comptabilité. La saisie est conçu pour être intuitive et rapide et vos données sont centralisées. Il est accessible de manière sécurisée de n'importe où"
     },
     // {
     //   icon: 'mat:check',
@@ -219,9 +219,21 @@ export class AccueilPage {
     // },
     {
       icon: 'mat:check',
-      label: "Comment m'inscrire ou avoir plus d'informations ?",
+      label: "Comment essayer ou avoir plus d'informations ?",
       description:
-        "L'inscription est gratuite via le bouton CREER MON COMPTE, vous pourrez alors sélectionner le plan qui vous convient. Jusqu'à 5 employés actifs, l'application reste sans frais pour vous, vous pouvez donc l'essayer puis, si vous êtes convaincu, choisir un abonnement ou rester sur le plan gratuit"
+        "L'inscription avec des fonctionnalités restreintes est gratuite via le bouton CREER MON COMPTE. Vous pouvez aussi me contacter au 06 99 89 22 42, n'hésitez pas."
+    },
+    {
+      icon: 'mat:check',
+      label: "Comment l'utiliser à plein temps dans mon entreprise ?",
+      description:
+        'Je peux installer le logiciel sur votre serveur ou vous en dédier un. Tout est possible, contactez moi et nous étudierons ensemble la méthode la plus avantageuse pour vous.'
+    },
+    {
+      icon: 'mat:check',
+      label: 'Je peux adapter le logiciel à mes besoins spécifiques ?',
+      description:
+        "Oui, c'est moi qui ai créé planifique, je peux l'adapter exactement comme vous le voudrez."
     },
     // {
     //   icon: 'mat:check',
@@ -232,15 +244,10 @@ export class AccueilPage {
     // },
     {
       icon: 'mat:check',
-      label: "Quel engagement je prends si je m'abonne",
-      description: 'Aucun, vous pouvez vous désabonner à tout moment'
-    },
-    {
-      icon: 'mat:check',
       label: 'Il y a un support utilisateur',
       description:
         "Un espace dédié est accessible pour demander des informations ou signaler un problème directement dans l'application. Nous pouvons aussi signer un contrat d'assistance sur devis"
-    },
+    }
     // {
     //   icon: 'mat:check',
     //   label: 'Quel engagement vous prenez de votre côté ?',
@@ -260,11 +267,5 @@ export class AccueilPage {
     //   description:
     //     "J'ai l'habitude et c'est mon métier. Dans mon précédent travail j'avais la gestion d'un logiciel semblable utilisé par plus de quatre mille personnes quotidiennement. En 2021 j'ai créé le même type de logiciel pour une TPE de Combrit et il fonctionne parfaitement sans qu'il n'y ait eu aucune intervention de ma part."
     // },
-    {
-      icon: 'mat:check',
-      label: 'Pourquoi le nom planifique ?',
-      description:
-        'C\'est un clin d\'oeil à ma région la Bretagne, "deiz" signifie "jour" en breton et je fais référence à l\'expréssion "à l\'aise breizh" qu\'on m\'a souvent rappelée avec mon nom de famille "lasbleis". planifique, pour moi signifie que vous organiserez vos jours plus facilement.'
-    }
   ];
 }
