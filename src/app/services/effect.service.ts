@@ -33,7 +33,7 @@ export class EffectService {
       (userConnected) => {
         this.store.userConnected.set(userConnected);
         this.store.isLoading.set(false);
-        this.router.navigate(['users']);
+        this.router.navigate(['admin/users']);
       },
       (error: string) => {
         this.store.isLoading.set(false);

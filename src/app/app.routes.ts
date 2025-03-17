@@ -48,7 +48,7 @@ export const appRoutes: VexRoutes = [
   },
   {
     path: '**',
-    redirectTo: '/users',
+    redirectTo: '/admin/users',
     pathMatch: 'full'
   }
 ];
