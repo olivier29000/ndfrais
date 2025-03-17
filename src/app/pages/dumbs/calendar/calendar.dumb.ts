@@ -81,9 +81,21 @@ import { DayApp } from 'src/app/models/day-app.model';
         (mouseover)="eventOver()">
         <div class="text-center mt-1 w-full">
           @if (weekEvent.event.meta && weekEvent.event.meta.contratUserApp) {
-            <b>{{ weekEvent.event.meta.contratUserApp.userApp.pseudo }}</b>
+            <b>{{ weekEvent.event.meta.title }}</b>
             <br />
             <b>{{ weekEvent.event.meta.contratUserApp.poste }}</b>
+          }
+          @if (weekEvent.event.meta && weekEvent.event.meta.tagList) {
+            <div class="flex flex-wrap">
+              @for (tag of weekEvent.event.meta.tagList; track $index) {
+                <a
+                  tabindex="0"
+                  class="label label-light m-1 p-2"
+                  [ngStyle]="{ color: tag.color, border: '1px solid' }">
+                  {{ tag.title }}
+                </a>
+              }
+            </div>
           }
         </div>
         @if (canCreate) {

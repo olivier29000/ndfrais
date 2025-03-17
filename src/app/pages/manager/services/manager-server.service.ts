@@ -21,18 +21,18 @@ export class ManagerServerService {
     private managerStore: ManagerStoreService,
     private utils: UtilsService
   ) {
-    this.getAllContratUserApp();
-    this.getActionListByUserApp();
-    effect(
-      () => {
-        const userConnected = this.utils.userConnected();
-        const nbActionList = this.actionList().length;
-        if (userConnected?.roleList.includes(Role.ROLE_MANAGER)) {
-          this.utils.pushManagerNbActionList(nbActionList);
-        }
-      },
-      { allowSignalWrites: true }
-    );
+    // this.getAllContratUserApp();
+    // this.getActionListByUserApp();
+    // effect(
+    //   () => {
+    //     const userConnected = this.utils.userConnected();
+    //     const nbActionList = this.actionList().length;
+    //     if (userConnected?.roleList.includes(Role.ROLE_MANAGER)) {
+    //       this.utils.pushManagerNbActionList(nbActionList);
+    //     }
+    //   },
+    //   { allowSignalWrites: true }
+    // );
   }
   eventList = this.managerStore.eventList;
   getAllEventByContratListAndPeriod(start: Date, end: Date): void {

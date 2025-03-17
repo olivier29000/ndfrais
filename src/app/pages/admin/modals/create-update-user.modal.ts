@@ -79,31 +79,6 @@ import { DatepickerDumb } from '../../dumbs/datepicker.dumb';
         </div>
 
         <mat-form-field class="flex-auto">
-          <mat-label>Nom d'utilisateur</mat-label>
-          <input
-            [formControl]="pseudo"
-            [value]="currentUserApp.pseudo"
-            name="pseudo"
-            matInput
-            required />
-          @if (isCreateMode()) {
-            @if (canChoosePseudo() === true) {
-              <mat-hint class="text-green"
-                >Ce nom d'utilisateur est disponible</mat-hint
-              >
-            } @else if (canChoosePseudo() === false) {
-              <mat-hint class="text-red"
-                >Ce nom d'utilisateur est indisponible, choisissez en un
-                autre</mat-hint
-              >
-            } @else {
-              <mat-hint>Vérification de la disponibilité du nom</mat-hint>
-            }
-          }
-
-          <mat-icon matIconPrefix svgIcon="mat:edit_location"></mat-icon>
-        </mat-form-field>
-        <mat-form-field class="flex-auto">
           <mat-label>Email</mat-label>
           <input
             [(ngModel)]="currentUserApp.email"
@@ -207,7 +182,7 @@ import { DatepickerDumb } from '../../dumbs/datepicker.dumb';
           mat-flat-button
           type="submit"
           (click)="save()"
-          [disabled]="!canChoosePseudo() || currentUserApp.email === ''">
+          [disabled]="currentUserApp.nom === ''">
           Créer utilisateur
         </button>
         <button
@@ -314,7 +289,8 @@ export class CreateUpdateUserModal implements OnInit {
     telephone: this.data?.userApp?.telephone || '',
     notes: this.data?.userApp?.notes || '',
     imageBase64: this.data?.userApp?.imageBase64 || undefined,
-    contratUserApp: this.currentContrat
+    contratUserApp: this.currentContrat,
+    enabled: this.data?.userApp?.enabled || false
   });
 
   adminAllContratList = computed(() => {

@@ -1,7 +1,7 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
 import { WEEK_STATE, DayApp, WORK_STATE } from '../models/day-app.model';
 import { DayBdd } from '../models/day-bdd.model';
-import { navigationItemManager, StoreService } from './store.service';
+import { StoreService } from './store.service';
 import { NavigationService } from '../core/navigation/navigation.service';
 import {
   NavigationItem,
@@ -43,35 +43,6 @@ export class UtilsService {
 
   loadNavigation(navigationItemList: NavigationItem[]): void {
     this.navigationService.loadNavigation(navigationItemList);
-  }
-
-  pushManagerNbActionList(nbActionList: number): void {
-    this.store.navigationItemList.update((navigationItemList) => {
-      return navigationItemList.map((nav) => {
-        if (nav.label === navigationItemManager.label) {
-          return {
-            ...nav,
-            children: navigationItemManager.children.map((c) => {
-              if (c.label === 'Validations') {
-                return {
-                  ...c,
-                  badge: {
-                    value: nbActionList > 0 ? nbActionList + '' : '',
-                    bgClass: 'bg-green-600',
-                    textClass: 'text-white'
-                  }
-                };
-              }
-
-              return c;
-            })
-          };
-        } else {
-          return nav;
-        }
-      });
-    });
-    this.store.navigationItemList();
   }
 
   pushChildrenAdmin(

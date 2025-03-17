@@ -23,60 +23,9 @@ export class StoreService {
         const userConnected = this.userConnected();
         if (userConnected) {
           const navigationItemList: NavigationItem[] = [];
-          if (userConnected.roleList.includes(Role.ROLE_USER)) {
-            const userAllContratList = this.userAllContratList();
-            for (let userAppContrat of userAllContratList) {
-              navigationItemList.push({
-                ...navigationItemUser,
-
-                label: userAppContrat.poste,
-                children: [
-                  {
-                    type: 'link',
-                    label: 'Planning',
-                    route: '/user/planning/' + userAppContrat.id,
-                    icon: 'mat:calendar_today',
-                    routerLinkActiveOptions: { exact: true }
-                  },
-                  {
-                    type: 'link',
-                    label: 'Calendrier',
-                    route: '/user/conges/' + userAppContrat.id,
-                    icon: 'mat:card_travel',
-                    routerLinkActiveOptions: { exact: true }
-                  },
-                  {
-                    type: 'link',
-                    label: 'Historique',
-                    route: '/user/historique/' + userAppContrat.id,
-                    icon: 'mat:account_balance',
-                    routerLinkActiveOptions: { exact: true }
-                  },
-                  {
-                    type: 'link',
-                    label: 'Equipe',
-                    route: '/user/equipe/' + userAppContrat.id,
-                    icon: 'mat:supervised_user_circle',
-                    routerLinkActiveOptions: { exact: true }
-                  }
-                ]
-              });
-            }
-            if (userAllContratList.length === 0) {
-              navigationItemList.push({
-                type: 'subheading',
-                label: 'Aucun contrat',
-                children: []
-              });
-            }
-          }
-          if (userConnected.roleList.includes(Role.ROLE_MANAGER)) {
-            navigationItemList.push(navigationItemManager);
-          }
           if (userConnected.roleList.includes(Role.ROLE_ADMIN)) {
             navigationItemList.push(navigationItemAdmin);
           }
-          navigationItemList.push(navigationItemCommun);
           this.navigationItemList.set(navigationItemList);
         }
       },
@@ -105,73 +54,6 @@ export class StoreService {
   ]);
   dataTreeNode: WritableSignal<TreeNode[]> = signal([]);
 }
-export const navigationItemCommun: NavigationSubheading = {
-  type: 'subheading',
-  label: 'Commun',
-  children: [
-    {
-      type: 'link',
-      label: 'Organigramme',
-      route: '/organigramme',
-      icon: 'mat:bubble_chart',
-      routerLinkActiveOptions: { exact: true }
-    }
-  ]
-};
-const navigationItemUser: NavigationSubheading = {
-  type: 'subheading',
-  label: 'Contrats',
-  children: [
-    {
-      type: 'link',
-      label: 'Planning',
-      route: '/user/planning',
-      icon: 'mat:calendar_today',
-      routerLinkActiveOptions: { exact: true }
-    },
-    {
-      type: 'link',
-      label: 'Congés',
-      route: '/user/conges',
-      icon: 'mat:card_travel',
-      routerLinkActiveOptions: { exact: true }
-    }
-  ]
-};
-export const navigationItemManager: NavigationSubheading = {
-  type: 'subheading',
-  label: 'Manager',
-  children: [
-    {
-      type: 'link',
-      label: 'Mes employés',
-      route: '/manager/contrats',
-      icon: 'mat:people',
-      routerLinkActiveOptions: { exact: true }
-    },
-    {
-      type: 'link',
-      label: 'Validations',
-      route: '/manager/validations',
-      icon: 'mat:thumbs_up_down',
-      routerLinkActiveOptions: { exact: true }
-    },
-    {
-      type: 'link',
-      label: 'Historique',
-      route: '/manager/historique',
-      icon: 'mat:account_balance',
-      routerLinkActiveOptions: { exact: true }
-    },
-    {
-      type: 'link',
-      label: 'Plannings',
-      route: '/manager/plannings',
-      icon: 'mat:assignment',
-      routerLinkActiveOptions: { exact: true }
-    }
-  ]
-};
 
 export const UserBddList = [
   {

@@ -40,6 +40,7 @@ import { VexPageLayoutComponent } from '@vex/components/vex-page-layout/vex-page
 import { MatInputModule } from '@angular/material/input';
 import { UserApp } from 'src/app/models/user.model';
 import { MatSelectModule } from '@angular/material/select';
+import { environment } from 'src/environment/environment';
 
 @Component({
   selector: 'dumb-user-app-list',
@@ -138,7 +139,20 @@ import { MatSelectModule } from '@angular/material/select';
                   *matCellDef="let row"
                   [ngClass]="column.cssClasses"
                   mat-cell>
-                  {{ row[column.property] }}
+                  @if (row.contratUserApp[column.property]) {
+                    <button
+                      class="ml-4 flex-none"
+                      mat-icon-button
+                      matTooltip="Copier le lien"
+                      type="button"
+                      (click)="
+                        copyToClipboard(row.contratUserApp[column.property])
+                      ">
+                      <mat-icon svgIcon="mat:phonelink"></mat-icon>
+                    </button>
+                  } @else {
+                    {{ row[column.property] }}
+                  }
                 </td>
               </ng-container>
               <ng-container
@@ -332,6 +346,16 @@ import { MatSelectModule } from '@angular/material/select';
   ]
 })
 export class UserListDumb implements AfterViewInit {
+  copyToClipboard(text: string): void {
+    navigator.clipboard
+      .writeText(`${environment.urlFrontEnd}/employe/${text}`)
+      .then(() => {
+        console.log('Texte copié dans le presse-papiers !');
+      })
+      .catch((err) => {
+        console.error('Échec de la copie :', err);
+      });
+  }
   columns: TableColumn<UserApp>[] = [
     {
       label: 'Nom Prénom',
@@ -355,8 +379,8 @@ export class UserListDumb implements AfterViewInit {
       cssClasses: ['font-medium']
     },
     {
-      label: "Nom d'utilisateur",
-      property: 'pseudo',
+      label: 'Lien',
+      property: 'token',
       type: 'text',
       visible: true,
       cssClasses: ['font-medium']
