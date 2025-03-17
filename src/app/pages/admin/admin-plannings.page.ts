@@ -170,7 +170,9 @@ export class AdminPlanningsPage implements OnInit {
       );
     }
     return allEventList.filter((e) =>
-      this.displayedContratList().some((c) => c.id && c.id + '' === e.title)
+      this.displayedContratList().some(
+        (c) => c.id && c.id === e.meta?.contratUserApp?.id
+      )
     );
   });
   constructor(private adminServer: AdminServerService) {
