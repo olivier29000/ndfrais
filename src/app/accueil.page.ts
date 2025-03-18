@@ -23,13 +23,24 @@ import { RouterLink } from '@angular/router';
           </div>
           <div class="text-2xl font-medium  mb-5">
             Plutôt qu'un long discours, je vous propose de regarder la première
-            minute ou toute la vidéo ci-dessous pour découvrir le logiciel
+            minute ou les deux vidéos ci-dessous pour découvrir le logiciel
             planifique
           </div>
-          <div class="video-container">
+          <div class="video-container mb-3">
             <iframe
               class="ql-video ql-align-center mx-auto"
-              src="https://www.youtube.com/embed/nIa-T8fdrvc?autoplay=1&mute=1"
+              src="https://www.youtube.com/embed/aHnOcznGU5E?autoplay=1&mute=1"
+              title="YouTube video player"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen>
+            </iframe>
+          </div>
+          <div class="video-container mt-3">
+            <iframe
+              class="ql-video ql-align-center mx-auto"
+              src="https://www.youtube.com/embed/S_9J8z0aKVo"
               title="YouTube video player"
               frameborder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
