@@ -143,7 +143,7 @@ import { DayApp } from 'src/app/models/day-app.model';
         box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
       }
       .calendar {
-        height: 70vh;
+        height: 90vh;
         overflow: scroll;
         min-width: 800px;
       }

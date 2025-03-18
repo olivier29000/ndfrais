@@ -256,6 +256,10 @@ export class AdminServerService {
     this.adminEffect.changeEnabled(userApp);
   }
 
+  sendEmailLink(contratUserApp: ContratUserApp): void {
+    this.adminEffect.sendEmailLink(contratUserApp);
+  }
+
   createContratModal(userApp: UserApp): void {
     this.adminEffect.createContratModal(userApp);
   }

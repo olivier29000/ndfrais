@@ -270,6 +270,15 @@ export class AdminRepoService {
       .pipe(catchError(this.handleError));
   }
 
+  sendEmailLink(idContratUserApp: number): Observable<void> {
+    return this.http
+      .get<void>(
+        `${URL_BACKEND}/user-app/send-email-link/${idContratUserApp}`,
+        httpOptions
+      )
+      .pipe(catchError(this.handleError));
+  }
+
   getAllContrat(): Observable<ContratUserApp[]> {
     return this.http
       .get<

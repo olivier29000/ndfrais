@@ -80,11 +80,7 @@ import { DatepickerDumb } from '../../dumbs/datepicker.dumb';
 
         <mat-form-field class="flex-auto">
           <mat-label>Email</mat-label>
-          <input
-            [(ngModel)]="currentUserApp.email"
-            name="email"
-            matInput
-            [disabled]="!isCreateMode()" />
+          <input [(ngModel)]="currentUserApp.email" name="email" matInput />
 
           <mat-icon matIconPrefix svgIcon="mat:edit_location"></mat-icon>
         </mat-form-field>

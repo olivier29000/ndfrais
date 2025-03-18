@@ -5,6 +5,7 @@ import { UserListDumb } from '../dumbs/user-app-list.dumb';
 import { AdminServerService } from './services/admin-server.service';
 import { AdminContratSmart } from './smarts/admin-contrat.smart';
 import { ContratUserApp } from 'src/app/models/contrat-employe.model';
+import Swal from 'sweetalert2';
 
 @Component({
   template: `
@@ -14,7 +15,8 @@ import { ContratUserApp } from 'src/app/models/contrat-employe.model';
       (changeEnabled)="changeEnabled($event)"
       (selectContrat)="selectContrat($event)"
       [title]="'Utilisateurs actifs'"
-      [userAppList]="userAppList()">
+      [userAppList]="userAppList()"
+      (sendEmailLinkOutput)="sendEmailLink($event)">
     </dumb-user-app-list>
 
     <hr />
@@ -42,6 +44,23 @@ export class AdminUsersPage implements OnInit {
 
   changeEnabled(userApp: UserApp) {
     this.adminServer.changeEnabled(userApp);
+  }
+
+  sendEmailLink(contratUserApp: ContratUserApp & { email: string }): void {
+    if (!this.isValidEmail(contratUserApp.email)) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "l'employé n'a pas une adresse email correcte"
+      });
+    } else {
+      this.adminServer.sendEmailLink(contratUserApp);
+    }
+  }
+
+  isValidEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   }
 
   selectContrat(userApp: UserApp | undefined) {

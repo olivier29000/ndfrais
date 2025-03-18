@@ -41,6 +41,7 @@ import { MatInputModule } from '@angular/material/input';
 import { UserApp } from 'src/app/models/user.model';
 import { MatSelectModule } from '@angular/material/select';
 import { environment } from 'src/environment/environment';
+import { ContratUserApp } from 'src/app/models/contrat-employe.model';
 
 @Component({
   selector: 'dumb-user-app-list',
@@ -143,6 +144,14 @@ import { environment } from 'src/environment/environment';
                     row.contratUserApp[column.property] &&
                     column.property === 'token'
                   ) {
+                    <button
+                      class="ml-4 flex-none"
+                      mat-icon-button
+                      matTooltip="Copier le lien"
+                      type="button"
+                      (click)="sendEmailLink(row.contratUserApp, row)">
+                      <mat-icon svgIcon="mat:alternate_email"></mat-icon>
+                    </button>
                     <button
                       class="ml-4 flex-none"
                       mat-icon-button
@@ -361,6 +370,10 @@ export class UserListDumb implements AfterViewInit {
         console.error('Échec de la copie :', err);
       });
   }
+
+  sendEmailLink(contratUserApp: ContratUserApp, userApp: UserApp): void {
+    this.sendEmailLinkOutput.emit({ ...contratUserApp, email: userApp.email });
+  }
   columns: TableColumn<UserApp>[] = [
     {
       label: 'Nom Prénom',
@@ -404,6 +417,9 @@ export class UserListDumb implements AfterViewInit {
   @Output() updateUserModal = new EventEmitter<UserApp>();
   @Output() changeEnabled = new EventEmitter<UserApp>();
   @Output() selectContrat = new EventEmitter<UserApp>();
+  @Output() sendEmailLinkOutput = new EventEmitter<
+    ContratUserApp & { email: string }
+  >();
 
   selectedUser: UserApp | undefined = undefined;
   selectRow(row: UserApp): void {

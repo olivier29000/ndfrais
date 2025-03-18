@@ -674,6 +674,30 @@ export class AdminEffectService {
     this.updateUserApp(userApp);
   }
 
+  sendEmailLink(contratUserApp: ContratUserApp): void {
+    if (contratUserApp.id) {
+      this.utils.changeIsLoading(true);
+      this.adminRepo.sendEmailLink(contratUserApp.id).subscribe(
+        () => {
+          this.utils.changeIsLoading(false);
+          Swal.fire({
+            icon: 'success',
+            title: 'Et voila !',
+            text: "l'employé vient de recevoir un email avec le lien de son planning"
+          });
+        },
+        (error) => {
+          this.utils.changeIsLoading(false);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: error
+          });
+        }
+      );
+    }
+  }
+
   getUserAppList(): void {
     this.utils.changeIsLoading(true);
     this.adminRepo.getUserAppList().subscribe(
