@@ -47,17 +47,12 @@ export class RepoService {
       .pipe(catchError(this.handleError));
   }
 
-  creationCompte(
-    email: string,
-    entreprise: string,
-    password: string
-  ): Observable<void> {
+  creationCompte(email: string, password: string): Observable<void> {
     return this.http
       .post<void>(
         URL_BACKEND + '/user/creation-compte',
         {
           email,
-          entreprise,
           password
         },
         httpOptions

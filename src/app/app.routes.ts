@@ -6,6 +6,7 @@ import { EffectService } from './services/effect.service';
 import { inject } from '@angular/core';
 import { AccueilPage } from './accueil.page';
 import { PLanningEmployePage } from './unlogged-pages/planning-employe.page';
+import { TicketListPage } from './ndfrais/ticket-liste.page';
 
 export const appRoutes: VexRoutes = [
   {
@@ -20,6 +21,7 @@ export const appRoutes: VexRoutes = [
     canActivate: [() => inject(EffectService).canActivate()],
     component: LayoutComponent,
     children: [
+      { path: 'tickets', component: TicketListPage },
       {
         path: 'admin',
         children: [

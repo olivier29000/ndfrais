@@ -65,9 +65,9 @@ export class EffectService {
     );
   }
 
-  creationCompte(email: string, entreprise: string, password: string): void {
+  creationCompte(email: string, password: string): void {
     this.store.isLoading.set(true);
-    this.repo.creationCompte(email, entreprise, password).subscribe(
+    this.repo.creationCompte(email, password).subscribe(
       () => {
         this.store.isLoading.set(false);
         this.router.navigate(['']);

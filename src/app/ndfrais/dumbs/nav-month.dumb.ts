@@ -1,0 +1,52 @@
+import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ContratUserApp } from 'src/app/models/contrat-employe.model';
+import { DayApp } from 'src/app/models/day-app.model';
+import { addMonths, endOfWeek, format, startOfWeek, subMonths } from 'date-fns';
+import { fr } from 'date-fns/locale';
+import { MatIconModule } from '@angular/material/icon';
+@Component({
+  selector: 'dumb-nav-month',
+  template: `
+    <div class="headline py-1 px-2 flex justify-center items-center">
+      <button mat-icon-button (click)="previousMonth()">
+        <mat-icon svgIcon="mat:arrow_back_ios"></mat-icon>
+      </button>
+      <div class="card flex items-center mt-3 px-2 mx-2">
+        <div class="flex-auto  items-center justify-center">
+          <h2>{{ currentMonth }}</h2>
+        </div>
+      </div>
+
+      <button mat-icon-button (click)="nextMonth()">
+        <mat-icon svgIcon="mat:arrow_forward_ios"></mat-icon>
+      </button>
+    </div>
+  `,
+  styles: [``],
+  standalone: true,
+  imports: [CommonModule, MatIconModule]
+})
+export class NavMonthDumb {
+  _currentDate!: Date;
+  currentMonth!: string;
+  @Input() set currentDate(value: Date) {
+    this._currentDate = value;
+    this.currentMonth = format(value, 'MMM yyyy', { locale: fr });
+  }
+  get currentDate(): Date {
+    return this._currentDate;
+  }
+  @Output() currentDateChange = new EventEmitter<Date>();
+
+  previousMonth(): void {
+    this.currentDateChange.emit(
+      subMonths(startOfWeek(this.currentDate, { locale: fr }), 1)
+    );
+  }
+  nextMonth(): void {
+    this.currentDateChange.emit(
+      addMonths(startOfWeek(this.currentDate, { locale: fr }), 1)
+    );
+  }
+}

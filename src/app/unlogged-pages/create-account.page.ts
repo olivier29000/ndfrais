@@ -31,26 +31,6 @@ import { debounceTime, distinctUntilChanged, tap } from 'rxjs';
         <div class="p-6 flex flex-col gap-4 flex-auto flex flex-col">
           <div>
             <mat-form-field class="flex-1 block">
-              <mat-label>Entreprise</mat-label>
-              <input
-                [formControl]="nomEntreprise"
-                [value]="entreprise"
-                name="entreprise"
-                matInput
-                required />
-              @if (canChooseNomEntreprise() === true) {
-                <mat-hint class="text-green"
-                  >Ce nom d'entreprise est disponible</mat-hint
-                >
-              } @else if (canChooseNomEntreprise() === false) {
-                <mat-hint class="text-red"
-                  >Ce nom d'entreprise est indisponible</mat-hint
-                >
-              } @else {
-                <mat-hint>Vérification de la disponibilité du nom</mat-hint>
-              }
-            </mat-form-field>
-            <mat-form-field class="flex-1 block">
               <mat-label>E-Mail</mat-label>
               <input [(ngModel)]="email" name="email" matInput required />
             </mat-form-field>
@@ -107,10 +87,7 @@ import { debounceTime, distinctUntilChanged, tap } from 'rxjs';
           <button
             (click)="creationCompte()"
             [disabled]="
-              !canChooseNomEntreprise() ||
-              email === '' ||
-              password === '' ||
-              password !== passwordConfirm
+              email === '' || password === '' || password !== passwordConfirm
             "
             color="primary"
             mat-raised-button
@@ -154,8 +131,6 @@ import { debounceTime, distinctUntilChanged, tap } from 'rxjs';
 export class CreateAccountPage {
   inputType = 'password';
   visible = false;
-  entreprise = '';
-  nomEntreprise = new FormControl('');
   email = '';
   password = '';
   passwordConfirm = '';
@@ -165,29 +140,10 @@ export class CreateAccountPage {
   constructor(
     private serverService: ServerService,
     private cd: ChangeDetectorRef
-  ) {
-    effect(() => {
-      this.nomEntreprise.valueChanges
-        .pipe(
-          tap(() => this.serverService.canChooseNomEntreprise.set(undefined)),
-          debounceTime(500),
-          distinctUntilChanged()
-        )
-        .subscribe((res) => {
-          if (res) {
-            this.serverService.verifDispoNomEntreprise(res);
-            this.entreprise = res;
-          }
-        });
-    });
-  }
+  ) {}
 
   creationCompte(): void {
-    this.serverService.creationCompte(
-      this.email,
-      this.entreprise,
-      this.password
-    );
+    this.serverService.creationCompte(this.email, this.password);
   }
   toggleVisibility() {
     if (this.visible) {

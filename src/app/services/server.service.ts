@@ -61,8 +61,8 @@ export class ServerService {
   getUserContratList(): void {
     this.effectService.getUserContratList();
   }
-  creationCompte(email: string, entreprise: string, password: string): void {
-    this.effectService.creationCompte(email, entreprise, password);
+  creationCompte(email: string, password: string): void {
+    this.effectService.creationCompte(email, password);
   }
   authentification(email: string, password: string): void {
     this.effectService.authentification(email, password);
