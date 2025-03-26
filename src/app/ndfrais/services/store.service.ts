@@ -10,6 +10,7 @@ export class StoreService {
   currentDate: WritableSignal<Date> = signal(new Date());
   isLoading: WritableSignal<boolean> = signal(false);
   ticketList: WritableSignal<Ticket[]> = signal([]);
+  trajetList: WritableSignal<Trajet[]> = signal([]);
   currentTicket: WritableSignal<Ticket | undefined> = signal(undefined);
   currentTrajet: WritableSignal<Trajet | undefined> = signal(undefined);
 }

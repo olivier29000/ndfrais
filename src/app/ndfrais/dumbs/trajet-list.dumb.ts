@@ -26,10 +26,10 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { VexPageLayoutComponent } from '@vex/components/vex-page-layout/vex-page-layout.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { Ticket } from '../models/ticket.model';
+import { Trajet } from '../models/trajet.model';
 
 @Component({
-  selector: 'dumb-ticket-list',
+  selector: 'dumb-trajet-list',
   template: `<vex-page-layout>
       <vex-page-layout-content class="-mt-6 container">
         <div class="card overflow-auto -mt-16" style="margin-top : 50px">
@@ -37,7 +37,7 @@ import { Ticket } from '../models/ticket.model';
             class="bg-app-bar px-6 h-16 border-b sticky left-0 flex items-center">
             <h2
               class="title my-0 ltr:pr-4 rtl:pl-4 ltr:mr-4 rtl:ml-4 ltr:border-r rtl:border-l hidden sm:block flex-none">
-              <span>{{ selection.selected.length }} tickets </span>
+              <span>{{ selection.selected.length }} trajets </span>
             </h2>
 
             <span class="flex-1"></span>
@@ -76,12 +76,28 @@ import { Ticket } from '../models/ticket.model';
                   mat-sort-header>
                   {{ column.label }}
                 </th>
-                <td
-                  *matCellDef="let row"
-                  [ngClass]="column.cssClasses"
-                  mat-cell>
-                  {{ row[column.property] }}
-                </td>
+                @if (column.label === 'Départ') {
+                  <td
+                    *matCellDef="let row"
+                    [ngClass]="column.cssClasses"
+                    mat-cell>
+                    {{ row.depart.displayed }}
+                  </td>
+                } @else if (column.label === 'Arrivée') {
+                  <td
+                    *matCellDef="let row"
+                    [ngClass]="column.cssClasses"
+                    mat-cell>
+                    {{ row.arrive.displayed }}
+                  </td>
+                } @else {
+                  <td
+                    *matCellDef="let row"
+                    [ngClass]="column.cssClasses"
+                    mat-cell>
+                    {{ row[column.property] }}
+                  </td>
+                }
               </ng-container>
               <ng-container
                 *ngIf="column.type === 'date'"
@@ -125,7 +141,7 @@ import { Ticket } from '../models/ticket.model';
               <td *matCellDef="let row" class="w-10 text-secondary" mat-cell>
                 <button
                   (click)="$event.stopPropagation()"
-                  [matMenuTriggerData]="{ Ticket: row }"
+                  [matMenuTriggerData]="{ Trajet: row }"
                   [matMenuTriggerFor]="actionsMenu"
                   mat-icon-button
                   type="button">
@@ -149,16 +165,16 @@ import { Ticket } from '../models/ticket.model';
     </vex-page-layout>
 
     <mat-menu #actionsMenu="matMenu" xPosition="before" yPosition="below">
-      <ng-template let-Ticket="Ticket" matMenuContent>
-        <button mat-menu-item (click)="openImageTicketOutput(Ticket)">
+      <ng-template let-Trajet="Trajet" matMenuContent>
+        <button mat-menu-item (click)="openImageTrajetOutput(Trajet)">
           <mat-icon svgIcon="mat:remove_red_eye"></mat-icon>
           <span>Voir</span>
         </button>
-        <button mat-menu-item (click)="updateTicketOutput(Ticket)">
+        <button mat-menu-item (click)="updateTrajetOutput(Trajet)">
           <mat-icon svgIcon="mat:edit"></mat-icon>
           <span>Modifier</span>
         </button>
-        <button mat-menu-item (click)="deleteTicketOutput(Ticket)">
+        <button mat-menu-item (click)="deleteTrajetOutput(Trajet)">
           <mat-icon svgIcon="mat:delete"></mat-icon>
           <span>Supprimer</span>
         </button>
@@ -189,8 +205,8 @@ import { Ticket } from '../models/ticket.model';
     MatSelectModule
   ]
 })
-export class TicketListDumb {
-  columns: TableColumn<Ticket>[] = [
+export class TrajetListDumb {
+  columns: TableColumn<Trajet>[] = [
     {
       label: 'Titre',
       property: 'titre',
@@ -199,22 +215,29 @@ export class TicketListDumb {
       cssClasses: ['font-medium']
     },
     {
-      label: 'Notes',
-      property: 'notes',
+      label: 'Départ',
+      property: 'displayedDepart',
+      type: 'text',
+      visible: true,
+      cssClasses: ['font-medium']
+    },
+    {
+      label: 'Arrivée',
+      property: 'displayedArrive',
       type: 'text',
       visible: true,
       cssClasses: ['font-medium']
     },
     {
       label: 'Date',
-      property: 'dateTicket',
+      property: 'dateTrajet',
       type: 'date',
       visible: true,
       cssClasses: ['font-medium']
     },
     {
-      label: 'Montant',
-      property: 'montant',
+      label: 'nbkm',
+      property: 'nbkm',
       type: 'number',
       visible: true,
       cssClasses: ['font-medium']
@@ -222,31 +245,31 @@ export class TicketListDumb {
     { label: 'Actions', property: 'actions', type: 'button', visible: true }
   ];
 
-  @Output() openImageTicket = new EventEmitter<Ticket>();
-  @Output() updateTicket = new EventEmitter<Ticket>();
-  @Output() deleteTicket = new EventEmitter<Ticket>();
+  @Output() openImageTrajet = new EventEmitter<Trajet>();
+  @Output() updateTrajet = new EventEmitter<Trajet>();
+  @Output() deleteTrajet = new EventEmitter<Trajet>();
 
-  selectedUser: Ticket | undefined = undefined;
-  openImageTicketOutput(ticket: Ticket): void {
-    this.openImageTicket.emit(ticket);
+  selectedUser: Trajet | undefined = undefined;
+  openImageTrajetOutput(trajet: Trajet): void {
+    this.openImageTrajet.emit(trajet);
   }
-  updateTicketOutput(ticket: Ticket): void {
-    this.updateTicket.emit(ticket);
+  updateTrajetOutput(trajet: Trajet): void {
+    this.updateTrajet.emit(trajet);
   }
-  deleteTicketOutput(ticket: Ticket): void {
-    this.deleteTicket.emit(ticket);
+  deleteTrajetOutput(trajet: Trajet): void {
+    this.deleteTrajet.emit(trajet);
   }
 
-  dataSource!: MatTableDataSource<Ticket, MatPaginator>;
-  contratManagerList: Ticket[] = [];
+  dataSource!: MatTableDataSource<Trajet, MatPaginator>;
+  contratManagerList: Trajet[] = [];
   @Input()
-  set ticketList(value: Ticket[]) {
-    const dataSource: MatTableDataSource<Ticket> = new MatTableDataSource();
+  set trajetList(value: Trajet[]) {
+    const dataSource: MatTableDataSource<Trajet> = new MatTableDataSource();
     dataSource.data = value;
     this.dataSource = dataSource;
     this.contratManagerList = value;
   }
-  selection = new SelectionModel<Ticket>(true, []);
+  selection = new SelectionModel<Trajet>(true, []);
 
   constructor() {}
 

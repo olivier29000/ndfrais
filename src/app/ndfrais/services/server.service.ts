@@ -16,6 +16,7 @@ export class ServerService {
   currentTrajet = this.store.currentTrajet;
   currentDate = this.store.currentDate;
   ticketList = this.store.ticketList;
+  trajetList = this.store.trajetList;
   uploadTicket(file: File): void {
     this.effect.uploadTicket(file);
   }
@@ -24,8 +25,16 @@ export class ServerService {
     this.effect.updateTicketModal(ticket);
   }
 
-  updateTrajetModal(trajet?: Trajet) {
+  updateTrajetModal(trajet: Trajet) {
     this.effect.updateTrajetModal(trajet);
+  }
+
+  createTrajetModal() {
+    this.effect.createTrajetModal();
+  }
+
+  deleteTrajet(trajet: Trajet) {
+    this.effect.deleteTrajet(trajet);
   }
 
   getImageByTicketId(ticketId: number) {

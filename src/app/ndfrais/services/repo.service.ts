@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Ticket } from '../models/ticket.model';
 import { environment } from 'src/environment/environment';
 import { Image } from '../models/image.model';
+import { Trajet } from '../models/trajet.model';
 const URL_BACKEND = environment.urlBackEnd;
 const httpOptions = {
   headers: new HttpHeaders({
@@ -47,6 +48,48 @@ export class RepoService {
     );
   }
 
+  createTrajet(trajet: Trajet, date: Date): Observable<Trajet[]> {
+    const monthStr: string =
+      (date.getMonth() < 9
+        ? '0' + (date.getMonth() + 1)
+        : date.getMonth() + 1) +
+      '-' +
+      date.getFullYear();
+    return this.http.post<Trajet[]>(
+      `${URL_BACKEND}/trajet/create-trajet/${monthStr}`,
+      trajet,
+      httpOptions
+    );
+  }
+
+  deleteTrajet(trajet: Trajet, date: Date): Observable<Trajet[]> {
+    const monthStr: string =
+      (date.getMonth() < 9
+        ? '0' + (date.getMonth() + 1)
+        : date.getMonth() + 1) +
+      '-' +
+      date.getFullYear();
+    return this.http.post<Trajet[]>(
+      `${URL_BACKEND}/trajet/delete-by-id/${trajet.id}/${monthStr}`,
+      trajet,
+      httpOptions
+    );
+  }
+
+  updateTrajet(trajet: Trajet, date: Date): Observable<Trajet[]> {
+    const monthStr: string =
+      (date.getMonth() < 9
+        ? '0' + (date.getMonth() + 1)
+        : date.getMonth() + 1) +
+      '-' +
+      date.getFullYear();
+    return this.http.post<Trajet[]>(
+      `${URL_BACKEND}/trajet/update-trajet/${monthStr}`,
+      trajet,
+      httpOptions
+    );
+  }
+
   getImageByTicketId(ticketId: number): Observable<Image> {
     return this.http.get<Image>(
       `${URL_BACKEND}/ticket/get-image-by-ticket-id/${ticketId}`,
@@ -54,7 +97,7 @@ export class RepoService {
     );
   }
 
-  getAllByYearMonth(date: Date): Observable<Ticket[]> {
+  getAllTicketByYearMonth(date: Date): Observable<Ticket[]> {
     const monthStr: string =
       (date.getMonth() < 9
         ? '0' + (date.getMonth() + 1)
@@ -63,6 +106,19 @@ export class RepoService {
       date.getFullYear();
     return this.http.get<Ticket[]>(
       `${URL_BACKEND}/ticket/get-all-by-year-month/${monthStr}`,
+      httpOptions
+    );
+  }
+
+  getAllTrajetByYearMonth(date: Date): Observable<Trajet[]> {
+    const monthStr: string =
+      (date.getMonth() < 9
+        ? '0' + (date.getMonth() + 1)
+        : date.getMonth() + 1) +
+      '-' +
+      date.getFullYear();
+    return this.http.get<Trajet[]>(
+      `${URL_BACKEND}/trajet/get-all-by-year-month/${monthStr}`,
       httpOptions
     );
   }

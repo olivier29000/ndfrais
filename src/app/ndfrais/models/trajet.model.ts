@@ -11,4 +11,5 @@ export interface Trajet {
 export interface Position {
   lat: number;
   lon: number;
+  displayed: string;
 }

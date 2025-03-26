@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Ticket } from './models/ticket.model';
 import { Trajet } from './models/trajet.model';
+import { TrajetListDumb } from './dumbs/trajet-list.dumb';
 
 @Component({
   template: `
@@ -34,7 +35,9 @@ import { Trajet } from './models/trajet.model';
           <mat-icon svgIcon="mat:add"></mat-icon>
         </button>
       </dumb-ticket-list>
-      <dumb-ticket-list>
+      <dumb-trajet-list
+        [trajetList]="trajetList()"
+        (updateTrajet)="updateTrajetModal($event)">
         <button
           class="ml-4 flex-none"
           color="primary"
@@ -44,7 +47,7 @@ import { Trajet } from './models/trajet.model';
           (click)="newTrajetModal()">
           <mat-icon svgIcon="mat:add"></mat-icon>
         </button>
-      </dumb-ticket-list>
+      </dumb-trajet-list>
     </div>
   `,
   animations: [fadeInUp400ms, stagger40ms],
@@ -52,6 +55,7 @@ import { Trajet } from './models/trajet.model';
   imports: [
     CommonModule,
     TicketListDumb,
+    TrajetListDumb,
     MatIconModule,
     MatButtonModule,
     MatTooltipModule,
@@ -64,7 +68,7 @@ export class TicketListPage {
   constructor(private server: ServerService) {}
 
   ticketList = this.server.ticketList;
-
+  trajetList = this.server.trajetList;
   onFileSelected(event: any): void {
     const selectedFile = event.target.files[0];
     if (selectedFile) {
@@ -83,7 +87,7 @@ export class TicketListPage {
   }
 
   newTrajetModal(): void {
-    this.server.updateTrajetModal();
+    this.server.createTrajetModal();
   }
 
   currentDate = this.server.currentDate;

@@ -16,9 +16,15 @@ export class EffectService {
     private store: StoreService,
     private repo: RepoService
   ) {
-    effect(() => this.getAllByYearMonth(this.store.currentDate()), {
-      allowSignalWrites: true
-    });
+    effect(
+      () => {
+        this.getAllTicketByYearMonth(this.store.currentDate());
+        this.getAllTrajetByYearMonth(this.store.currentDate());
+      },
+      {
+        allowSignalWrites: true
+      }
+    );
   }
 
   uploadTicket(file: File): void {
@@ -41,26 +47,35 @@ export class EffectService {
       });
   }
 
-  updateTrajetModal(trajet?: Trajet) {
-    if (trajet) {
-      this.store.currentTrajet.set(trajet);
-    } else {
-      this.store.currentTrajet.set({
-        titre: '',
-        dateTrajet: new Date(),
-        dateCreation: new Date(),
-        nbkm: 0,
-        depart: {
-          lat: 0,
-          lon: 0
-        },
-        arrive: {
-          lat: 1,
-          lon: 1
+  createTrajetModal() {
+    this.store.currentTrajet.set({
+      titre: '',
+      dateTrajet: new Date(),
+      dateCreation: new Date(),
+      nbkm: 0,
+      depart: {
+        lat: 0,
+        lon: 0,
+        displayed: ''
+      },
+      arrive: {
+        lat: 1,
+        lon: 1,
+        displayed: ''
+      }
+    });
+
+    this.dialog
+      .open(UpdateTrajetModal)
+      .afterClosed()
+      .subscribe((createdTrajet) => {
+        if (createdTrajet) {
+          this.createTrajet(createdTrajet);
         }
       });
-    }
-    console.log('UpdateTrajetModal');
+  }
+  updateTrajetModal(trajet: Trajet) {
+    this.store.currentTrajet.set(trajet);
     this.dialog
       .open(UpdateTrajetModal)
       .afterClosed()
@@ -83,9 +98,9 @@ export class EffectService {
     });
   }
 
-  getAllByYearMonth(date: Date): void {
+  getAllTicketByYearMonth(date: Date): void {
     this.store.isLoading.set(true);
-    this.repo.getAllByYearMonth(date).subscribe((ticketList) => {
+    this.repo.getAllTicketByYearMonth(date).subscribe((ticketList) => {
       console.log(ticketList);
       this.store.isLoading.set(false);
       this.store.ticketList.set(ticketList);
@@ -99,6 +114,44 @@ export class EffectService {
       .subscribe((ticketList) => {
         this.store.isLoading.set(false);
         this.store.ticketList.set(ticketList);
+      });
+  }
+
+  getAllTrajetByYearMonth(date: Date): void {
+    this.store.isLoading.set(true);
+    this.repo.getAllTrajetByYearMonth(date).subscribe((trajetList) => {
+      console.log(trajetList);
+      this.store.isLoading.set(false);
+      this.store.trajetList.set(
+        trajetList.map((t) => ({ ...t, dateTrajet: new Date(t.dateTrajet) }))
+      );
+    });
+  }
+  createTrajet(trajet: Trajet) {
+    this.store.isLoading.set(true);
+    this.repo
+      .createTrajet(trajet, this.store.currentDate())
+      .subscribe((trajetList) => {
+        this.store.isLoading.set(false);
+        this.store.trajetList.set(trajetList);
+      });
+  }
+  updateTrajet(trajet: Trajet) {
+    this.store.isLoading.set(true);
+    this.repo
+      .updateTrajet(trajet, this.store.currentDate())
+      .subscribe((trajetList) => {
+        this.store.isLoading.set(false);
+        this.store.trajetList.set(trajetList);
+      });
+  }
+  deleteTrajet(trajet: Trajet) {
+    this.store.isLoading.set(true);
+    this.repo
+      .deleteTrajet(trajet, this.store.currentDate())
+      .subscribe((trajetList) => {
+        this.store.isLoading.set(false);
+        this.store.trajetList.set(trajetList);
       });
   }
 }
