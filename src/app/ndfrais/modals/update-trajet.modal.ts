@@ -38,6 +38,7 @@ import { DatepickerDumb } from '../dumbs/datepicker.dumb';
 import { ServerService } from '../services/server.service';
 import { Position, Trajet } from '../models/trajet.model';
 import { HttpClient } from '@angular/common/http';
+import Swal from 'sweetalert2';
 declare module 'leaflet' {
   namespace Routing {
     interface RoutingControlOptions {
@@ -47,116 +48,105 @@ declare module 'leaflet' {
 }
 @Component({
   template: `<form>
-      <div class="flex items-center" mat-dialog-title>
-        <h2 class="headline m-0 flex-auto">Trajet</h2>
+    <div class="flex items-center" mat-dialog-title>
+      <h2 class="headline m-0 flex-auto">Trajet</h2>
 
-        <button
-          class="text-secondary"
-          mat-dialog-close
-          mat-icon-button
-          type="button">
-          <mat-icon svgIcon="mat:close"></mat-icon>
-        </button>
-      </div>
-
-      <mat-divider class="text-border"></mat-divider>
-
-      <mat-dialog-content class="flex flex-col">
-        <div id="map" style="height: 400px;" class="mb-3"></div>
-        @if (currentTrajet) {
-          <div class="flex flex-col sm:flex-row">
-            <mat-form-field class="flex-auto">
-              <mat-label>Départ</mat-label>
-              <input
-                [formControl]="depart"
-                [value]="depart"
-                name="nom"
-                matInput />
-              @if (departFound()) {
-                <mat-hint class="text-green">{{ departSignal() }}</mat-hint>
-              } @else if (departFound() === false) {
-                <mat-hint class="text-red">Adresse non trouvée</mat-hint>
-              }
-              <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
-            </mat-form-field>
-
-            <mat-form-field class="flex-auto">
-              <mat-label>Arrivée</mat-label>
-              <input
-                [formControl]="arrive"
-                [value]="arrive"
-                name="nom"
-                matInput />
-              @if (arriveFound()) {
-                <mat-hint class="text-green">{{ arriveSignal() }}</mat-hint>
-              } @else if (arriveFound() === false) {
-                <mat-hint class="text-red">Adresse non trouvée</mat-hint>
-              }
-              <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
-            </mat-form-field>
-          </div>
-          <div class="flex flex-col sm:flex-row mt-3">
-            <mat-form-field class="flex-auto">
-              <mat-label>Titre</mat-label>
-              <input
-                cdkFocusInitial
-                [(ngModel)]="currentTrajet.titre"
-                name="nom"
-                matInput />
-
-              <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
-            </mat-form-field>
-
-            <mat-form-field class="flex-auto">
-              <mat-label>Date</mat-label>
-              <div class="flex">
-                <dumb-datepicker
-                  #datepickerRefdateBegin
-                  [(date)]="currentTrajet.dateTrajet"></dumb-datepicker>
-                <input
-                  [value]="
-                    currentTrajet.dateTrajet | date: 'dd MMM yyyy' : '' : 'fr'
-                  "
-                  disabled
-                  matInput
-                  name="dateBegin" />
-              </div>
-            </mat-form-field>
-          </div>
-
-          <div class="flex flex-col sm:flex-row"></div>
-        }
-      </mat-dialog-content>
-
-      <mat-dialog-actions align="end">
-        <button mat-button mat-dialog-close type="button">Annuler</button>
-        <button
-          color="primary"
-          mat-flat-button
-          type="submit"
-          [disabled]="canValid() === false"
-          (click)="validTrajet()">
-          Valider
-        </button>
-      </mat-dialog-actions>
-    </form>
-
-    <mat-menu #settingsMenu="matMenu" xPosition="before" yPosition="below">
-      <button mat-menu-item>
-        <mat-icon svgIcon="mat:print"></mat-icon>
-        <span>Print</span>
+      <button
+        class="text-secondary"
+        mat-dialog-close
+        mat-icon-button
+        type="button">
+        <mat-icon svgIcon="mat:close"></mat-icon>
       </button>
+    </div>
 
-      <button mat-menu-item>
-        <mat-icon svgIcon="mat:download"></mat-icon>
-        <span>Export</span>
-      </button>
+    <mat-divider class="text-border"></mat-divider>
 
-      <button mat-menu-item>
-        <mat-icon svgIcon="mat:delete"></mat-icon>
-        <span>Delete</span>
+    <mat-dialog-content class="flex flex-col">
+      <div id="map" style="height: 400px;" class="mb-3"></div>
+      @if (currentTrajet) {
+        <div class="flex flex-col sm:flex-row mt-3">
+          <mat-form-field class="flex-auto">
+            <mat-label>Titre</mat-label>
+            <input
+              cdkFocusInitial
+              [(ngModel)]="currentTrajet.titre"
+              name="nom"
+              matInput />
+
+            <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
+          </mat-form-field>
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Date</mat-label>
+            <div class="flex">
+              <dumb-datepicker
+                #datepickerRefdateBegin
+                [(date)]="currentTrajet.dateTrajet"></dumb-datepicker>
+              <input
+                [value]="
+                  currentTrajet.dateTrajet | date: 'dd MMM yyyy' : '' : 'fr'
+                "
+                disabled
+                matInput
+                name="dateBegin" />
+            </div>
+          </mat-form-field>
+        </div>
+        <div class="flex flex-col sm:flex-row">
+          <mat-form-field class="flex-auto">
+            <mat-label>Départ</mat-label>
+            <input
+              [formControl]="depart"
+              [value]="depart"
+              name="nom"
+              matInput />
+            @if (departFound()) {
+              <mat-hint class="text-green">{{ departSignal() }}</mat-hint>
+            } @else if (departFound() === false) {
+              <mat-hint class="text-red">Adresse non trouvée</mat-hint>
+            }
+            <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
+          </mat-form-field>
+
+          <mat-form-field class="flex-auto">
+            <mat-label>Arrivée</mat-label>
+            <input
+              [formControl]="arrive"
+              [value]="arrive"
+              name="nom"
+              matInput />
+            @if (arriveFound()) {
+              <mat-hint class="text-green">{{ arriveSignal() }}</mat-hint>
+            } @else if (arriveFound() === false) {
+              <mat-hint class="text-red">Adresse non trouvée</mat-hint>
+            }
+            <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
+          </mat-form-field>
+        </div>
+        <div class="flex flex-col sm:flex-row"></div>
+      }
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close type="button">Annuler</button>
+      <button
+        color="warn"
+        mat-flat-button
+        type="button"
+        (click)="deleteTrajet()">
+        Supprimer
       </button>
-    </mat-menu> `,
+      <button
+        color="primary"
+        mat-flat-button
+        type="submit"
+        [disabled]="canValid() === false"
+        (click)="validTrajet()">
+        Valider
+      </button>
+    </mat-dialog-actions>
+  </form> `,
   standalone: true,
   imports: [
     CommonModule,
@@ -206,8 +196,6 @@ export class UpdateTrajetModal implements AfterViewInit {
   arriveFound: WritableSignal<boolean | undefined> = signal(undefined);
   arriveSignal: WritableSignal<string | undefined> = signal(undefined);
   canValid = computed(() => {
-    console.log(this.departFound());
-    console.log(this.arriveFound());
     return this.departFound() === true && this.arriveFound() === true;
   });
   constructor(
@@ -221,7 +209,6 @@ export class UpdateTrajetModal implements AfterViewInit {
         if (currentTrajetSignal) {
           this.currentTrajet = currentTrajetSignal;
           if (this.currentTrajet.id) {
-            console.log(this.currentTrajet.id);
             this.depart = new FormControl(this.currentTrajet.depart.displayed);
             this.arrive = new FormControl(this.currentTrajet.arrive.displayed);
             this.departFound.set(true);
@@ -329,7 +316,23 @@ export class UpdateTrajetModal implements AfterViewInit {
   validTrajet() {
     this.dialogRef.close(this.currentTrajet);
   }
-
+  deleteTrajet() {
+    Swal.fire({
+      title: 'Etes vous sûr de vouloir supprimer ce trajet ?',
+      text: 'Vous ne pourrez pas revenir en arrière!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonText: 'Annuler',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Oui, supprimer'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.server.deleteTrajet(this.currentTrajet);
+        this.dialogRef.close();
+      }
+    });
+  }
   private initMap(): void {
     this.map = L.map('map').setView([48, -2], 9);
 

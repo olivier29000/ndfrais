@@ -37,6 +37,7 @@ export class EffectService {
 
   updateTicketModal(ticket: Ticket) {
     this.store.currentTicket.set(ticket);
+    this.getImageByTicketId(ticket.id);
     this.dialog
       .open(UpdateTicketModal)
       .afterClosed()
@@ -152,6 +153,16 @@ export class EffectService {
       .subscribe((trajetList) => {
         this.store.isLoading.set(false);
         this.store.trajetList.set(trajetList);
+      });
+  }
+
+  deleteTicket(ticket: Ticket) {
+    this.store.isLoading.set(true);
+    this.repo
+      .deleteTicket(ticket, this.store.currentDate())
+      .subscribe((ticketList) => {
+        this.store.isLoading.set(false);
+        this.store.ticketList.set(ticketList);
       });
   }
 }

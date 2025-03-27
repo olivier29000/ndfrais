@@ -24,7 +24,8 @@ import { TrajetListDumb } from './dumbs/trajet-list.dumb';
           #fileInput
           (change)="onFileSelected($event)"
           accept="image/*"
-          style="display: none;" />
+          style="display: none;"
+          capture="environment" />
         <button
           class="ml-4 flex-none"
           color="primary"
@@ -70,11 +71,46 @@ export class TicketListPage {
   ticketList = this.server.ticketList;
   trajetList = this.server.trajetList;
   onFileSelected(event: any): void {
-    const selectedFile = event.target.files[0];
-    if (selectedFile) {
-      this.server.uploadTicket(selectedFile);
+    const file: File = event.target.files[0];
+
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+
+      reader.onload = (loadEvent: any) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+
+          const MAX_WIDTH = 1024;
+          const scale = MAX_WIDTH / img.width;
+          canvas.width = MAX_WIDTH;
+          canvas.height = img.height * scale;
+
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            canvas.toBlob(
+              (blob) => {
+                if (blob) {
+                  const compressedFile = new File([blob], file.name, {
+                    type: file.type
+                  });
+                  this.server.uploadTicket(compressedFile); // Upload image réduite
+                }
+              },
+              file.type,
+              0.8
+            ); // 0.8 = qualité (80%)
+          }
+        };
+
+        img.src = loadEvent.target.result;
+      };
+
+      reader.readAsDataURL(file);
     } else {
-      console.error('No file selected!');
+      console.error('No image file selected!');
     }
   }
 

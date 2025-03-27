@@ -20,6 +20,7 @@ import { WORK_STATE } from 'src/app/models/day-app.model';
 import { DatepickerDumb } from '../dumbs/datepicker.dumb';
 import { Ticket } from '../models/ticket.model';
 import { ServerService } from '../services/server.service';
+import Swal from 'sweetalert2';
 
 @Component({
   template: `<form>
@@ -46,8 +47,8 @@ import { ServerService } from '../services/server.service';
                 : 'https://static.thenounproject.com/png/187803-200.png'
             "
             alt=""
-            style="height: 50vh;" />
-          <div class="flex flex-col sm:flex-row">
+            style="max-height: 50vh; height: auto; width: auto; max-width: 100%; object-fit: contain;" />
+          <div class="flex flex-col sm:flex-row mt-3">
             <mat-form-field class="flex-auto">
               <mat-label>Nom</mat-label>
               <input
@@ -164,15 +165,13 @@ export class UpdateTicketModal implements OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA)
-    public data: { ticket: Ticket },
     private dialogRef: MatDialogRef<UpdateTicketModal>,
     private server: ServerService
   ) {
     effect(() => {
       const currentTicketSignal = this.currentTicketSignal();
       if (currentTicketSignal) {
-        this.currentTicket = currentTicketSignal;
-        this.server.getImageByTicketId(currentTicketSignal.id);
+        this.currentTicket = { ...currentTicketSignal };
       }
     });
   }
@@ -180,5 +179,23 @@ export class UpdateTicketModal implements OnInit {
 
   updateTicket() {
     this.dialogRef.close(this.currentTicket);
+  }
+
+  deleteTicket() {
+    Swal.fire({
+      title: 'Etes vous sûr de vouloir supprimer ce ticket ?',
+      text: 'Vous ne pourrez pas revenir en arrière!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonText: 'Annuler',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Oui, supprimer'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.server.deleteTicket(this.currentTicket);
+        this.dialogRef.close();
+      }
+    });
   }
 }

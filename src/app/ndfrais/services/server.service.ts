@@ -37,6 +37,10 @@ export class ServerService {
     this.effect.deleteTrajet(trajet);
   }
 
+  deleteTicket(ticket: Ticket) {
+    this.effect.deleteTicket(ticket);
+  }
+
   getImageByTicketId(ticketId: number) {
     this.effect.getImageByTicketId(ticketId);
   }

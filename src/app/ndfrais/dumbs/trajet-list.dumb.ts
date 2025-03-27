@@ -31,155 +31,124 @@ import { Trajet } from '../models/trajet.model';
 @Component({
   selector: 'dumb-trajet-list',
   template: `<vex-page-layout>
-      <vex-page-layout-content class="-mt-6 container">
-        <div class="card overflow-auto -mt-16" style="margin-top : 50px">
-          <div
-            class="bg-app-bar px-6 h-16 border-b sticky left-0 flex items-center">
-            <h2
-              class="title my-0 ltr:pr-4 rtl:pl-4 ltr:mr-4 rtl:ml-4 ltr:border-r rtl:border-l hidden sm:block flex-none">
-              <span>{{ selection.selected.length }} trajets </span>
-            </h2>
+    <vex-page-layout-content class="-mt-6 container">
+      <div class="card overflow-auto -mt-16" style="margin-top : 50px">
+        <div
+          class="bg-app-bar px-6 h-16 border-b sticky left-0 flex items-center">
+          <h2
+            class="title my-0 ltr:pr-4 rtl:pl-4 ltr:mr-4 rtl:ml-4 ltr:border-r rtl:border-l hidden sm:block flex-none">
+            <span>{{ trajetList.length }} trajets </span>
+          </h2>
 
-            <span class="flex-1"></span>
+          <span class="flex-1"></span>
 
-            <ng-content></ng-content>
-          </div>
-          <table
-            @stagger
-            [dataSource]="dataSource"
-            class="w-full"
-            mat-table
-            matSort>
-            <!--- Note that these columns can be defined in any order.
+          <ng-content></ng-content>
+        </div>
+        <table
+          @stagger
+          [dataSource]="dataSource"
+          class="w-full"
+          mat-table
+          matSort>
+          <!--- Note that these columns can be defined in any order.
                 The actual rendered columns are set as a property on the row definition" -->
 
-            <!-- Image Column -->
-            <ng-container matColumnDef="image">
-              <th *matHeaderCellDef mat-header-cell></th>
-              <td *matCellDef="let row" class="w-8 min-w-8 p-0" mat-cell>
-                <img
-                  [src]="row['imageBase64']"
-                  class="avatar h-8 w-8 align-middle" />
-              </td>
-            </ng-container>
+          <!-- Image Column -->
+          <ng-container matColumnDef="image">
+            <th *matHeaderCellDef mat-header-cell></th>
+            <td *matCellDef="let row" class="w-8 min-w-8 p-0" mat-cell>
+              <img
+                [src]="row['imageBase64']"
+                class="avatar h-8 w-8 align-middle" />
+            </td>
+          </ng-container>
 
-            <!-- Text Columns -->
+          <!-- Text Columns -->
+          <ng-container
+            *ngFor="let column of columns; trackBy: trackByProperty">
             <ng-container
-              *ngFor="let column of columns; trackBy: trackByProperty">
-              <ng-container
-                *ngIf="column.type === 'text'"
-                [matColumnDef]="column.property">
-                <th
-                  *matHeaderCellDef
-                  class="uppercase"
-                  mat-header-cell
-                  mat-sort-header>
-                  {{ column.label }}
-                </th>
-                @if (column.label === 'Départ') {
-                  <td
-                    *matCellDef="let row"
-                    [ngClass]="column.cssClasses"
-                    mat-cell>
-                    {{ row.depart.displayed }}
-                  </td>
-                } @else if (column.label === 'Arrivée') {
-                  <td
-                    *matCellDef="let row"
-                    [ngClass]="column.cssClasses"
-                    mat-cell>
-                    {{ row.arrive.displayed }}
-                  </td>
-                } @else {
-                  <td
-                    *matCellDef="let row"
-                    [ngClass]="column.cssClasses"
-                    mat-cell>
-                    {{ row[column.property] }}
-                  </td>
-                }
-              </ng-container>
-              <ng-container
-                *ngIf="column.type === 'date'"
-                [matColumnDef]="column.property">
-                <th
-                  *matHeaderCellDef
-                  class="uppercase"
-                  mat-header-cell
-                  mat-sort-header>
-                  {{ column.label }}
-                </th>
+              *ngIf="column.type === 'text'"
+              [matColumnDef]="column.property">
+              <th
+                *matHeaderCellDef
+                class="uppercase"
+                mat-header-cell
+                mat-sort-header>
+                {{ column.label }}
+              </th>
+              @if (column.label === 'Départ') {
                 <td
                   *matCellDef="let row"
                   [ngClass]="column.cssClasses"
                   mat-cell>
-                  {{ row[column.property] | date: 'dd/MM/yyyy' : '' : 'fr' }}
+                  {{ row.depart.displayed }}
                 </td>
-              </ng-container>
-              <ng-container
-                *ngIf="column.type === 'number'"
-                [matColumnDef]="column.property">
-                <th
-                  *matHeaderCellDef
-                  class="uppercase"
-                  mat-header-cell
-                  mat-sort-header>
-                  {{ column.label }}
-                </th>
+              } @else if (column.label === 'Arrivée') {
                 <td
                   *matCellDef="let row"
                   [ngClass]="column.cssClasses"
                   mat-cell>
-                  {{ row[column.property] | number: '1.2-2' }} €
+                  {{ row.arrive.displayed }}
                 </td>
-              </ng-container>
+              } @else {
+                <td
+                  *matCellDef="let row"
+                  [ngClass]="column.cssClasses"
+                  mat-cell>
+                  {{ row[column.property] }}
+                </td>
+              }
             </ng-container>
-
-            <!-- Action Column -->
-            <ng-container matColumnDef="actions">
-              <th *matHeaderCellDef mat-header-cell mat-sort-header></th>
-              <td *matCellDef="let row" class="w-10 text-secondary" mat-cell>
-                <button
-                  (click)="$event.stopPropagation()"
-                  [matMenuTriggerData]="{ Trajet: row }"
-                  [matMenuTriggerFor]="actionsMenu"
-                  mat-icon-button
-                  type="button">
-                  <mat-icon svgIcon="mat:more_horiz"></mat-icon>
-                </button>
+            <ng-container
+              *ngIf="column.type === 'date'"
+              [matColumnDef]="column.property">
+              <th
+                *matHeaderCellDef
+                class="uppercase"
+                mat-header-cell
+                mat-sort-header>
+                {{ column.label }}
+              </th>
+              <td *matCellDef="let row" [ngClass]="column.cssClasses" mat-cell>
+                {{ row[column.property] | date: 'dd/MM/yyyy' : '' : 'fr' }}
               </td>
             </ng-container>
+            <ng-container
+              *ngIf="column.type === 'number'"
+              [matColumnDef]="column.property">
+              <th
+                *matHeaderCellDef
+                class="uppercase"
+                mat-header-cell
+                mat-sort-header>
+                {{ column.label }}
+              </th>
+              <td *matCellDef="let row" [ngClass]="column.cssClasses" mat-cell>
+                {{ row[column.property] | number: '1.2-2' }} km
+              </td>
+            </ng-container>
+          </ng-container>
 
-            <tr *matHeaderRowDef="visibleColumns" mat-header-row></tr>
+          <!-- Action Column -->
+          <ng-container matColumnDef="actions">
+            <th *matHeaderCellDef mat-header-cell mat-sort-header></th>
+            <td *matCellDef="let row" class="w-10 text-secondary" mat-cell></td>
+          </ng-container>
 
-            <tr
-              *matRowDef="let row; columns: visibleColumns"
-              @fadeInUp
-              class="hover:bg-hover transition duration-400 ease-out-swift cursor-pointer"
-              mat-row></tr>
+          <tr *matHeaderRowDef="visibleColumns" mat-header-row></tr>
 
-            <!-- Insère ici le contenu passé -->
-          </table>
-        </div>
-      </vex-page-layout-content>
-    </vex-page-layout>
+          <tr
+            *matRowDef="let row; columns: visibleColumns"
+            @fadeInUp
+            class="hover:bg-hover transition duration-400 ease-out-swift cursor-pointer"
+            mat-row
+            (click)="updateTrajetOutput(row)"></tr>
 
-    <mat-menu #actionsMenu="matMenu" xPosition="before" yPosition="below">
-      <ng-template let-Trajet="Trajet" matMenuContent>
-        <button mat-menu-item (click)="openImageTrajetOutput(Trajet)">
-          <mat-icon svgIcon="mat:remove_red_eye"></mat-icon>
-          <span>Voir</span>
-        </button>
-        <button mat-menu-item (click)="updateTrajetOutput(Trajet)">
-          <mat-icon svgIcon="mat:edit"></mat-icon>
-          <span>Modifier</span>
-        </button>
-        <button mat-menu-item (click)="deleteTrajetOutput(Trajet)">
-          <mat-icon svgIcon="mat:delete"></mat-icon>
-          <span>Supprimer</span>
-        </button>
-      </ng-template>
-    </mat-menu> `,
+          <!-- Insère ici le contenu passé -->
+        </table>
+      </div>
+    </vex-page-layout-content>
+  </vex-page-layout> `,
   animations: [fadeInUp400ms, stagger40ms],
   standalone: true,
   imports: [
@@ -214,20 +183,20 @@ export class TrajetListDumb {
       visible: true,
       cssClasses: ['font-medium']
     },
-    {
-      label: 'Départ',
-      property: 'displayedDepart',
-      type: 'text',
-      visible: true,
-      cssClasses: ['font-medium']
-    },
-    {
-      label: 'Arrivée',
-      property: 'displayedArrive',
-      type: 'text',
-      visible: true,
-      cssClasses: ['font-medium']
-    },
+    // {
+    //   label: 'Départ',
+    //   property: 'displayedDepart',
+    //   type: 'text',
+    //   visible: true,
+    //   cssClasses: ['font-medium']
+    // },
+    // {
+    //   label: 'Arrivée',
+    //   property: 'displayedArrive',
+    //   type: 'text',
+    //   visible: true,
+    //   cssClasses: ['font-medium']
+    // },
     {
       label: 'Date',
       property: 'dateTrajet',
@@ -241,35 +210,31 @@ export class TrajetListDumb {
       type: 'number',
       visible: true,
       cssClasses: ['font-medium']
-    },
-    { label: 'Actions', property: 'actions', type: 'button', visible: true }
+    }
   ];
 
-  @Output() openImageTrajet = new EventEmitter<Trajet>();
   @Output() updateTrajet = new EventEmitter<Trajet>();
-  @Output() deleteTrajet = new EventEmitter<Trajet>();
 
   selectedUser: Trajet | undefined = undefined;
-  openImageTrajetOutput(trajet: Trajet): void {
-    this.openImageTrajet.emit(trajet);
-  }
+
   updateTrajetOutput(trajet: Trajet): void {
     this.updateTrajet.emit(trajet);
   }
-  deleteTrajetOutput(trajet: Trajet): void {
-    this.deleteTrajet.emit(trajet);
-  }
-
+  _trajetList!: Trajet[];
   dataSource!: MatTableDataSource<Trajet, MatPaginator>;
   contratManagerList: Trajet[] = [];
   @Input()
   set trajetList(value: Trajet[]) {
+    this._trajetList = value;
     const dataSource: MatTableDataSource<Trajet> = new MatTableDataSource();
     dataSource.data = value;
     this.dataSource = dataSource;
     this.contratManagerList = value;
   }
-  selection = new SelectionModel<Trajet>(true, []);
+
+  get trajetList(): Trajet[] {
+    return this._trajetList;
+  }
 
   constructor() {}
 

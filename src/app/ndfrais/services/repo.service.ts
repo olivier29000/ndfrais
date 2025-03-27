@@ -48,6 +48,19 @@ export class RepoService {
     );
   }
 
+  deleteTicket(ticket: Ticket, date: Date): Observable<Ticket[]> {
+    const monthStr: string =
+      (date.getMonth() < 9
+        ? '0' + (date.getMonth() + 1)
+        : date.getMonth() + 1) +
+      '-' +
+      date.getFullYear();
+    return this.http.get<Ticket[]>(
+      `${URL_BACKEND}/ticket/delete-by-id/${ticket.id}/${monthStr}`,
+      httpOptions
+    );
+  }
+
   createTrajet(trajet: Trajet, date: Date): Observable<Trajet[]> {
     const monthStr: string =
       (date.getMonth() < 9
@@ -69,9 +82,8 @@ export class RepoService {
         : date.getMonth() + 1) +
       '-' +
       date.getFullYear();
-    return this.http.post<Trajet[]>(
+    return this.http.get<Trajet[]>(
       `${URL_BACKEND}/trajet/delete-by-id/${trajet.id}/${monthStr}`,
-      trajet,
       httpOptions
     );
   }

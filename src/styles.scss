@@ -9,8 +9,11 @@ button[mat-icon-button]:disabled {
   cursor: not-allowed; /* Modifier le curseur */
 }
 
-.swal2-styled {
-  background-color: #7066e0 !important;
+.swal2-confirm {
+  background-color: #3085d6 !important;
+}
+.swal2-cancel {
+  background-color: #d33 !important;
 }
 .TRAVAIL {
   background-color: #a1fb8e !important;
