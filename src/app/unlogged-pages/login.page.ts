@@ -29,21 +29,18 @@ import { FormsModule } from '@angular/forms';
         </div>
 
         <div class="text-center mt-4">
-          <h2 class="title m-0">Welcome back</h2>
-          <h4 class="body-2 text-secondary m-0">
-            Sign in with your credentials below.
-          </h4>
+          <h2 class="title m-0">Connexion ndfrais</h2>
         </div>
 
         <div class="p-6 flex flex-col gap-4">
           <div class="flex flex-col">
             <mat-form-field class="flex-1">
-              <mat-label>E-Mail</mat-label>
+              <mat-label>E-Mail ou nom d'utilisateur</mat-label>
               <input [(ngModel)]="email" name="email" matInput required />
-              <mat-error>We need an email address to log you in </mat-error>
+              <mat-error>Indiquez un email ou un nom d'utilisateur </mat-error>
             </mat-form-field>
             <mat-form-field class="flex-1">
-              <mat-label>Password</mat-label>
+              <mat-label>Mot de passe</mat-label>
               <input
                 [type]="passwordType"
                 [(ngModel)]="password"
@@ -63,8 +60,7 @@ import { FormsModule } from '@angular/forms';
                   *ngIf="!passwordVisible"
                   svgIcon="mat:visibility_off"></mat-icon>
               </button>
-              <mat-hint>Click the eye to toggle visibility</mat-hint>
-              <mat-error>We need a password to log you in </mat-error>
+              <mat-error>Indiquez un mot de passe </mat-error>
             </mat-form-field>
           </div>
 

@@ -10,6 +10,7 @@ import {
 } from '../core/navigation/navigation-item.interface';
 import { ContratUserApp } from '../models/contrat-employe.model';
 import { UserApp } from '../models/user.model';
+import { subMinutes } from 'date-fns';
 
 @Injectable({
   providedIn: 'root'
@@ -54,13 +55,13 @@ export class UtilsService {
           return {
             ...nav,
             children: navigationItemAdmin.children.map((c) => {
-              if (c.type === 'dropdown') {
+              if (c.label === 'Contrats') {
                 return {
                   ...c,
                   children: userAppList.map((userApp) => ({
                     type: 'link',
                     label: userApp.nomPrenom,
-                    route: '/admin/employes/' + userApp.id,
+                    route: '/admin/contrats/' + userApp.id,
                     routerLinkActiveOptions: { exact: false },
                     badge: {
                       value: userApp.nbAction > 0 ? userApp.nbAction + '' : '',
@@ -69,11 +70,24 @@ export class UtilsService {
                     }
                   }))
                 };
-              } else if (c.label === 'Validations') {
+              } else if (c.label === 'Congés' && c.type === 'dropdown') {
                 const nbActionListStr =
                   nbActionList > 0 ? nbActionList + '' : '';
                 return {
                   ...c,
+                  children: c.children.map((sub) => {
+                    if (sub.label === 'Validations') {
+                      return {
+                        ...sub,
+                        badge: {
+                          value: nbActionListStr,
+                          bgClass: 'bg-green-600',
+                          textClass: 'text-white'
+                        }
+                      };
+                    }
+                    return sub;
+                  }),
                   badge: {
                     value: nbActionListStr,
                     bgClass: 'bg-green-600',
@@ -81,9 +95,7 @@ export class UtilsService {
                   }
                 };
               }
-              {
-                return c;
-              }
+              return c;
             })
           };
         } else {
@@ -135,6 +147,42 @@ export class UtilsService {
     }
     return WORK_STATE.TRAVAIL;
   }
+
+  getStart(start: Date): Date {
+    return subMinutes(new Date(start), new Date().getTimezoneOffset());
+  }
+
+  getEnd(end: Date | undefined): Date {
+    return subMinutes(
+      end ? new Date(end) : new Date(),
+      new Date().getTimezoneOffset()
+    );
+  }
+
+  getDateString(date: Date): string {
+    return (
+      (date.getDate() < 10 ? '0' + date.getDate() : date.getDate()) +
+      '-' +
+      (date.getMonth() + 1 < 10
+        ? '0' + (date.getMonth() + 1)
+        : date.getMonth() + 1) +
+      '-' +
+      date.getFullYear()
+    );
+  }
+
+  getDateUTC(date: Date): Date {
+    return new Date(
+      Date.UTC(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        date.getHours(),
+        date.getMinutes(),
+        date.getSeconds()
+      )
+    );
+  }
 }
 
 export const navigationItemAdmin: NavigationSubheading = {
@@ -143,41 +191,16 @@ export const navigationItemAdmin: NavigationSubheading = {
   children: [
     {
       type: 'link',
-      label: 'Users',
+      label: 'Employés',
       route: '/admin/users',
       icon: 'mat:person_pin',
       routerLinkActiveOptions: { exact: true }
     },
     {
-      type: 'dropdown',
-      label: 'Employés',
-      icon: 'mat:people',
-      children: []
-    },
-    {
       type: 'link',
-      label: 'Recap',
-      route: '/admin/recap',
+      label: 'Plannings',
+      route: '/admin/plannings',
       icon: 'mat:assignment',
-      routerLinkActiveOptions: { exact: true }
-    },
-    {
-      type: 'link',
-      label: 'Validations',
-      route: '/admin/validations',
-      icon: 'mat:thumbs_up_down',
-      badge: {
-        value: '',
-        bgClass: 'bg-green-600',
-        textClass: 'text-white'
-      },
-      routerLinkActiveOptions: { exact: true }
-    },
-    {
-      type: 'link',
-      label: 'Historique',
-      route: '/admin/historique',
-      icon: 'mat:account_balance',
       routerLinkActiveOptions: { exact: true }
     }
   ]

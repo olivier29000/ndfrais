@@ -13,12 +13,19 @@ RUN npm install
 # Copy the rest of the app source code to the container
 COPY . .
 
+# Définir une variable d’environnement pour l'URL du backend
+ARG BACKEND_URL
+ENV BACKEND_URL=${BACKEND_URL}
+
+# Remplacement dynamique de l'URL du backend
+RUN sed -i "s|@BACKEND_URL@|${BACKEND_URL}|g" src/environment/environment.prod.ts
+
 # Build the Angular app
 RUN node_modules/.bin/ng build --configuration production
 
 # Use NGINX as the production server
 FROM nginx:alpine
-COPY --from=build /app/dist/alaisedeiz /usr/share/nginx/html
+COPY --from=build /app/dist/ndfrais /usr/share/nginx/html
 
 # Copy the custom NGINX configuration file
 COPY default.conf /etc/nginx/conf.d/default.conf

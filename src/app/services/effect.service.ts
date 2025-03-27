@@ -1,16 +1,13 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
-import { DayApp } from '../models/day-app.model';
-import { DayBdd } from '../models/day-bdd.model';
-import { UserApp } from '../models/user.model';
 import { MatDialog } from '@angular/material/dialog';
-import { CreateUpdateUserModal } from '../pages/admin/modals/create-update-user.modal';
 import { StoreService } from './store.service';
 import { RepoService } from './repo.service';
-import { ContratUserApp } from '../models/contrat-employe.model';
-import { CreateUpdateContratModal } from '../pages/admin/modals/create-update-contrat.modal';
 import { Router, UrlTree } from '@angular/router';
 import Swal from 'sweetalert2';
 import { catchError, map, Observable, of } from 'rxjs';
+import { Email } from '../models/email.model';
+import { EmailSupportModal } from './modals/email-support.modal';
+import { UtilsService } from './utils.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +16,9 @@ export class EffectService {
   constructor(
     private store: StoreService,
     private repo: RepoService,
-    private router: Router
+    private utils: UtilsService,
+    private router: Router,
+    private dialog: MatDialog
   ) {}
 
   authentification(email: string, password: string): void {
@@ -28,7 +27,7 @@ export class EffectService {
       (userConnected) => {
         this.store.userConnected.set(userConnected);
         this.store.isLoading.set(false);
-        this.router.navigate(['']);
+        this.router.navigate(['tickets']);
       },
       (error: string) => {
         this.store.isLoading.set(false);
@@ -60,9 +59,9 @@ export class EffectService {
     );
   }
 
-  creationCompte(email: string, entreprise: string, password: string): void {
+  creationCompte(email: string, password: string): void {
     this.store.isLoading.set(true);
-    this.repo.creationCompte(email, entreprise, password).subscribe(
+    this.repo.creationCompte(email, password).subscribe(
       () => {
         this.store.isLoading.set(false);
         this.router.navigate(['']);
@@ -101,23 +100,6 @@ export class EffectService {
     );
   }
 
-  getDayAppListByContratId(idContrat: string): void {
-    this.repo.getDayAppListByContratId(idContrat).subscribe(
-      (dayAppList) => {
-        this.store.isLoading.set(false);
-        this.store.dayAppList.set(
-          dayAppList.map((d) => ({
-            ...d,
-            date: new Date(d.date)
-          }))
-        );
-      },
-      () => {
-        this.store.isLoading.set(false);
-      }
-    );
-  }
-
   getUserConnected(): void {
     this.repo.getUserConnected().subscribe(
       (userConnected) => {
@@ -134,7 +116,13 @@ export class EffectService {
     this.repo.getUserContratList().subscribe(
       (userAllContratList) => {
         this.store.isLoading.set(false);
-        this.store.userAllContratList.set(userAllContratList);
+        this.store.userAllContratList.set(
+          userAllContratList.map((c) => ({
+            ...c,
+            dateBegin: this.utils.getStart(c.dateBegin),
+            dateEnd: this.utils.getStart(c.dateEnd)
+          }))
+        );
       },
       () => {
         this.store.isLoading.set(false);
@@ -166,5 +154,37 @@ export class EffectService {
         this.store.isLoading.set(false);
       }
     );
+  }
+
+  sendEmail(email: Email): void {
+    this.store.isLoading.set(true);
+    this.repo.sendEmail(email).subscribe(
+      () => {
+        this.store.isLoading.set(false);
+      },
+      () => {
+        this.store.isLoading.set(false);
+      }
+    );
+  }
+
+  verifDispoNomEntreprise(nomEntreprise: string): void {
+    this.repo.verifDispoNomEntreprise(nomEntreprise).subscribe(
+      () => {
+        this.store.canChooseNomEntreprise.set(true);
+      },
+      () => {
+        this.store.canChooseNomEntreprise.set(false);
+        return of();
+      }
+    );
+  }
+
+  openSendEmailModal(mode: 'bug' | 'information' | 'fonctionnality') {
+    this.dialog.open(EmailSupportModal, {
+      data: {
+        mode
+      }
+    });
   }
 }

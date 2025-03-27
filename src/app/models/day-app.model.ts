@@ -8,6 +8,7 @@ export interface DayApp {
   workState: WORK_STATE;
   idContrat?: number;
   actionDay?: ActionDay;
+  nbHours?: number;
 }
 
 export interface WorkStateAction {
@@ -20,20 +21,21 @@ export interface WorkStateAction {
 export enum WORK_STATE {
   HORS_CONTRAT = 'HORS_CONTRAT',
   TRAVAIL = 'TRAVAIL',
-  TELETRAVAIL = 'TELETRAVAIL',
   CONGE = 'CONGE',
   RTT = 'RTT',
   RECUP = 'RECUP',
   ARRET_MALADIE = 'ARRET_MALADIE',
   CONGE_SANS_SOLDE = 'CONGE_SANS_SOLDE',
   ABSCENCE = 'ABSCENCE',
-  REPOS = 'REPOS'
+  REPOS = 'REPOS',
+  ENFANT_MALADE = 'ENFANT_MALADE'
 }
 
 export interface workStateItem {
   label: WORK_STATE;
   icon: string;
-  nb: string;
+  nbDispo: string;
+  nbPrevision: string;
 }
 
 export enum ACTION_STATE {

@@ -2,7 +2,19 @@
 @import "~highlight.js/styles/androidstudio.css";
 // Vex Core
 @import "./@vex/styles/core";
+@import "../node_modules/angular-calendar/css/angular-calendar.css";
 
+button[mat-icon-button]:disabled {
+  opacity: 0.5; /* Par exemple, réduire l'opacité */
+  cursor: not-allowed; /* Modifier le curseur */
+}
+
+.swal2-confirm {
+  background-color: #3085d6 !important;
+}
+.swal2-cancel {
+  background-color: #d33 !important;
+}
 .TRAVAIL {
   background-color: #a1fb8e !important;
 }
@@ -10,7 +22,7 @@
   background-color: white !important;
 }
 .CONGE {
-  background-color: #067ef5 !important;
+  background-color: #3894ef !important;
 }
 .RTT {
   background-color: #051ef5 !important;
@@ -26,6 +38,12 @@
 }
 .TELETRAVAIL {
   background-color: pink !important;
+}
+.ABSCENCE {
+  background-color: #3994ef !important;
+}
+.ENFANT_MALADE {
+  background-color: #24eeee !important;
 }
 .HORS_CONTRAT {
   background: repeating-linear-gradient(

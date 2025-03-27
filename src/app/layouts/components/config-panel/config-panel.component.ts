@@ -28,6 +28,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { VEX_THEMES } from '@vex/config/config.token';
+import { ServerService } from 'src/app/services/server.service';
 
 @Component({
   selector: 'vex-config-panel',
@@ -49,6 +50,10 @@ import { VEX_THEMES } from '@vex/config/config.token';
   ]
 })
 export class ConfigPanelComponent {
+  openSendEmailModal(mode: 'bug' | 'information' | 'fonctionnality') {
+    this.server.openSendEmailModal(mode);
+  }
+
   configs: VexConfig[] = this.configService.configs;
   config$: Observable<VexConfig> = this.configService.config$;
 
@@ -112,7 +117,8 @@ export class ConfigPanelComponent {
 
   constructor(
     private readonly configService: VexConfigService,
-    @Inject(VEX_THEMES) public readonly themes: VexThemeProvider[]
+    @Inject(VEX_THEMES) public readonly themes: VexThemeProvider[],
+    private server: ServerService
   ) {}
 
   setConfig(layout: VexConfigName, colorScheme: VexColorScheme): void {

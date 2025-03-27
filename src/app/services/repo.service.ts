@@ -12,6 +12,7 @@ import { ContratUserApp } from '../models/contrat-employe.model';
 import { UserApp } from '../models/user.model';
 import { UserConnected } from '../models/user-connected.model';
 import { TreeNode } from 'primeng/api';
+import { Email } from '../models/email.model';
 
 const URL_BACKEND = environment.urlBackEnd;
 const httpOptions = {
@@ -46,17 +47,12 @@ export class RepoService {
       .pipe(catchError(this.handleError));
   }
 
-  creationCompte(
-    email: string,
-    entreprise: string,
-    password: string
-  ): Observable<void> {
+  creationCompte(email: string, password: string): Observable<void> {
     return this.http
       .post<void>(
         URL_BACKEND + '/user/creation-compte',
         {
           email,
-          entreprise,
           password
         },
         httpOptions
@@ -75,14 +71,6 @@ export class RepoService {
       .get<UserConnected>(
         `${URL_BACKEND}/user/fetch-user-connected/${avaibilityUrl}`
       )
-      .pipe(catchError(this.handleError));
-  }
-
-  getDayAppListByContratId(contratId: string): Observable<DayApp[]> {
-    return this.http
-      .get<
-        DayApp[]
-      >(`${URL_BACKEND}/day-app/get-all-by-contrat-id/${contratId}`, httpOptions)
       .pipe(catchError(this.handleError));
   }
 
@@ -105,6 +93,21 @@ export class RepoService {
       .get<
         TreeNode[]
       >(`${URL_BACKEND}/contrat-user-app/get-organigramme`, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+  sendEmail(email: Email): Observable<void> {
+    return this.http
+      .post<void>(`${URL_BACKEND}/user/email`, email, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+  verifDispoNomEntreprise(nomEntreprise: string): Observable<void> {
+    return this.http
+      .get<void>(
+        `${URL_BACKEND}/user/verif-nom-entreprise/${nomEntreprise}`,
+        httpOptions
+      )
       .pipe(catchError(this.handleError));
   }
 

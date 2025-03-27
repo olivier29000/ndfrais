@@ -5,6 +5,11 @@
     overflow: initial !important;
   }
 
+  * {
+    -webkit-print-color-adjust: exact !important; /* Safari & Chrome */
+    print-color-adjust: exact !important; /* Standard */
+  }
+
   .vex-toolbar,
   .vex-sidenav {
     display: none !important;
@@ -12,6 +17,13 @@
 
   .vex-layout-content {
     margin-top: 0 !important;
+  }
+
+  .vex-layout-sidenav-container {
+    height: auto !important;
+  }
+  .calendar {
+    height: auto !important;
   }
 
   .mat-drawer-container {
