@@ -25,15 +25,15 @@ jobs:
         run: npm run build -- --configuration production
 
       - name: Build Docker image
-        run: docker build --build-arg BACKEND_URL="https://alaisedeiz.bzh/back" -t alaisedeiz-front:latest .
+        run: docker build --build-arg BACKEND_URL="https://ndfrais.pro/back" -t ndfrais-front:latest .
 
       - name: Log in to Docker Hub
         run: echo ${{ secrets.DOCKER_HUB_PASSWORD }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
 
       - name: Push Docker image to Docker Hub
         run: |
-          docker tag alaisedeiz-front:latest ${{ secrets.DOCKER_HUB_USERNAME }}/alaisedeiz-front:latest
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/alaisedeiz-front:latest
+          docker tag ndfrais-front:latest ${{ secrets.DOCKER_HUB_USERNAME }}/ndfrais-front:latest
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/ndfrais-front:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -61,7 +61,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
             cd /home/debian
-            sudo docker pull olivierlasbleis/alaisedeiz-front
-            sudo docker-compose stop alaisedeiz-front
-            sudo docker-compose up -d alaisedeiz-front
+            sudo docker pull olivierlasbleis/ndfrais-front
+            sudo docker-compose stop ndfrais-front
+            sudo docker-compose up -d ndfrais-front
           EOF
