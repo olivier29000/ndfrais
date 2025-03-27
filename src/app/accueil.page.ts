@@ -36,7 +36,7 @@ import { RouterLink } from '@angular/router';
               referrerpolicy="strict-origin-when-cross-origin"
               allowfullscreen>
             </iframe>
-          </div>
+          </div
           <div class="video-container mt-3">
             <iframe
               class="ql-video ql-align-center mx-auto"
@@ -65,7 +65,6 @@ import { RouterLink } from '@angular/router';
             <a [routerLink]="['/login']">Connectez vous ici</a>
           </p>
         </div>
-        <!-- <dumb-abonnement-list></dumb-abonnement-list> -->
         <div class="space-y-12">
           <div class="text-center">
             <div class="text-4xl font-extrabold">Questions / Réponses</div>
