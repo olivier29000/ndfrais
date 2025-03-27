@@ -14,41 +14,55 @@ import { TrajetListDumb } from './dumbs/trajet-list.dumb';
 
 @Component({
   template: `
-    <dumb-nav-month [currentDate]="currentDate()"></dumb-nav-month>
-    <div class="container grid grid-cols-2 gap-4">
-      <dumb-ticket-list
-        [ticketList]="ticketList()"
-        (updateTicket)="updateTicketModal($event)">
-        <input
-          type="file"
-          #fileInput
-          (change)="onFileSelected($event)"
-          accept="image/*"
-          style="display: none;"
-          capture="environment" />
+    <div class="container relative">
+      <dumb-nav-month
+        [currentDate]="currentDate()"
+        (currentDateChange)="currentDateChange($event)"></dumb-nav-month>
+      <div class="absolute right-0 top-5 ml-4 flex">
         <button
-          class="ml-4 flex-none"
-          color="primary"
-          mat-mini-fab
-          matTooltip="Add Ticket"
+          class="mx-4"
+          mat-icon-button
+          matTooltip="télécharger sous forme d'excel"
           type="button"
-          (click)="fileInput.click()">
-          <mat-icon svgIcon="mat:add"></mat-icon>
+          (click)="getExcel()">
+          <mat-icon svgIcon="mat:receipt"></mat-icon>
         </button>
-      </dumb-ticket-list>
-      <dumb-trajet-list
-        [trajetList]="trajetList()"
-        (updateTrajet)="updateTrajetModal($event)">
-        <button
-          class="ml-4 flex-none"
-          color="primary"
-          mat-mini-fab
-          matTooltip="Add Ticket"
-          type="button"
-          (click)="newTrajetModal()">
-          <mat-icon svgIcon="mat:add"></mat-icon>
-        </button>
-      </dumb-trajet-list>
+      </div>
+      <div class=" grid grid-cols-1 md:grid-cols-2  gap-4">
+        <dumb-ticket-list
+          [ticketList]="ticketList()"
+          (updateTicket)="updateTicketModal($event)">
+          <input
+            type="file"
+            #fileInput
+            (change)="onFileSelected($event)"
+            accept="image/*"
+            style="display: none;"
+            capture="environment" />
+          <button
+            class="ml-4 flex-none"
+            color="primary"
+            mat-mini-fab
+            matTooltip="Add Ticket"
+            type="button"
+            (click)="fileInput.click()">
+            <mat-icon svgIcon="mat:add"></mat-icon>
+          </button>
+        </dumb-ticket-list>
+        <dumb-trajet-list
+          [trajetList]="trajetList()"
+          (updateTrajet)="updateTrajetModal($event)">
+          <button
+            class="ml-4 flex-none"
+            color="primary"
+            mat-mini-fab
+            matTooltip="Add Ticket"
+            type="button"
+            (click)="newTrajetModal()">
+            <mat-icon svgIcon="mat:add"></mat-icon>
+          </button>
+        </dumb-trajet-list>
+      </div>
     </div>
   `,
   animations: [fadeInUp400ms, stagger40ms],
@@ -70,6 +84,12 @@ export class TicketListPage {
 
   ticketList = this.server.ticketList;
   trajetList = this.server.trajetList;
+  getExcel(): void {
+    this.server.getExcel();
+  }
+  currentDateChange(newDate: Date): void {
+    this.server.currentDateChange(newDate);
+  }
   onFileSelected(event: any): void {
     const file: File = event.target.files[0];
 

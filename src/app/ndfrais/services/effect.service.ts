@@ -6,6 +6,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { UpdateTicketModal } from '../modals/update-ticket.modal';
 import { Trajet } from '../models/trajet.model';
 import { UpdateTrajetModal } from '../modals/update-trajet.modal';
+import { format } from 'date-fns';
+import Swal from 'sweetalert2';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +25,34 @@ export class EffectService {
       },
       {
         allowSignalWrites: true
+      }
+    );
+  }
+
+  currentDateChange(newDate: Date): void {
+    this.store.currentDate.set(newDate);
+  }
+
+  getExcel(): void {
+    this.store.isLoading.set(true);
+    this.repo.getExcel(this.store.currentDate()).subscribe(
+      (blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download =
+          format(Date.now(), 'yyyyMMddHHmmss') + 'ndfrais.pro' + '.csv';
+        a.click();
+        window.URL.revokeObjectURL(url);
+        this.store.isLoading.set(true);
+      },
+      (error) => {
+        this.store.isLoading.set(true);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error
+        });
       }
     );
   }
@@ -82,7 +112,7 @@ export class EffectService {
       .afterClosed()
       .subscribe((updatedTrajet) => {
         if (updatedTrajet) {
-          // this.updateTicket(updatedTicket);
+          this.updateTrajet(updatedTrajet);
         }
       });
   }

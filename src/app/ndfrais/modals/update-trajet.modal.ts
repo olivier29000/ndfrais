@@ -207,7 +207,7 @@ export class UpdateTrajetModal implements AfterViewInit {
       () => {
         const currentTrajetSignal = this.currentTrajetSignal();
         if (currentTrajetSignal) {
-          this.currentTrajet = currentTrajetSignal;
+          this.currentTrajet = { ...currentTrajetSignal };
           if (this.currentTrajet.id) {
             this.depart = new FormControl(this.currentTrajet.depart.displayed);
             this.arrive = new FormControl(this.currentTrajet.arrive.displayed);

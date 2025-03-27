@@ -17,6 +17,14 @@ export class ServerService {
   currentDate = this.store.currentDate;
   ticketList = this.store.ticketList;
   trajetList = this.store.trajetList;
+  currentDateChange(newDate: Date): void {
+    this.effect.currentDateChange(newDate);
+  }
+
+  getExcel(): void {
+    this.effect.getExcel();
+  }
+
   uploadTicket(file: File): void {
     this.effect.uploadTicket(file);
   }
