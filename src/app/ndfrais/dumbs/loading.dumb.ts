@@ -1,8 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ContratUserApp } from 'src/app/models/contrat-employe.model';
-import { DayApp } from 'src/app/models/day-app.model';
-import { DayLineDumb } from './day-line.dumb';
+import { Component } from '@angular/core';
 @Component({
   selector: 'dumb-loading',
   template: `<div class="vex-splash-screen">

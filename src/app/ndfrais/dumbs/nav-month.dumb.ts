@@ -8,14 +8,13 @@ import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'dumb-nav-month',
   template: `
-    <div class="headline py-1 px-2 flex justify-center items-center">
+    <div class="headline py-1 px-2 flex justify-center items-center mt-3">
       <button mat-icon-button (click)="previousMonth()">
         <mat-icon svgIcon="mat:arrow_back_ios"></mat-icon>
       </button>
-      <div class="card flex items-center mt-3 px-2 mx-2">
-        <div class="flex-auto  items-center justify-center">
-          <h2>{{ currentMonth }}</h2>
-        </div>
+      <div
+        class="h-full flex items-center px-2 mx-2 items-center justify-center">
+        <h2 class="h-full">{{ currentMonth }}</h2>
       </div>
 
       <button mat-icon-button (click)="nextMonth()">

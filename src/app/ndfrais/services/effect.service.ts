@@ -132,7 +132,6 @@ export class EffectService {
   getAllTicketByYearMonth(date: Date): void {
     this.store.isLoading.set(true);
     this.repo.getAllTicketByYearMonth(date).subscribe((ticketList) => {
-      console.log(ticketList);
       this.store.isLoading.set(false);
       this.store.ticketList.set(ticketList);
     });
@@ -151,7 +150,6 @@ export class EffectService {
   getAllTrajetByYearMonth(date: Date): void {
     this.store.isLoading.set(true);
     this.repo.getAllTrajetByYearMonth(date).subscribe((trajetList) => {
-      console.log(trajetList);
       this.store.isLoading.set(false);
       this.store.trajetList.set(
         trajetList.map((t) => ({ ...t, dateTrajet: new Date(t.dateTrajet) }))

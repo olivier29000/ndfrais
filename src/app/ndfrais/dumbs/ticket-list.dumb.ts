@@ -37,7 +37,7 @@ import { Ticket } from '../models/ticket.model';
           class="bg-app-bar px-6 h-16 border-b sticky left-0 flex items-center">
           <h2
             class="title my-0 ltr:pr-4 rtl:pl-4 ltr:mr-4 rtl:ml-4 ltr:border-r rtl:border-l hidden sm:block flex-none">
-            <span>{{ ticketList.length }} tickets </span>
+            <span>{{ ticketList.length }} tickets : {{ total }} € </span>
           </h2>
 
           <span class="flex-1"></span>
@@ -200,6 +200,7 @@ export class TicketListDumb {
   deleteTicketOutput(ticket: Ticket): void {
     this.deleteTicket.emit(ticket);
   }
+  total: number = 0;
   _ticketList!: Ticket[];
   dataSource!: MatTableDataSource<Ticket, MatPaginator>;
   contratManagerList: Ticket[] = [];
@@ -210,6 +211,7 @@ export class TicketListDumb {
     dataSource.data = value;
     this.dataSource = dataSource;
     this.contratManagerList = value;
+    this.total = value.reduce((acc, t) => acc + t.montant, 0);
   }
 
   get ticketList(): Ticket[] {

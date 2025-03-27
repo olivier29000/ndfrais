@@ -130,13 +130,16 @@ declare module 'leaflet' {
 
     <mat-dialog-actions align="end">
       <button mat-button mat-dialog-close type="button">Annuler</button>
-      <button
-        color="warn"
-        mat-flat-button
-        type="button"
-        (click)="deleteTrajet()">
-        Supprimer
-      </button>
+      @if (currentTrajet && currentTrajet.id) {
+        <button
+          color="warn"
+          mat-flat-button
+          type="button"
+          (click)="deleteTrajet()">
+          Supprimer
+        </button>
+      }
+
       <button
         color="primary"
         mat-flat-button
@@ -278,7 +281,6 @@ export class UpdateTrajetModal implements AfterViewInit {
             this.arriveSignal.set(undefined);
             this.arriveFound.set(undefined);
             this.getCoordsFromAddress(arrive).subscribe((res) => {
-              console.log(res);
               this.markers.forEach((m) => this.map?.removeLayer(m));
               this.markers.length = 0; // Vide le tableau
               if (res.length > 0 && this.map) {
@@ -364,7 +366,6 @@ export class UpdateTrajetModal implements AfterViewInit {
         const route = e.routes[0];
         const distanceMeters = route.summary.totalDistance;
         const distanceKm = (distanceMeters / 1000).toFixed(2);
-        console.log(distanceKm);
         this.currentTrajet.nbkm = Number(distanceKm);
 
         // Tu peux ensuite afficher cette info dans le template ou ailleurs

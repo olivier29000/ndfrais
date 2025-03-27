@@ -101,6 +101,15 @@ import Swal from 'sweetalert2';
 
       <mat-dialog-actions align="end">
         <button mat-button mat-dialog-close type="button">Annuler</button>
+        @if (currentTicket && currentTicket.id) {
+          <button
+            color="warn"
+            mat-flat-button
+            type="button"
+            (click)="deleteTicket()">
+            Supprimer
+          </button>
+        }
         <button
           color="primary"
           mat-flat-button
@@ -164,7 +173,6 @@ export class UpdateTicketModal implements OnInit {
   currentTicketSignal = this.server.currentTicket;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA)
     private dialogRef: MatDialogRef<UpdateTicketModal>,
     private server: ServerService
   ) {

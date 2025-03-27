@@ -1,14 +1,7 @@
-import { computed, effect, Injectable } from '@angular/core';
+import { effect, Injectable } from '@angular/core';
 import { StoreService } from './store.service';
-import { eachDayOfInterval, format } from 'date-fns';
-import { WEEK_STATE, DayApp, WORK_STATE } from '../models/day-app.model';
-import { UtilsService } from './utils.service';
-import { UserApp } from '../models/user.model';
-import { NavigationService } from '../core/navigation/navigation.service';
-import { ContratUserApp } from '../models/contrat-employe.model';
 import { Role } from '../models/user-connected.model';
 import { EffectService } from './effect.service';
-import { AdminServerService } from '../pages/admin/services/admin-server.service';
 import { Email } from '../models/email.model';
 
 @Injectable({
@@ -17,22 +10,8 @@ import { Email } from '../models/email.model';
 export class ServerService {
   constructor(
     private store: StoreService,
-    private effectService: EffectService,
-    private adminServer: AdminServerService
-  ) {
-    effect(
-      () => {
-        const userConnected = this.userConnected();
-        if (userConnected?.roleList.includes(Role.ROLE_ADMIN)) {
-          this.adminServer.getUserAppList();
-        }
-        if (userConnected?.roleList.includes(Role.ROLE_USER)) {
-          this.getUserContratList();
-        }
-      },
-      { allowSignalWrites: true }
-    );
-  }
+    private effectService: EffectService
+  ) {}
   isLoading = this.store.isLoading;
   openSendEmailModal(mode: 'bug' | 'information' | 'fonctionnality') {
     this.effectService.openSendEmailModal(mode);

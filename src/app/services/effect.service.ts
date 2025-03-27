@@ -1,13 +1,7 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
-import { DayApp } from '../models/day-app.model';
-import { DayBdd } from '../models/day-bdd.model';
-import { UserApp } from '../models/user.model';
 import { MatDialog } from '@angular/material/dialog';
-import { CreateUpdateUserModal } from '../pages/admin/modals/create-update-user.modal';
 import { StoreService } from './store.service';
 import { RepoService } from './repo.service';
-import { ContratUserApp } from '../models/contrat-employe.model';
-import { CreateUpdateContratModal } from '../pages/admin/modals/create-update-contrat.modal';
 import { Router, UrlTree } from '@angular/router';
 import Swal from 'sweetalert2';
 import { catchError, map, Observable, of } from 'rxjs';
@@ -33,7 +27,7 @@ export class EffectService {
       (userConnected) => {
         this.store.userConnected.set(userConnected);
         this.store.isLoading.set(false);
-        this.router.navigate(['admin/users']);
+        this.router.navigate(['tickets']);
       },
       (error: string) => {
         this.store.isLoading.set(false);

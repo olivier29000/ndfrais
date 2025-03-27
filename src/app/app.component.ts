@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ServerService } from './services/server.service';
-import { LoadingDumb } from './pages/dumbs/loading.dumb';
+import { LoadingDumb } from './ndfrais/dumbs/loading.dumb';
 
 @Component({
   selector: 'vex-root',

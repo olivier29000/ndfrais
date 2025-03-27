@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   Component,
+  computed,
   EventEmitter,
   Input,
   Output,
@@ -37,7 +38,7 @@ import { Trajet } from '../models/trajet.model';
           class="bg-app-bar px-6 h-16 border-b sticky left-0 flex items-center">
           <h2
             class="title my-0 ltr:pr-4 rtl:pl-4 ltr:mr-4 rtl:ml-4 ltr:border-r rtl:border-l hidden sm:block flex-none">
-            <span>{{ trajetList.length }} trajets </span>
+            <span>{{ trajetList.length }} trajets : {{ total }} km </span>
           </h2>
 
           <span class="flex-1"></span>
@@ -220,16 +221,17 @@ export class TrajetListDumb {
   updateTrajetOutput(trajet: Trajet): void {
     this.updateTrajet.emit(trajet);
   }
+
+  total: number = 0;
   _trajetList!: Trajet[];
   dataSource!: MatTableDataSource<Trajet, MatPaginator>;
-  contratManagerList: Trajet[] = [];
   @Input()
   set trajetList(value: Trajet[]) {
     this._trajetList = value;
     const dataSource: MatTableDataSource<Trajet> = new MatTableDataSource();
     dataSource.data = value;
     this.dataSource = dataSource;
-    this.contratManagerList = value;
+    this.total = value.reduce((acc, t) => acc + t.nbkm, 0);
   }
 
   get trajetList(): Trajet[] {
