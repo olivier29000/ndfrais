@@ -24,7 +24,7 @@ import { RouterLink } from '@angular/router';
           <div class="text-2xl font-medium  mb-5">
             Plutôt qu'un long discours, je vous propose de regarder la première
             minute ou les deux vidéos ci-dessous pour découvrir le logiciel
-            planifique
+            ndfrais
           </div>
           <div class="video-container mb-3">
             <iframe
@@ -120,14 +120,14 @@ import { RouterLink } from '@angular/router';
                 des autres.
               </div>
               <div class="text-gray-300 mt-3 leading-relaxed">
-                J'ai créé planifique.pro après avoir remarqué que la gestion du
+                J'ai créé ndfrais.pro après avoir remarqué que la gestion du
                 planning des employés peut être chronophage pour un manager, en
                 plus de créer des tensions du coté des employés.
               </div>
               <div class="text-gray-300 mt-3 leading-relaxed">
-                Je souhaite, via planifique.pro, répondre à cette problématique
-                au meilleur rapport qualité/prix. Vous pouvez me retrouver tous
-                les jours à la cantine numérique de Quimper à travailler dessus.
+                Je souhaite, via ndfrais.pro, répondre à cette problématique au
+                meilleur rapport qualité/prix. Vous pouvez me retrouver tous les
+                jours à la cantine numérique de Quimper à travailler dessus.
               </div>
             </div>
 
@@ -212,7 +212,7 @@ export class AccueilPage {
   }[] = [
     {
       icon: 'mat:check',
-      label: 'A quoi sert le logiciel web planifique ?',
+      label: 'A quoi sert le logiciel web ndfrais ?',
       description:
         "C'est un outil disponible sur le web qui permet de gérer facilement le planning de vos employés. Concrétement, C'est très simple pour vous de le faire et vos employés peuvent retrouver leur planning personnel via une simple url"
     },
@@ -244,7 +244,7 @@ export class AccueilPage {
       icon: 'mat:check',
       label: 'Je peux adapter le logiciel à mes besoins spécifiques ?',
       description:
-        "Oui, c'est moi qui ai créé planifique, je peux l'adapter exactement comme vous le voudrez."
+        "Oui, c'est moi qui ai créé ndfrais, je peux l'adapter exactement comme vous le voudrez."
     },
     // {
     //   icon: 'mat:check',

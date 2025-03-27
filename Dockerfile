@@ -25,7 +25,7 @@ RUN node_modules/.bin/ng build --configuration production
 
 # Use NGINX as the production server
 FROM nginx:alpine
-COPY --from=build /app/dist/planifique /usr/share/nginx/html
+COPY --from=build /app/dist/ndfrais /usr/share/nginx/html
 
 # Copy the custom NGINX configuration file
 COPY default.conf /etc/nginx/conf.d/default.conf
