@@ -222,7 +222,7 @@ export class TrajetListDumb {
     this.updateTrajet.emit(trajet);
   }
 
-  total: number = 0;
+  total: string = '0';
   _trajetList!: Trajet[];
   dataSource!: MatTableDataSource<Trajet, MatPaginator>;
   @Input()
@@ -231,7 +231,7 @@ export class TrajetListDumb {
     const dataSource: MatTableDataSource<Trajet> = new MatTableDataSource();
     dataSource.data = value;
     this.dataSource = dataSource;
-    this.total = value.reduce((acc, t) => acc + t.nbkm, 0);
+    this.total = value.reduce((acc, t) => acc + t.nbkm, 0).toFixed(0);
   }
 
   get trajetList(): Trajet[] {

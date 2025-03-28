@@ -200,7 +200,7 @@ export class TicketListDumb {
   deleteTicketOutput(ticket: Ticket): void {
     this.deleteTicket.emit(ticket);
   }
-  total: number = 0;
+  total: string = "0";
   _ticketList!: Ticket[];
   dataSource!: MatTableDataSource<Ticket, MatPaginator>;
   contratManagerList: Ticket[] = [];
@@ -211,7 +211,7 @@ export class TicketListDumb {
     dataSource.data = value;
     this.dataSource = dataSource;
     this.contratManagerList = value;
-    this.total = value.reduce((acc, t) => acc + t.montant, 0);
+    this.total = value.reduce((acc, t) => acc + t.montant, 0).toFixed(0);
   }
 
   get ticketList(): Ticket[] {
