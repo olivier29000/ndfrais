@@ -37,7 +37,7 @@ import { Trajet } from '../models/trajet.model';
         <div
           class="bg-app-bar px-6 h-16 border-b sticky left-0 flex items-center">
           <h2
-            class="title my-0 ltr:pr-4 rtl:pl-4 ltr:mr-4 rtl:ml-4 ltr:border-r rtl:border-l hidden sm:block flex-none">
+            class="title my-0 ltr:pr-4 rtl:pl-4 ltr:mr-4 rtl:ml-4 ltr:border-r rtl:border-l flex-none">
             <span>{{ trajetList.length }} trajets : {{ total }} km </span>
           </h2>
 
