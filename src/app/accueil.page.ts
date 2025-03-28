@@ -36,18 +36,8 @@ import { RouterLink } from '@angular/router';
               referrerpolicy="strict-origin-when-cross-origin"
               allowfullscreen>
             </iframe>
-          </div
-          <div class="video-container mt-3">
-            <iframe
-              class="ql-video ql-align-center mx-auto"
-              src="https://www.youtube.com/embed/S_9J8z0aKVo"
-              title="YouTube video player"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerpolicy="strict-origin-when-cross-origin"
-              allowfullscreen>
-            </iframe>
           </div>
+          
         </div>
         <!-- PRICING -->
 
