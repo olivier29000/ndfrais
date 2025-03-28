@@ -133,7 +133,7 @@ export class EffectService {
     this.store.isLoading.set(true);
     this.repo.getAllTicketByYearMonth(date).subscribe((ticketList) => {
       this.store.isLoading.set(false);
-      this.store.ticketList.set(ticketList);
+      this.store.ticketList.set(ticketList.map((t) => ({ ...t, dateTrajet: new Date(t.dateTicket), dateCreation: new Date(t.dateCreation) })));
     });
   }
 
@@ -143,7 +143,7 @@ export class EffectService {
       .updateTicket(ticket, this.store.currentDate())
       .subscribe((ticketList) => {
         this.store.isLoading.set(false);
-        this.store.ticketList.set(ticketList);
+        this.store.ticketList.set( ticketList.map((t) => ({ ...t, dateTrajet: new Date(t.dateTicket), dateCreation: new Date(t.dateCreation) })))
       });
   }
 
@@ -152,7 +152,7 @@ export class EffectService {
     this.repo.getAllTrajetByYearMonth(date).subscribe((trajetList) => {
       this.store.isLoading.set(false);
       this.store.trajetList.set(
-        trajetList.map((t) => ({ ...t, dateTrajet: new Date(t.dateTrajet) }))
+        trajetList.map((t) => ({ ...t, dateTrajet: new Date(t.dateTrajet), dateCreation: new Date(t.dateCreation) }))
       );
     });
   }
@@ -190,7 +190,7 @@ export class EffectService {
       .deleteTicket(ticket, this.store.currentDate())
       .subscribe((ticketList) => {
         this.store.isLoading.set(false);
-        this.store.ticketList.set(ticketList);
+        this.store.ticketList.set(ticketList.map((t) => ({ ...t, dateTrajet: new Date(t.dateTicket), dateCreation: new Date(t.dateCreation) })));
       });
   }
 }

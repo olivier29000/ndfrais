@@ -52,7 +52,6 @@ export class RepoService {
   }
 
   updateTicket(ticket: Ticket, date: Date): Observable<Ticket[]> {
-    ticket = { ...ticket, dateTicket: this.getDateUTC(ticket.dateTicket) };
     const monthStr: string =
       (date.getMonth() < 9
         ? '0' + (date.getMonth() + 1)
