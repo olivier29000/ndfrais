@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
   selector: 'dumb-nav-month',
   template: `
     <div class="headline py-1 px-2 flex justify-center items-center mt-3">
-      <button mat-icon-button (click)="previousMonth()">
+      <button mat-icon-button class="bigger-button"  (click)="previousMonth()">
         <mat-icon svgIcon="mat:arrow_back_ios"></mat-icon>
       </button>
       <div
@@ -17,12 +17,22 @@ import { MatIconModule } from '@angular/material/icon';
         <h2 class="h-full">{{ currentMonth }}</h2>
       </div>
 
-      <button mat-icon-button (click)="nextMonth()">
+      <button mat-icon-button class="bigger-button" (click)="nextMonth()">
         <mat-icon svgIcon="mat:arrow_forward_ios"></mat-icon>
       </button>
     </div>
   `,
-  styles: [``],
+  styles: [`
+    .bigger-button {
+      padding: 1rem; /* ou 0.75rem */
+    }
+  
+    @media (max-width: 640px) {
+      .bigger-button {
+        padding: 1.5rem; /* plus gros sur mobile */
+      }
+    }
+  `],
   standalone: true,
   imports: [CommonModule, MatIconModule]
 })
