@@ -145,6 +145,8 @@ export class EffectService {
       .subscribe((ticketList) => {
         this.store.isLoading.set(false);
         this.store.ticketList.set( ticketList.map((t) => ({ ...t, dateTrajet: new Date(t.dateTicket), dateCreation: new Date(t.dateCreation) })))
+     
+        this.getAllTicketByYearMonth(this.store.currentDate());
       });
   }
 
