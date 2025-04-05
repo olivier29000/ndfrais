@@ -65,7 +65,7 @@ import { Ticket } from '../models/ticket.model';
 
           <!-- Text Columns -->
           <ng-container
-            *ngFor="let column of columns; trackBy: trackByProperty">
+            *ngFor="let column of columns;">
             <ng-container
               *ngIf="column.type === 'text'"
               [matColumnDef]="column.property">
@@ -118,7 +118,7 @@ import { Ticket } from '../models/ticket.model';
           <tr *matHeaderRowDef="visibleColumns" mat-header-row></tr>
 
           <tr
-            *matRowDef="let row; columns: visibleColumns"
+            *matRowDef="let row; columns: visibleColumns; trackBy: trackByTicket"
             @fadeInUp
             class="hover:bg-hover transition duration-400 ease-out-swift cursor-pointer"
             mat-row
@@ -226,7 +226,7 @@ export class TicketListDumb {
       .map((column) => column.property);
   }
 
-  trackByProperty<T>(index: number, column: TableColumn<T>) {
-    return column.property;
+  trackByTicket(index: number, ticket: Ticket): any {
+    return `${ticket.titre}-${ticket.dateTicket}-${ticket.montant}`;
   }
 }
