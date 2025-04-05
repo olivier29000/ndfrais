@@ -61,7 +61,6 @@ export class EffectService {
     this.store.isLoading.set(true);
     this.repo.uploadTicket(file).subscribe((ticket) => {
       this.store.isLoading.set(false);
-      this.getAllTicketByYearMonth(this.store.currentDate());
       this.updateTicketModal(ticket);
     });
   }
