@@ -76,6 +76,7 @@ export class EffectService {
         if (updatedTicket) {
           this.updateTicket(updatedTicket);
         }
+        this.getAllTicketByYearMonth(this.store.currentDate());
       });
   }
 
@@ -142,10 +143,9 @@ export class EffectService {
     this.store.isLoading.set(true);
     this.repo
       .updateTicket(ticket, this.store.currentDate())
-      .subscribe((ticketList) => {
+      .subscribe(() => {
         this.store.isLoading.set(false);
-        this.store.ticketList.set( ticketList.map((t) => ({ ...t, dateTrajet: new Date(t.dateTicket), dateCreation: new Date(t.dateCreation) })))
-     
+        
         this.getAllTicketByYearMonth(this.store.currentDate());
       });
   }
