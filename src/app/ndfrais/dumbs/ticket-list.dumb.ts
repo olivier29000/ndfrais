@@ -227,6 +227,6 @@ export class TicketListDumb {
   }
 
   trackByTicket(index: number, ticket: Ticket): any {
-    return `${ticket.titre}-${ticket.dateTicket}-${ticket.montant}`;
+    return `${index}-${ticket.titre}-${ticket.dateTicket}-${ticket.montant}`;
   }
 }
