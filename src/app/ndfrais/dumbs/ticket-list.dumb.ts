@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -213,13 +214,14 @@ export class TicketListDumb {
     this.dataSource = dataSource;
     this.contratManagerList = value;
     this.total = value.reduce((acc, t) => acc + t.montant, 0).toFixed(0);
+    this.cdr.detectChanges();
   }
 
   get ticketList(): Ticket[] {
     return this._ticketList;
   }
 
-  constructor() {}
+  constructor(private cdr: ChangeDetectorRef) {}
 
   get visibleColumns() {
     return this.columns
