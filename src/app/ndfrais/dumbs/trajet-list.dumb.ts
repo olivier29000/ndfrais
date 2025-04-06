@@ -227,6 +227,7 @@ export class TrajetListDumb {
   dataSource!: MatTableDataSource<Trajet, MatPaginator>;
   @Input()
   set trajetList(value: Trajet[]) {
+    console.log(value)
     this._trajetList = value;
     const dataSource: MatTableDataSource<Trajet> = new MatTableDataSource();
     dataSource.data = value;
