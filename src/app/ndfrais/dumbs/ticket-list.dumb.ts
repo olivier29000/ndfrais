@@ -206,6 +206,7 @@ export class TicketListDumb {
   contratManagerList: Ticket[] = [];
   @Input()
   set ticketList(value: Ticket[]) {
+    console.log(value)
     this._ticketList = value;
     const dataSource: MatTableDataSource<Ticket> = new MatTableDataSource();
     dataSource.data = value;
