@@ -19,17 +19,15 @@ import { RouterLink } from '@angular/router';
 
         <div class=" px-8 text-center rounded-2xl">
           <div class="text-5xl font-extrabold mb-5">
-            Besoin de simplifier le planning de vos employés ?
+            Besoin d'une gestion de vos frais professionnels ?
           </div>
           <div class="text-2xl font-medium  mb-5">
-            Plutôt qu'un long discours, je vous propose de regarder la première
-            minute ou les deux vidéos ci-dessous pour découvrir le logiciel
-            ndfrais
+            Découvrez ndfrais.pro en 2 minutes via la vidéo ci-dessous et créez un compte gratuitement
           </div>
           <div class="video-container mb-3">
             <iframe
               class="ql-video ql-align-center mx-auto"
-              src="https://www.youtube.com/embed/aHnOcznGU5E?autoplay=1&mute=1"
+              src="https://www.youtube.com/embed/OXwI5WvVtNM?autoplay=1&mute=1"
               title="YouTube video player"
               frameborder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -55,7 +53,7 @@ import { RouterLink } from '@angular/router';
             <a [routerLink]="['/login']">Connectez vous ici</a>
           </p>
         </div>
-        <div class="space-y-12">
+        <!-- <div class="space-y-12">
           <div class="text-center">
             <div class="text-4xl font-extrabold">Questions / Réponses</div>
             <div class="text-gray-500 max-w-md mx-auto mt-4 font-medium">
@@ -72,8 +70,8 @@ import { RouterLink } from '@angular/router';
               </div>
             </div>
           </div>
-        </div>
-        <div class="px-8 text-center rounded-2xl">
+        </div> -->
+        <!-- <div class="px-8 text-center rounded-2xl">
           <button
             color="primary"
             mat-raised-button
@@ -86,7 +84,7 @@ import { RouterLink } from '@angular/router';
             Vous êtes déjà inscrits ?<br />
             <a [routerLink]="['/login']">Connectez vous ici</a>
           </p>
-        </div>
+        </div> -->
         <div
           class="rounded-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
           <div class="relative">
@@ -109,13 +107,10 @@ import { RouterLink } from '@angular/router';
                 des autres.
               </div>
               <div class="text-gray-300 mt-3 leading-relaxed">
-                J'ai créé ndfrais.pro après avoir remarqué que la gestion du
-                planning des employés peut être chronophage pour un manager, en
-                plus de créer des tensions du coté des employés.
+                J'ai créé ndfrais.pro après avoir remarqué que la gestion des notes de frais peut être chronophage.
               </div>
               <div class="text-gray-300 mt-3 leading-relaxed">
-                Je souhaite, via ndfrais.pro, répondre à cette problématique au
-                meilleur rapport qualité/prix. Vous pouvez me retrouver tous les
+                Je souhaite, via ndfrais.pro, répondre à cette problématique. Vous pouvez me retrouver tous les
                 jours à la cantine numérique de Quimper à travailler dessus.
               </div>
             </div>
