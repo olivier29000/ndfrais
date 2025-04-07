@@ -119,7 +119,7 @@ import { Ticket } from '../models/ticket.model';
           <tr *matHeaderRowDef="visibleColumns" mat-header-row></tr>
 
           <tr
-            *matRowDef="let row; columns: visibleColumns; trackBy: trackByTicket"
+            *matRowDef="let row; columns: visibleColumns; "
             @fadeInUp
             class="hover:bg-hover transition duration-400 ease-out-swift cursor-pointer"
             mat-row

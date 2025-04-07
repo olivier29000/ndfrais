@@ -122,6 +122,7 @@ export class TicketListPage {
                   });
                   this.server.uploadTicket(compressedFile); // Upload image réduite
                 }
+                (event.target as HTMLInputElement).value = '';
               },
               file.type,
               0.8
@@ -135,6 +136,7 @@ export class TicketListPage {
       reader.readAsDataURL(file);
     } else {
       console.error('No image file selected!');
+      (event.target as HTMLInputElement).value = '';
     }
   }
 
