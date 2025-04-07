@@ -54,7 +54,7 @@ import Swal from 'sweetalert2';
               <input
                 cdkFocusInitial
                 [(ngModel)]="currentTicket.titre"
-                name="nom"
+                name="titre"
                 matInput />
 
               <mat-icon matIconPrefix svgIcon="mat:person"></mat-icon>
@@ -64,7 +64,7 @@ import Swal from 'sweetalert2';
               <input
                 cdkFocusInitial
                 [(ngModel)]="currentTicket.montant"
-                name="nom"
+                name="montant"
                 type="number"
                 matInput />
 
@@ -179,6 +179,7 @@ export class UpdateTicketModal implements OnInit {
     effect(() => {
       const currentTicketSignal = this.currentTicketSignal();
       if (currentTicketSignal) {
+        console.log(currentTicketSignal)
         this.currentTicket = { ...currentTicketSignal };
       }
     });
