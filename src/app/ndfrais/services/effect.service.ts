@@ -144,7 +144,7 @@ export class EffectService {
       .updateTicket(ticket, this.store.currentDate())
       .subscribe((ticketList) => {
         this.store.isLoading.set(false);
-        this.store.ticketList.set( ticketList.map((t) => ({ ...t, dateTrajet: new Date(t.dateTicket), dateCreation: new Date(t.dateCreation) })))
+        this.store.ticketList.set( [...ticketList].map((t) => ({ ...t, dateTrajet: new Date(t.dateTicket), dateCreation: new Date(t.dateCreation) })))
       });
   }
 

@@ -186,7 +186,6 @@ export class UpdateTicketModal implements OnInit {
   ngOnInit(): void {}
 
   updateTicket() {
-    console.log(this.currentTicket)
     this.dialogRef.close(this.currentTicket);
   }
 

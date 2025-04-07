@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed, effect } from '@angular/core';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger40ms } from '@vex/animations/stagger.animation';
 import { MatIconModule } from '@angular/material/icon';
@@ -80,9 +80,13 @@ import { TrajetListDumb } from './dumbs/trajet-list.dumb';
 })
 export class TicketListPage {
   selectedFile: File | null = null;
-  constructor(private server: ServerService) {}
+  constructor(private server: ServerService) {
+    effect(() => {
+      this.ticketList();
+    });
+  }
 
-  ticketList = this.server.ticketList;
+  ticketList = this.server.ticketList ;
   trajetList = this.server.trajetList;
   getExcel(): void {
     this.server.getExcel();

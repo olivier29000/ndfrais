@@ -226,7 +226,7 @@ export class TicketListDumb {
       .map((column) => column.property);
   }
 
-  trackByProperty<T>(index: number, column: TableColumn<T>) {
+  trackByProperty<T>(index: number, column: TableColumn<Ticket>) {
     return column.property;
   }
 }
