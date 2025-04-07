@@ -179,7 +179,6 @@ export class UpdateTicketModal implements OnInit {
     effect(() => {
       const currentTicketSignal = this.currentTicketSignal();
       if (currentTicketSignal) {
-        console.log(currentTicketSignal)
         this.currentTicket = { ...currentTicketSignal };
       }
     });
