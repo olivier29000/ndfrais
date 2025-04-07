@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -65,7 +66,7 @@ import { Ticket } from '../models/ticket.model';
 
           <!-- Text Columns -->
           <ng-container
-            *ngFor="let column of columns; trackBy: trackByProperty">
+            *ngFor="let column of columns;">
             <ng-container
               *ngIf="column.type === 'text'"
               [matColumnDef]="column.property">
@@ -118,7 +119,7 @@ import { Ticket } from '../models/ticket.model';
           <tr *matHeaderRowDef="visibleColumns" mat-header-row></tr>
 
           <tr
-            *matRowDef="let row; columns: visibleColumns"
+            *matRowDef="let row; columns: visibleColumns; trackBy: trackByTicket"
             @fadeInUp
             class="hover:bg-hover transition duration-400 ease-out-swift cursor-pointer"
             mat-row
@@ -206,19 +207,21 @@ export class TicketListDumb {
   contratManagerList: Ticket[] = [];
   @Input()
   set ticketList(value: Ticket[]) {
+    console.log(value)
     this._ticketList = value;
     const dataSource: MatTableDataSource<Ticket> = new MatTableDataSource();
     dataSource.data = value;
     this.dataSource = dataSource;
     this.contratManagerList = value;
     this.total = value.reduce((acc, t) => acc + t.montant, 0).toFixed(0);
+    this.cdr.detectChanges();
   }
 
   get ticketList(): Ticket[] {
     return this._ticketList;
   }
 
-  constructor() {}
+  constructor(private cdr: ChangeDetectorRef) {}
 
   get visibleColumns() {
     return this.columns
